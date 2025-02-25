@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Employee Loan</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow-lg">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h4>Add Employee Loan</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="loanForm">
+                            <div class="mb-3">
+                                <label for="employeeId" class="form-label">Employee ID</label>
+                                <input type="number" class="form-control" id="employeeId" placeholder="Enter Employee ID" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="loanAmount" class="form-label">Loan Amount</label>
+                                <input type="number" class="form-control" id="loanAmount" placeholder="Enter Loan Amount" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="repaymentPeriod" class="form-label">Repayment Period (Months)</label>
+                                <input type="number" class="form-control" id="repaymentPeriod" placeholder="Enter Repayment Period" required>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">Submit Loan Request</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('loanForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const loanData = {
+                employee: {
+                    employeeId: document.getElementById('employeeId').value
+                },
+                loanAmount: document.getElementById('loanAmount').value,
+                repaymentPeriodInMonths: document.getElementById('repaymentPeriod').value
+            };
+
+            fetch('https://localhost:7136/employee-loans', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(loanData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert('Loan Request Submitted Successfully!');
+                document.getElementById('loanForm').reset();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to submit loan request.');
+            });
+        });
+    </script>
+</body>
+</html>

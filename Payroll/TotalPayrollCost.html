@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Total Payroll Cost</title>
+    <!-- Bootstrap CSS -->
+    <link 
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" 
+        rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 50px;
+        }
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card text-center">
+                    <div class="card-header bg-primary text-white">
+                        Total Payroll Cost
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Total Payroll Cost:</h5>
+                        <p class="card-text fs-3" id="totalPayrollCost">Loading...</p>
+                        <button class="btn btn-primary" onclick="fetchTotalPayrollCost()">
+                            Refresh
+                        </button>
+                    </div>
+                    <div class="card-footer text-muted">
+                        Updated just now
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function fetchTotalPayrollCost() {
+            fetch('/payrollCost')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('totalPayrollCost').innerText = 
+                        new Intl.NumberFormat('en-US', {
+                            style: 'currency',
+                            currency: 'USD'
+                        }).format(data.TotalPayrollCost);
+                })
+                .catch(error => {
+                    console.error('Error fetching total payroll cost:', error);
+                    document.getElementById('totalPayrollCost').innerText = 
+                        'Error fetching data';
+                });
+        }
+
+        // Fetch data on page load
+        window.onload = fetchTotalPayrollCost;
+    </script>
+</body>
+</html>

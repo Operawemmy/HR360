@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Lookup</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5 d-flex justify-content-center">
+        <div class="card p-4 shadow-lg" style="width: 40rem;">
+            <h2 class="text-center mb-4">Attendance Lookup</h2>
+            <div class="mb-3">
+                <label for="attendanceId" class="form-label">Enter Attendance ID:</label>
+                <input type="text" class="form-control" id="attendanceId" placeholder="Enter GUID">
+            </div>
+            <button class="btn btn-primary w-100" onclick="fetchAttendance()">Get Attendance</button>
+            
+            <div class="mt-4" id="result"></div>
+        </div>
+    </div>
+    
+    <script>
+        function fetchAttendance() {
+            var id = document.getElementById("attendanceId").value;
+            if (!id) {
+                alert("Please enter an Attendance ID.");
+                return;
+            }
+            
+            fetch(`/api/attendance/${id}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Attendance not found");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById("result").innerHTML = `
+                        <div class="card mt-4 p-3 shadow-sm">
+                            <h4 class="text-center">Attendance Details</h4>
+                            <p><strong>ID:</strong> ${data.attendanceId}</p>
+                            <p><strong>Status:</strong> ${data.status}</p>
+                            <p><strong>Date:</strong> ${data.date}</p>
+                        </div>
+                    `;
+                })
+                .catch(error => {
+                    document.getElementById("result").innerHTML = `
+                        <div class="alert alert-danger mt-3">${error.message}</div>
+                    `;
+                });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee List</title>
+  <!-- Bootstrap CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      padding: 20px;
+    }
+    .employee-card {
+      margin-bottom: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .card-body {
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2 class="text-center mb-4">Employee List</h2>
+    <div class="row" id="employee-container">
+      <!-- Employee Cards will be inserted here -->
+    </div>
+  </div>
+
+  <!-- Employee Details Modal -->
+  <div class="modal fade" id="employeeModal" tabindex="-1" aria-labelledby="employeeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="employeeModalLabel">Employee Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="employeeModalBody">
+          <!-- Employee details will be populated here -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS and dependencies -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Load the list of employees from /api/Employees
+    async function loadEmployees() {
+      try {
+        const response = await fetch('/api/Employees');
+        if (!response.ok) {
+          throw new Error('Failed to fetch employees.');
+        }
+        const employees = await response.json();
+        const employeeContainer = document.getElementById('employee-container');
+        employeeContainer.innerHTML = '';
+        employees.forEach(employee => {
+          const cardHTML = `
+            <div class="col-md-4">
+              <div class="card employee-card">
+                <div class="card-body">
+                  <h5 class="card-title">${employee.FirstName} ${employee.LastName}</h5>
+                  <p class="card-text">
+                    <strong>Email:</strong> ${employee.Email} <br>
+                    <strong>Department:</strong> ${employee.Department} <br>
+                    <strong>Job Title:</strong> ${employee.JobTitle}
+                  </p>
+                  <button class="btn btn-primary" onclick="viewEmployeeDetails('${employee.EmployeeId}')">View Details</button>
+                </div>
+              </div>
+            </div>
+          `;
+          employeeContainer.innerHTML += cardHTML;
+        });
+      } catch (error) {
+        console.error('Error fetching employee data:', error);
+      }
+    }
+
+    // Fetch detailed info for an employee and show it in a modal
+    async function viewEmployeeDetails(employeeId) {
+      try {
+        const response = await fetch(`/api/Employees/${employeeId}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch employee details.');
+        }
+        const employee = await response.json();
+        const modalBody = document.getElementById('employeeModalBody');
+        modalBody.innerHTML = `
+          <p><strong>First Name:</strong> ${employee.FirstName}</p>
+          <p><strong>Last Name:</strong> ${employee.LastName}</p>
+          <p><strong>Email:</strong> ${employee.Email}</p>
+          <p><strong>Address:</strong> ${employee.Address}</p>
+          <p><strong>Department:</strong> ${employee.Department}</p>
+          <p><strong>Job Title:</strong> ${employee.JobTitle}</p>
+          <p><strong>Level:</strong> ${employee.Level}</p>
+          <p><strong>Gender:</strong> ${employee.Gender}</p>
+          <p><strong>Date Hired:</strong> ${new Date(employee.DateHired).toLocaleDateString()}</p>
+          <p><strong>Role:</strong> ${employee.Role}</p>
+        `;
+        // Show modal
+        const employeeModal = new bootstrap.Modal(document.getElementById('employeeModal'));
+        employeeModal.show();
+      } catch (error) {
+        console.error('Error fetching employee details:', error);
+      }
+    }
+
+    // Load employees when the DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', loadEmployees);
+  </script>
+</body>
+</html>
