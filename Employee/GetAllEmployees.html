@@ -2,118 +2,326 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Employee List</title>
-  <!-- Bootstrap CSS CDN -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HR360 APP - Employee Dashboard</title>
+  <!-- Bootstrap 5 CSS CDN -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <style>
     body {
       background-color: #f8f9fa;
-      padding: 20px;
+      scroll-behavior: smooth;
     }
-    .employee-card {
-      margin-bottom: 20px;
+    .dashboard-title {
+      background: linear-gradient(45deg, #007bff, #6610f2);
+      color: #fff;
+      padding: 30px;
       border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 40px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
     }
-    .card-body {
-      padding: 20px;
+    .box-card {
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .box-card:hover {
+      transform: scale(1.03);
+    }
+    .section {
+      display: none;
+      margin-top: 30px;
+    }
+    .section.active {
+      display: block;
+    }
+    .section-title {
+      padding: 15px;
+      border-bottom: 2px solid #ddd;
+      margin-bottom: 20px;
+    }
+    .result-container {
+      margin-top: 20px;
+    }
+    pre {
+      background: #e9ecef;
+      padding: 15px;
+      border-radius: 5px;
+      font-size: 0.9rem;
+    }
+    .sample-section {
+      margin-top: 40px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2 class="text-center mb-4">Employee List</h2>
-    <div class="row" id="employee-container">
-      <!-- Employee Cards will be inserted here -->
+  <div class="container my-5">
+    <!-- Dashboard Title -->
+    <div class="dashboard-title">
+      <h1 class="display-4">Employee Dashboard</h1>
+      <p class="lead">Manage and search employee records</p>
     </div>
-  </div>
-
-  <!-- Employee Details Modal -->
-  <div class="modal fade" id="employeeModal" tabindex="-1" aria-labelledby="employeeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="employeeModalLabel">Employee Details</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    
+    <!-- Clickable Boxes -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mb-5">
+      <!-- Box 1: All Employees -->
+      <div class="col">
+        <div class="card box-card text-white bg-primary h-100" onclick="showSection('allEmployeesSection')">
+          <div class="card-body text-center">
+            <i class="bi bi-card-list" style="font-size: 3rem;"></i>
+            <h5 class="card-title mt-3">All Employees</h5>
+            <p class="card-text">View all employee records.</p>
+          </div>
         </div>
-        <div class="modal-body" id="employeeModalBody">
-          <!-- Employee details will be populated here -->
+      </div>
+      <!-- Box 2: Employee by ID -->
+      <div class="col">
+        <div class="card box-card text-white bg-success h-100" onclick="showSection('employeeByIdSection')">
+          <div class="card-body text-center">
+            <i class="bi bi-search" style="font-size: 3rem;"></i>
+            <h5 class="card-title mt-3">By Employee ID</h5>
+            <p class="card-text">Search using Employee GUID.</p>
+          </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+      <!-- Box 3: Employee by Department -->
+      <div class="col">
+        <div class="card box-card text-white bg-danger h-100" onclick="showSection('employeeByDeptSection')">
+          <div class="card-body text-center">
+            <i class="bi bi-building" style="font-size: 3rem;"></i>
+            <h5 class="card-title mt-3">By Department</h5>
+            <p class="card-text">Search using Department GUID.</p>
+          </div>
+        </div>
+      </div>
+      <!-- Box 4: Employee by Number -->
+      <div class="col">
+        <div class="card box-card text-white bg-warning h-100" onclick="showSection('employeeByNumberSection')">
+          <div class="card-body text-center">
+            <i class="bi bi-person-lines-fill" style="font-size: 3rem;"></i>
+            <h5 class="card-title mt-3">By Employee Number</h5>
+            <p class="card-text">Search using Employee Number.</p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- Bootstrap JS and dependencies -->
+    
+    <!-- Sections -->
+    <div id="sectionsContainer">
+      <!-- Section 1: All Employees -->
+      <div id="allEmployeesSection" class="section active">
+        <h2 class="section-title text-primary">All Employees</h2>
+        <div class="text-center">
+          <button id="loadEmployeesBtn" class="btn btn-primary btn-lg">Load All Employees</button>
+        </div>
+        <div id="allEmployeesResult" class="result-container"></div>
+      </div>
+      
+      <!-- Section 2: Employee by ID -->
+      <div id="employeeByIdSection" class="section">
+        <h2 class="section-title text-success">Search Employee by ID</h2>
+        <form id="employeeByIdForm">
+          <div class="mb-3">
+            <label for="employeeIdInput" class="form-label">Employee ID</label>
+            <input type="text" class="form-control" id="employeeIdInput" placeholder="Enter Employee ID (GUID)" required>
+          </div>
+          <div class="d-grid">
+            <button type="submit" class="btn btn-success btn-lg">Search Employee</button>
+          </div>
+        </form>
+        <div id="employeeByIdResult" class="result-container"></div>
+      </div>
+      
+      <!-- Section 3: Employee by Department -->
+      <div id="employeeByDeptSection" class="section">
+        <h2 class="section-title text-danger">Search Employee by Department ID</h2>
+        <form id="employeeByDeptForm">
+          <div class="mb-3">
+            <label for="departmentIdInput" class="form-label">Department ID</label>
+            <input type="text" class="form-control" id="departmentIdInput" placeholder="Enter Department ID (GUID)" required>
+          </div>
+          <div class="d-grid">
+            <button type="submit" class="btn btn-danger btn-lg">Search Employee</button>
+          </div>
+        </form>
+        <div id="employeeByDeptResult" class="result-container"></div>
+      </div>
+      
+      <!-- Section 4: Employee by Number -->
+      <div id="employeeByNumberSection" class="section">
+        <h2 class="section-title text-warning">Search Employee by Number</h2>
+        <form id="employeeByNumberForm">
+          <div class="mb-3">
+            <label for="employeeNumberInput" class="form-label">Employee Number</label>
+            <input type="text" class="form-control" id="employeeNumberInput" placeholder="Enter Employee Number" required>
+          </div>
+          <div class="d-grid">
+            <button type="submit" class="btn btn-warning btn-lg">Search Employee</button>
+          </div>
+        </form>
+        <div id="employeeByNumberResult" class="result-container"></div>
+      </div>
+    </div>
+  <!-- Bootstrap 5 JS Bundle (includes Popper) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
   <script>
-    // Load the list of employees from /api/Employees
-    async function loadEmployees() {
-      try {
-        const response = await fetch('/api/Employees');
-        if (!response.ok) {
-          throw new Error('Failed to fetch employees.');
-        }
-        const employees = await response.json();
-        const employeeContainer = document.getElementById('employee-container');
-        employeeContainer.innerHTML = '';
-        employees.forEach(employee => {
-          const cardHTML = `
-            <div class="col-md-4">
-              <div class="card employee-card">
-                <div class="card-body">
-                  <h5 class="card-title">${employee.FirstName} ${employee.LastName}</h5>
-                  <p class="card-text">
-                    <strong>Email:</strong> ${employee.Email} <br>
-                    <strong>Department:</strong> ${employee.Department} <br>
-                    <strong>Job Title:</strong> ${employee.JobTitle}
-                  </p>
-                  <button class="btn btn-primary" onclick="viewEmployeeDetails('${employee.EmployeeId}')">View Details</button>
-                </div>
-              </div>
-            </div>
-          `;
-          employeeContainer.innerHTML += cardHTML;
+    // Function to show only the selected section and hide others
+    function showSection(sectionId) {
+      const sections = document.querySelectorAll('.section');
+      sections.forEach(sec => sec.classList.remove('active'));
+      const selectedSection = document.getElementById(sectionId);
+      if (selectedSection) {
+        selectedSection.classList.add('active');
+        selectedSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    // 1. Get All Employees
+    document.getElementById('loadEmployeesBtn').addEventListener('click', function() {
+      fetch('https://localhost:7136/api/Employees')
+        .then(response => {
+          if (!response.ok) throw new Error('Failed to fetch employees.');
+          return response.json();
+        })
+        .then(data => {
+          let html = '';
+          if (!data || data.length === 0) {
+            html = '<div class="alert alert-info">No employee records found.</div>';
+          } else {
+            html += `<div class="table-responsive">
+                      <table class="table table-bordered table-striped table-hover">
+                        <thead class="table-dark">
+                          <tr>
+                            <th>Employee ID</th>
+                            <th>Employee Number</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Department</th>
+                          </tr>
+                        </thead>
+                        <tbody>`;
+            data.forEach(emp => {
+              html += `<tr>
+                        <td>${emp.employeeId || 'N/A'}</td>
+                        <td>${emp.employeeNumber || 'N/A'}</td>
+                        <td>${emp.firstName} ${emp.lastName}</td>
+                        <td>${emp.email || 'N/A'}</td>
+                        <td>${emp.department ? emp.department.departmentName : 'N/A'}</td>
+                      </tr>`;
+            });
+            html += `</tbody></table></div>`;
+          }
+          document.getElementById('allEmployeesResult').innerHTML = html;
+        })
+        .catch(error => {
+          document.getElementById('allEmployeesResult').innerHTML =
+            `<div class="alert alert-danger">${error.message}</div>`;
         });
-      } catch (error) {
-        console.error('Error fetching employee data:', error);
-      }
-    }
+    });
 
-    // Fetch detailed info for an employee and show it in a modal
-    async function viewEmployeeDetails(employeeId) {
-      try {
-        const response = await fetch(`/api/Employees/${employeeId}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch employee details.');
-        }
-        const employee = await response.json();
-        const modalBody = document.getElementById('employeeModalBody');
-        modalBody.innerHTML = `
-          <p><strong>First Name:</strong> ${employee.FirstName}</p>
-          <p><strong>Last Name:</strong> ${employee.LastName}</p>
-          <p><strong>Email:</strong> ${employee.Email}</p>
-          <p><strong>Address:</strong> ${employee.Address}</p>
-          <p><strong>Department:</strong> ${employee.Department}</p>
-          <p><strong>Job Title:</strong> ${employee.JobTitle}</p>
-          <p><strong>Level:</strong> ${employee.Level}</p>
-          <p><strong>Gender:</strong> ${employee.Gender}</p>
-          <p><strong>Date Hired:</strong> ${new Date(employee.DateHired).toLocaleDateString()}</p>
-          <p><strong>Role:</strong> ${employee.Role}</p>
-        `;
-        // Show modal
-        const employeeModal = new bootstrap.Modal(document.getElementById('employeeModal'));
-        employeeModal.show();
-      } catch (error) {
-        console.error('Error fetching employee details:', error);
+    // 2. Get Employee by ID
+    document.getElementById('employeeByIdForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const employeeId = document.getElementById('employeeIdInput').value.trim();
+      if (!employeeId) {
+        document.getElementById('employeeByIdResult').innerHTML =
+          `<div class="alert alert-warning">Please enter a valid Employee ID.</div>`;
+        return;
       }
-    }
+      fetch(`https://localhost:7136/api/Employees/${encodeURIComponent(employeeId)}`)
+        .then(response => {
+          if (!response.ok) throw new Error('Employee not found.');
+          return response.json();
+        })
+        .then(data => {
+          let html = `<div class="card">
+                        <div class="card-body">
+                          <h5 class="card-title">Employee Details</h5>
+                          <p><strong>Employee ID:</strong> ${data.employeeId || 'N/A'}</p>
+                          <p><strong>Employee Number:</strong> ${data.employeeNumber || 'N/A'}</p>
+                          <p><strong>Name:</strong> ${data.firstName} ${data.lastName}</p>
+                          <p><strong>Email:</strong> ${data.email || 'N/A'}</p>
+                          <p><strong>Department:</strong> ${data.department ? data.department.departmentName : 'N/A'}</p>
+                        </div>
+                      </div>`;
+          document.getElementById('employeeByIdResult').innerHTML = html;
+        })
+        .catch(error => {
+          document.getElementById('employeeByIdResult').innerHTML =
+            `<div class="alert alert-danger">${error.message}</div>`;
+        });
+    });
 
-    // Load employees when the DOM is fully loaded
-    document.addEventListener('DOMContentLoaded', loadEmployees);
+    // 3. Get Employee by Department
+    document.getElementById('employeeByDeptForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const departmentId = document.getElementById('departmentIdInput').value.trim();
+      if (!departmentId) {
+        document.getElementById('employeeByDeptResult').innerHTML =
+          `<div class="alert alert-warning">Please enter a valid Department ID.</div>`;
+        return;
+      }
+      fetch(`https://localhost:7136/api/Employees/GetByDepartment/${encodeURIComponent(departmentId)}`)
+        .then(response => {
+          if (!response.ok) throw new Error('No employee found for the given department.');
+          return response.json();
+        })
+        .then(data => {
+          let html = `<div class="card">
+                        <div class="card-body">
+                          <h5 class="card-title">Employee Details</h5>
+                          <p><strong>Employee ID:</strong> ${data.employeeId || 'N/A'}</p>
+                          <p><strong>Name:</strong> ${data.firstName} ${data.lastName}</p>
+                          <p><strong>Email:</strong> ${data.email || 'N/A'}</p>
+                          <p><strong>Department:</strong> ${data.department ? data.department.departmentName : 'N/A'}</p>
+                        </div>
+                      </div>`;
+          document.getElementById('employeeByDeptResult').innerHTML = html;
+        })
+        .catch(error => {
+          document.getElementById('employeeByDeptResult').innerHTML =
+            `<div class="alert alert-danger">${error.message}</div>`;
+        });
+    });
+
+    // 4. Get Employee by Number
+    document.getElementById('employeeByNumberForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const employeeNumber = document.getElementById('employeeNumberInput').value.trim();
+      if (!employeeNumber) {
+        document.getElementById('employeeByNumberResult').innerHTML =
+          `<div class="alert alert-warning">Please enter a valid Employee Number.</div>`;
+        return;
+      }
+      fetch(`https://localhost:7136/api/Employees/by-number/${encodeURIComponent(employeeNumber)}`)
+        .then(response => {
+          if (!response.ok) throw new Error('Employee not found.');
+          return response.json();
+        })
+        .then(data => {
+          let html = `<div class="card">
+                        <div class="card-body">
+                          <h5 class="card-title">Employee Details</h5>
+                          <p><strong>Employee ID:</strong> ${data.employeeId || 'N/A'}</p>
+                          <p><strong>Employee Number:</strong> ${data.employeeNumber || 'N/A'}</p>
+                          <p><strong>Name:</strong> ${data.firstName} ${data.lastName}</p>
+                          <p><strong>Email:</strong> ${data.email || 'N/A'}</p>
+                          <p><strong>Department:</strong> ${data.department ? data.department.departmentName : 'N/A'}</p>
+                        </div>
+                      </div>`;
+          document.getElementById('employeeByNumberResult').innerHTML = html;
+        })
+        .catch(error => {
+          document.getElementById('employeeByNumberResult').innerHTML =
+            `<div class="alert alert-danger">${error.message}</div>`;
+        });
+    });
   </script>
+  
+  <!-- Bootstrap 5 JS Bundle (includes Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

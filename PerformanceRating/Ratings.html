@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HR360 APP - Performance Review Dashboard</title>
+  <!-- Bootstrap 5 CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      scroll-behavior: smooth;
+    }
+    .dashboard-title {
+      background: linear-gradient(45deg, #007bff, #6610f2);
+      color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      text-align: center;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    .box-link {
+      text-decoration: none;
+    }
+    .box-card {
+      cursor: pointer;
+      transition: transform 0.2s ease-in-out;
+    }
+    .box-card:hover {
+      transform: scale(1.03);
+    }
+    .section {
+      display: none;
+      margin-top: 30px;
+    }
+    .section.active {
+      display: block;
+    }
+    .section-title {
+      padding: 15px;
+      border-bottom: 2px solid #ddd;
+      margin-bottom: 20px;
+    }
+    .result-container {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container my-5">
+    <!-- Dashboard Title -->
+    <div class="dashboard-title">
+      <h1 class="display-4">Performance Review Dashboard</h1>
+      <p class="lead">Manage and search performance reviews</p>
+    </div>
+    
+    <!-- Boxes arranged in a grid -->
+    <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+      <!-- Box 1: All Reviews -->
+      <div class="col">
+        <div class="card box-card text-white bg-primary h-100" onclick="showSection('allReviewsSection')">
+          <div class="card-body text-center">
+            <i class="bi bi-card-list" style="font-size: 3rem;"></i>
+            <h5 class="card-title mt-3">All Reviews</h5>
+            <p class="card-text">View all performance reviews.</p>
+          </div>
+        </div>
+      </div>
+      <!-- Box 2: Review by ID -->
+      <div class="col">
+        <div class="card box-card text-white bg-success h-100" onclick="showSection('reviewByIdSection')">
+          <div class="card-body text-center">
+            <i class="bi bi-search" style="font-size: 3rem;"></i>
+            <h5 class="card-title mt-3">Review by ID</h5>
+            <p class="card-text">Search review by Review ID.</p>
+          </div>
+        </div>
+      </div>
+      <!-- Box 3: Review by Employee ID -->
+      <div class="col">
+        <div class="card box-card text-white bg-danger h-100" onclick="showSection('reviewByEmployeeSection')">
+          <div class="card-body text-center">
+            <i class="bi bi-person-check" style="font-size: 3rem;"></i>
+            <h5 class="card-title mt-3">Review by Employee</h5>
+            <p class="card-text">Search review by Employee ID.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Sections: Only one section visible at a time -->
+    <div id="sectionsContainer">
+      <!-- Section 1: All Reviews -->
+      <div id="allReviewsSection" class="section active">
+        <h2 class="section-title text-primary">All Performance Reviews</h2>
+        <div class="text-center">
+          <button id="loadReviewsBtn" class="btn btn-primary btn-lg">Load All Reviews</button>
+        </div>
+        <div id="allReviewsResult" class="result-container"></div>
+      </div>
+      
+      <!-- Section 2: Review by ID -->
+      <div id="reviewByIdSection" class="section">
+        <h2 class="section-title text-success">Performance Review by Review ID</h2>
+        <form id="reviewByIdForm">
+          <div class="mb-3">
+            <label for="reviewIdInput" class="form-label">Review ID</label>
+            <input type="text" class="form-control" id="reviewIdInput" placeholder="Enter Review ID (GUID)" required>
+          </div>
+          <div class="d-grid">
+            <button type="submit" class="btn btn-success btn-lg">Search Review</button>
+          </div>
+        </form>
+        <div id="reviewByIdResult" class="result-container"></div>
+      </div>
+      
+      <!-- Section 3: Review by Employee ID -->
+      <div id="reviewByEmployeeSection" class="section">
+        <h2 class="section-title text-danger">Performance Review by Employee ID</h2>
+        <form id="reviewByEmployeeForm">
+          <div class="mb-3">
+            <label for="employeeIdInput" class="form-label">Employee ID</label>
+            <input type="text" class="form-control" id="employeeIdInput" placeholder="Enter Employee ID (GUID)" required>
+          </div>
+          <div class="d-grid">
+            <button type="submit" class="btn btn-danger btn-lg">Search Review</button>
+          </div>
+        </form>
+        <div id="reviewByEmployeeResult" class="result-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript for showing sections and handling API calls -->
+  <script>
+    // Function to show only the selected section and hide the others
+    function showSection(sectionId) {
+      const sections = document.querySelectorAll('.section');
+      sections.forEach(sec => sec.classList.remove('active'));
+      const selectedSection = document.getElementById(sectionId);
+      if (selectedSection) {
+        selectedSection.classList.add('active');
+        selectedSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    // Helper function to format date strings (if needed)
+    const formatDate = (dateStr) => {
+      if (!dateStr) return 'N/A';
+      const date = new Date(dateStr);
+      return date.toLocaleDateString();
+    };
+
+    // 1. Load All Reviews
+    document.getElementById('loadReviewsBtn').addEventListener('click', function() {
+      fetch('/api/PerformanceReview')
+        .then(response => {
+          if (!response.ok) throw new Error('Failed to fetch performance reviews.');
+          return response.json();
+        })
+        .then(data => {
+          let html = '';
+          if (!data || data.length === 0) {
+            html = '<div class="alert alert-info">No performance reviews found.</div>';
+          } else {
+            html += `<div class="table-responsive">
+                      <table class="table table-bordered table-striped table-hover">
+                        <thead class="table-dark">
+                          <tr>
+                            <th>Review ID</th>
+                            <th>Employee Name</th>
+                            <th>Review Date</th>
+                            <th>Reviewer</th>
+                            <th>Rating</th>
+                          </tr>
+                        </thead>
+                        <tbody>`;
+            data.forEach(review => {
+              html += `<tr>
+                        <td>${review.reviewId || 'N/A'}</td>
+                        <td>${review.employeeName || 'N/A'}</td>
+                        <td>${review.reviewDate ? formatDate(review.reviewDate) : 'N/A'}</td>
+                        <td>${review.reviewer || 'N/A'}</td>
+                        <td>${review.rating || 'N/A'}</td>
+                      </tr>`;
+            });
+            html += `</tbody></table></div>`;
+          }
+          document.getElementById('allReviewsResult').innerHTML = html;
+        })
+        .catch(error => {
+          document.getElementById('allReviewsResult').innerHTML =
+            `<div class="alert alert-danger">${error.message}</div>`;
+        });
+    });
+
+    // 2. Get Review by Review ID
+    document.getElementById('reviewByIdForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const reviewId = document.getElementById('reviewIdInput').value.trim();
+      if (!reviewId) {
+        document.getElementById('reviewByIdResult').innerHTML =
+          `<div class="alert alert-warning">Please enter a valid Review ID.</div>`;
+        return;
+      }
+      fetch('/api/PerformanceReview/' + encodeURIComponent(reviewId))
+        .then(response => {
+          if (!response.ok) throw new Error('Performance review not found.');
+          return response.json();
+        })
+        .then(data => {
+          let html = `<div class="card">
+                        <div class="card-body">
+                          <h5 class="card-title">Review Details</h5>
+                          <p><strong>Review ID:</strong> ${data.reviewId || 'N/A'}</p>
+                          <p><strong>Employee Name:</strong> ${data.employeeName || 'N/A'}</p>
+                          <p><strong>Review Date:</strong> ${data.reviewDate ? formatDate(data.reviewDate) : 'N/A'}</p>
+                          <p><strong>Reviewer:</strong> ${data.reviewer || 'N/A'}</p>
+                          <p><strong>Comments:</strong> ${data.comments || 'N/A'}</p>
+                          <p><strong>Rating:</strong> ${data.rating || 'N/A'}</p>
+                        </div>
+                      </div>`;
+          document.getElementById('reviewByIdResult').innerHTML = html;
+        })
+        .catch(error => {
+          document.getElementById('reviewByIdResult').innerHTML =
+            `<div class="alert alert-danger">${error.message}</div>`;
+        });
+    });
+
+    // 3. Get Review by Employee ID
+    document.getElementById('reviewByEmployeeForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const employeeId = document.getElementById('employeeIdInput').value.trim();
+      if (!employeeId) {
+        document.getElementById('reviewByEmployeeResult').innerHTML =
+          `<div class="alert alert-warning">Please enter a valid Employee ID.</div>`;
+        return;
+      }
+      fetch('/api/PerformanceReview/employee/' + encodeURIComponent(employeeId))
+        .then(response => {
+          if (!response.ok) throw new Error('Performance review not found for this employee.');
+          return response.json();
+        })
+        .then(data => {
+          let html = `<div class="card">
+                        <div class="card-body">
+                          <h5 class="card-title">Review Details</h5>
+                          <p><strong>Review ID:</strong> ${data.reviewId || 'N/A'}</p>
+                          <p><strong>Employee Name:</strong> ${data.employeeName || 'N/A'}</p>
+                          <p><strong>Review Date:</strong> ${data.reviewDate ? formatDate(data.reviewDate) : 'N/A'}</p>
+                          <p><strong>Reviewer:</strong> ${data.reviewer || 'N/A'}</p>
+                          <p><strong>Comments:</strong> ${data.comments || 'N/A'}</p>
+                          <p><strong>Rating:</strong> ${data.rating || 'N/A'}</p>
+                        </div>
+                      </div>`;
+          document.getElementById('reviewByEmployeeResult').innerHTML = html;
+        })
+        .catch(error => {
+          document.getElementById('reviewByEmployeeResult').innerHTML =
+            `<div class="alert alert-danger">${error.message}</div>`;
+        });
+    });
+  </script>
+
+  <!-- Bootstrap 5 JS Bundle (includes Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

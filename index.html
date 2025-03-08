@@ -89,6 +89,7 @@
                     // Login successful, handle successful login (redirect, show success message, etc.)
                     alert('Login Successful');
                     console.log(result);  // You may want to handle token or roles here
+                    window.location.href = "Dashboard.html";
                 } else {
                     // Display error message if login fails
                     document.getElementById('error-message').textContent = result;
