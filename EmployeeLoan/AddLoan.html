@@ -1,78 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Employee Loan</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Employee Loan Submission</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      padding-top: 40px;
+    }
+    .container {
+      max-width: 600px;
+    }
+    .header-banner {
+      background: linear-gradient(135deg, #007bff, #00d4ff);
+      color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .header-banner h3 {
+      margin: 0;
+      font-size: 2.5rem;
+      font-weight: bold;
+    }
+    .header-banner p {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+    .card {
+      margin-bottom: 20px;
+    }
+    .response-message {
+      background-color: #e9ecef;
+      padding: 15px;
+      border-radius: 5px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #155724;
+    }
+  </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card shadow-lg">
-                    <div class="card-header bg-primary text-white text-center">
-                        <h4>Add Employee Loan</h4>
-                    </div>
-                    <div class="card-body">
-                        <form id="loanForm">
-                            <div class="mb-3">
-                                <label for="employeeId" class="form-label">Employee ID</label>
-                                <input type="number" class="form-control" id="employeeId" placeholder="Enter Employee ID" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="loanAmount" class="form-label">Loan Amount</label>
-                                <input type="number" class="form-control" id="loanAmount" placeholder="Enter Loan Amount" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="repaymentPeriod" class="form-label">Repayment Period (Months)</label>
-                                <input type="number" class="form-control" id="repaymentPeriod" placeholder="Enter Repayment Period" required>
-                            </div>
-                            <button type="submit" class="btn btn-success w-100">Submit Loan Request</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <div class="container">
+    <!-- Header with beautiful styling -->
+    <div class="header-banner">
+      <h4>Employee Loan Request</h4>
+      <p>Please fill in the form below to request a new loan</p>
     </div>
-
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.getElementById('loanForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const loanData = {
-                employee: {
-                    employeeId: document.getElementById('employeeId').value
-                },
-                loanAmount: document.getElementById('loanAmount').value,
-                repaymentPeriodInMonths: document.getElementById('repaymentPeriod').value
-            };
-
-            fetch('https://localhost:7136/employee-loans', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(loanData)
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                alert('Loan Request Submitted Successfully!');
-                document.getElementById('loanForm').reset();
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Failed to submit loan request.');
-            });
+    
+    <!-- Loan Request Form -->
+    <div class="card">
+      <div class="card-body">
+        <form id="loanForm">
+          <!-- Updated: Employee ID as a dropdown populated from /api/Employees -->
+          <div class="mb-3">
+            <label for="employeeId" class="form-label">Employee</label>
+            <select id="employeeId" class="form-select" required>
+              <option value="">Select Employee</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="loanAmount" class="form-label">Loan Amount</label>
+            <input type="number" id="loanAmount" class="form-control" placeholder="Enter Loan Amount" required>
+          </div>
+          <div class="mb-3">
+            <label for="loanStartDate" class="form-label">Loan Start Date</label>
+            <input type="date" id="loanStartDate" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="term" class="form-label">Term (months)</label>
+            <input type="number" id="term" class="form-control" placeholder="Enter repayment term in months" required>
+          </div>
+          <!-- Loan End Date is calculated based on the term -->
+          <button type="submit" class="btn btn-primary w-100">Submit Loan Request</button>
+        </form>
+      </div>
+    </div>
+    
+    <!-- Response Display Section -->
+    <div class="card-body">
+      <div id="responseOutput" class="response-message"></div>
+    </div>
+  </div>
+  
+  <!-- JavaScript to handle form submission and populate employee dropdown -->
+  <script>
+    // Fetch employee list from the /api/Employees endpoint on page load
+    window.addEventListener('DOMContentLoaded', async function() {
+      try {
+        const response = await fetch("https://localhost:7136/api/Employees");
+        if (!response.ok) {
+          throw new Error("Error fetching employee data");
+        }
+        const employees = await response.json();
+        const employeeSelect = document.getElementById('employeeId');
+        employees.forEach(employee => {
+          const option = document.createElement('option');
+          option.value = employee.employeeId;
+          option.textContent = `${employee.firstName} ${employee.lastName}`;
+          employeeSelect.appendChild(option);
         });
-    </script>
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    });
+
+    // Form submission handler
+    document.getElementById('loanForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      // Retrieve form values.
+      const employeeId = document.getElementById('employeeId').value;
+      const loanAmount = parseFloat(document.getElementById('loanAmount').value);
+      const loanStartDate = document.getElementById('loanStartDate').value;
+      const term = parseInt(document.getElementById('term').value);
+
+      // Calculate LoanEndDate based on the term.
+      const startDate = new Date(loanStartDate);
+      const endDate = new Date(startDate);
+      endDate.setMonth(endDate.getMonth() + term);
+      const loanEndDate = endDate.toISOString().split('T')[0];
+
+      // Create the payload.
+      const payload = {
+        employeeId: employeeId,
+        loanAmount: loanAmount,
+        loanStartDate: loanStartDate,
+        loanEndDate: loanEndDate,
+        term: term
+      };
+
+      try {
+        const response = await fetch("https://localhost:7136/api/EmployeeLoans", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+        if (!response.ok) {
+          throw new Error("Error submitting loan request");
+        }
+        document.getElementById("responseOutput").textContent = "Loan request successful";
+      } catch (error) {
+        document.getElementById("responseOutput").textContent = error.message;
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -4,99 +4,127 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Leave Request</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 50px;
+        }
+        .container {
+            max-width: 600px;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card shadow-lg">
-                    <div class="card-header text-center bg-primary text-white">
-                        <h3>Add Leave Request</h3>
-                    </div>
-                    <div class="card-body">
-                        <form id="addLeaveForm">
-                            <div class="mb-3">
-                                <label for="leaveType" class="form-label">Leave Type</label>
-                                <select class="form-select" id="Leave" required>
-                                    <option value="Compassionate">Compassionate</option>
-                                    <option value="Bereavement">Bereavement</option>
-                                    <option value="Sick">Sick</option>
-                                    <option value="Paternity">Paternity</option>
-                                    <option value="Maternity">Maternity</option>
-                                    <option value="AnnualLeave">Annual Leave</option>
-                                    <option value="Dependents">Dependents</option>
-                                    <option value="Study">Study</option>
-                                    <option value="Sabbatical">Sabbatical</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="employeeId" class="form-label">Employee ID</label>
-                                <input type="number" class="form-control" id="employeeId" name="employeeId" placeholder="Enter Employee ID" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="startDate" class="form-label">Start Date</label>
-                                <input type="date" class="form-control" id="startDate" name="startDate" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="endDate" class="form-label">End Date</label>
-                                <input type="date" class="form-control" id="endDate" name="endDate" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="requestDate" class="form-label">Request Date</label>
-                                <input type="date" class="form-control" id="requestDate" name="requestDate" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="approver" class="form-label">Approver</label>
-                                <input type="text" class="form-control" id="approver" name="approver" placeholder="Enter Approver Name" required>
-                            </div>
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-success">Submit Leave Request</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+    <div class="container">
+        <h2 class="text-center">Add Leave Request</h2>
+        <form id="leaveForm" method="POST">
+            <div class="form-group">
+                <label for="employeeId">Employee</label>
+                <select class="form-control" id="employeeId" required>
+                    <option value="" disabled selected>Select Employee</option>
+                </select>
             </div>
-        </div>
+            <div class="form-group">
+                <label for="leaveType">Leave Type</label>
+                <select class="form-control" id="leaveType" required>
+                    <option value="1">Compassionate</option>
+                    <option value="2">Bereavement</option>
+                    <option value="3">Sick Leave</option>
+                    <option value="4">Paternity</option>
+                    <option value="5">Maternity</option>
+                    <option value="6">Annual Leave</option>
+                    <option value="7">Dependents</option>
+                    <option value="8">Study</option>
+                    <option value="9">Sabbatical</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="startDate">Start Date</label>
+                <input type="date" class="form-control" id="startDate" required>
+            </div>
+            <div class="form-group">
+                <label for="endDate">End Date</label>
+                <input type="date" class="form-control" id="endDate" required>
+            </div>
+            <div class="form-group">
+                <label for="approverComments">Approver Comments</label>
+                <textarea class="form-control" id="approverComments" rows="3" placeholder="Enter any comments..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Submit Leave Request</button>
+        </form>
+        <div id="responseMessage" class="alert mt-4" style="display: none;"></div>
     </div>
 
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.getElementById('addLeaveForm').addEventListener('submit', function(event) {
-            event.preventDefault();
+        // Function to fetch employees and populate the employee dropdown
+        function loadEmployees() {
+            fetch('https://localhost:7136/api/Employees')  // Fetch employees from API
+                .then(response => response.json())
+                .then(data => {
+                    const employeeSelect = document.getElementById('employeeId');
+                    data.forEach(employee => {
+                        const option = document.createElement('option');
+                        option.value = employee.employeeId; // UUID should be used here
+                        option.textContent = `${employee.firstName} ${employee.lastName}`; // Full name of employee
+                        employeeSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading employees:', error);
+                });
+        }
 
-            const formData = {
-                LeaveType: document.getElementById('leaveType').value,
-                Employee: {
-                    EmployeeId: document.getElementById('employeeId').value
-                },
-                StartDate: document.getElementById('startDate').value,
-                EndDate: document.getElementById('endDate').value,
-                Status: document.getElementById('status').value,
-                RequestDate: document.getElementById('requestDate').value,
-                Approver: document.getElementById('approver').value,
-                ApproverComments: document.getElementById('approverComments').value
+        // Call the function to load employees when the page is ready
+        window.onload = loadEmployees;
+
+        // Handle the form submission
+        document.getElementById('leaveForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const leaveData = {
+                leaveType: parseInt(document.getElementById('leaveType').value),
+                employeeId: document.getElementById('employeeId').value, // The UUID of the employee
+                startDate: document.getElementById('startDate').value, 
+                endDate: document.getElementById('endDate').value,
+                status: 1, // Set status as numeric "1" (Pending)
+                requestDate: new Date().toISOString().split('T')[0], // Get today's date in yyyy-MM-dd format
+                approverComments: document.getElementById('approverComments').value
             };
 
-            fetch('/api/leave/addleave', {
+            fetch('https://localhost:7136/api/Leaves', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(leaveData)
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to submit leave request');
+                }
+                return response.json();
+            })
             .then(data => {
-                alert('Leave request submitted successfully!');
-                document.getElementById('addLeaveForm').reset();
+                // Handle success response
+                const messageDiv = document.getElementById('responseMessage');
+                messageDiv.classList.remove('alert-danger');
+                messageDiv.classList.add('alert-success');
+                messageDiv.innerHTML = `Leave Request Submitted Successfully. Leave ID: ${data.leaveId}`;
+                messageDiv.style.display = 'block';
             })
             .catch(error => {
-                console.error('Error:', error);
-                alert('Failed to submit leave request.');
+                // Handle error response
+                const messageDiv = document.getElementById('responseMessage');
+                messageDiv.classList.remove('alert-success');
+                messageDiv.classList.add('alert-danger');
+                messageDiv.innerHTML = `Error: ${error.message}`;
+                messageDiv.style.display = 'block';
             });
         });
     </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

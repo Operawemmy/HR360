@@ -53,11 +53,11 @@
             <form id="addDepartmentForm">
               <div class="mb-3">
                 <label for="departmentName" class="form-label">Department Name</label>
-                <input type="text" class="form-control" id="departmentName" name="departmentName" placeholder="Health Safety and Enviroment" required>
+                <input type="text" class="form-control" id="departmentName" name="departmentName" placeholder="e.g., Supply Chain" required>
               </div>
               <div class="mb-3">
                 <label for="description" class="form-label">Description</label>
-                <textarea class="form-control" id="description" name="description" rows="4" placeholder="Manages the safe Practices in the organisation" required></textarea>
+                <textarea class="form-control" id="description" name="description" rows="4" placeholder="e.g., Manages Inventory" required></textarea>
               </div>
               <div class="text-center">
                 <button type="submit" class="btn btn-success btn-custom">Add Department</button>
@@ -84,7 +84,6 @@
         description: description
       };
 
-      // Adjust the endpoint URL as needed
       fetch('https://localhost:7136/api/Departments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -97,9 +96,20 @@
         return response.json();
       })
       .then(data => {
-        document.getElementById('responseMessage').innerHTML = `<div class="alert alert-success" role="alert">
-          ${data.departmentName} has been created successfully!
-        </div>`;
+        // Using the sample server response structure:
+        // {
+        //   "departmentId": "9aa51d97-d0d1-4e4d-87ed-c2e4991d2acf",
+        //   "departmentName": "Supply Chain",
+        //   "description": "Manages Inventory",
+        //   "departmentManagerName": null
+        // }
+        const managerName = data.departmentManagerName ? data.departmentManagerName : 'N/A';
+        document.getElementById('responseMessage').innerHTML = `
+          <div class="alert alert-success" role="alert">
+            Department <strong>${data.departmentName}</strong> has been created successfully!<br>
+            Description: ${data.description}<br>
+          </div>
+        `;
         document.getElementById('addDepartmentForm').reset();
       })
       .catch(error => {

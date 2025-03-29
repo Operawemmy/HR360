@@ -2,285 +2,258 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Leaves Dashboard</title>
-  <!-- Bootstrap 5 CSS CDN -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Bootstrap Icons CDN -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leave Management</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
       background-color: #f8f9fa;
-      scroll-behavior: smooth;
+      padding: 20px;
     }
     .dashboard-title {
       background: linear-gradient(45deg, #007bff, #6610f2);
-      color: #fff;
+      color: white;
+      text-align: center;
       padding: 20px;
       border-radius: 10px;
       margin-bottom: 30px;
-      text-align: center;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-    }
-    .box-link {
-      text-decoration: none;
-    }
-    .box-card {
-      cursor: pointer;
-      transition: transform 0.2s ease-in-out;
-    }
-    .box-card:hover {
-      transform: scale(1.03);
     }
     .section {
-      display: none;
-      margin-top: 30px;
-    }
-    .section.active {
-      display: block;
-    }
-    .section-title {
-      padding: 15px;
-      border-bottom: 2px solid #ddd;
-      margin-bottom: 20px;
+      margin-top: 20px;
     }
     .result-container {
       margin-top: 20px;
     }
+    .result-card {
+      background: white;
+      border: 1px solid #ddd;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      width: 100%;
+    }
+    .card-title {
+      font-size: 1.25rem;
+    }
+    .card-body {
+      font-size: 1.1rem;
+    }
   </style>
 </head>
 <body>
-  <div class="container my-5">
-    <!-- Dashboard Title -->
+  <div class="container">
     <div class="dashboard-title">
-      <h1 class="display-4">Leaves Dashboard</h1>
-      <p class="lead">Click a box below to manage leaves</p>
+      <h1>Leave Management Dashboard</h1>
+      <p class="lead">Manage All Employee Leaves</p>
     </div>
-    
-    <!-- Boxes arranged in a grid -->
-    <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
-      <!-- Box 1: All Leaves -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
       <div class="col">
-        <div class="card box-card text-white bg-primary h-100" onclick="showSection('allLeavesSection')">
-          <div class="card-body text-center">
-            <i class="bi bi-card-checklist" style="font-size: 3rem;"></i>
-            <h5 class="card-title mt-3">All Leaves</h5>
-            <p class="card-text">View all leave records.</p>
-          </div>
-        </div>
+        <button class="btn btn-primary w-100" style="font-size: 1.2rem; padding: 20px;" onclick="showSection('allLeavesSection')">All Leaves</button>
       </div>
-      <!-- Box 2: Leave by ID -->
       <div class="col">
-        <div class="card box-card text-white bg-success h-100" onclick="showSection('leaveByIdSection')">
-          <div class="card-body text-center">
-            <i class="bi bi-search" style="font-size: 3rem;"></i>
-            <h5 class="card-title mt-3">Leave by ID</h5>
-            <p class="card-text">Search leave by Leave ID.</p>
-          </div>
-        </div>
+        <button class="btn btn-success w-100" style="font-size: 1.2rem; padding: 20px;" onclick="showSection('leaveByIdSection')">Leave by ID</button>
       </div>
-      <!-- Box 3: Leaves by Employee -->
       <div class="col">
-        <div class="card box-card text-white bg-danger h-100" onclick="showSection('leavesByEmployeeSection')">
-          <div class="card-body text-center">
-            <i class="bi bi-person-lines-fill" style="font-size: 3rem;"></i>
-            <h5 class="card-title mt-3">Leaves by Employee</h5>
-            <p class="card-text">Search leaves by Employee ID.</p>
-          </div>
-        </div>
+        <button class="btn btn-danger w-100" style="font-size: 1.2rem; padding: 20px;" onclick="showSection('leavesByEmployeeSection')">Leaves by Employee</button>
       </div>
-    </div>
-    
-    <!-- Sections (only one active at a time) -->
+      <div class="col">
+        <button class="btn btn-warning w-100" style="font-size: 1.2rem; padding: 20px;" onclick="showSection('pendingLeavesSection')">Pending Leaves</button>
+      </div>
+      <div class="col">
+        <button class="btn btn-info w-100" style="font-size: 1.2rem; padding: 20px;" onclick="showSection('totalLeaveDaysSection')">Total Leave Days</button>
+      </div>
+      <div class="col">
+        <button class="btn btn-secondary w-100" style="font-size: 1.2rem; padding: 20px;" onclick="showSection('leaveRequestsSection')">Leave Requests</button>
+      </div>
+    </div>    
     <div id="sectionsContainer">
-      <!-- Section 1: All Leaves -->
-      <div id="allLeavesSection" class="section active">
-        <h2 class="section-title text-primary">All Leaves</h2>
-        <div class="text-center">
-          <button id="loadLeavesBtn" class="btn btn-primary btn-lg">Load All Leaves</button>
-        </div>
+      <!-- All Leaves -->
+      <div id="allLeavesSection" class="section" style="display: none;">
+        <h3>All Leaves</h3>
+        <button id="loadAllLeaves" class="btn btn-primary">Load All Leaves</button>
         <div id="allLeavesResult" class="result-container"></div>
       </div>
-      
-      <!-- Section 2: Leave by ID -->
-      <div id="leaveByIdSection" class="section">
-        <h2 class="section-title text-success">Leave by ID</h2>
-        <form id="leaveByIdForm">
-          <div class="mb-3">
-            <label for="leaveIdInput" class="form-label">Leave ID</label>
-            <input type="text" class="form-control" id="leaveIdInput" placeholder="Enter Leave ID (GUID)" required>
-          </div>
-          <div class="d-grid">
-            <button type="submit" class="btn btn-success btn-lg">Search Leave</button>
-          </div>
-        </form>
+
+      <!-- Leave by ID -->
+      <div id="leaveByIdSection" class="section" style="display: none;">
+        <h3>Leave by ID</h3>
+        <input id="leaveIdInput" class="form-control" placeholder="Enter Leave ID">
+        <button id="getLeaveById" class="btn btn-success mt-2">Fetch Leave</button>
         <div id="leaveByIdResult" class="result-container"></div>
       </div>
-      
-      <!-- Section 3: Leaves by Employee -->
-      <div id="leavesByEmployeeSection" class="section">
-        <h2 class="section-title text-danger">Leaves by Employee</h2>
-        <form id="leavesByEmployeeForm">
-          <div class="mb-3">
-            <label for="employeeIdInput" class="form-label">Employee ID</label>
-            <input type="text" class="form-control" id="employeeIdInput" placeholder="Enter Employee ID (GUID)" required>
-          </div>
-          <div class="d-grid">
-            <button type="submit" class="btn btn-danger btn-lg">Search Leaves</button>
-          </div>
-        </form>
+
+      <!-- Leaves by Employee -->
+      <div id="leavesByEmployeeSection" class="section" style="display: none;">
+        <h3>Leaves by Employee</h3>
+        <select id="employeeIdInput" class="form-select"></select>
+        <button id="getLeavesByEmployee" class="btn btn-danger mt-2">Fetch Leaves</button>
         <div id="leavesByEmployeeResult" class="result-container"></div>
+      </div>
+
+      <!-- Pending Leaves -->
+      <div id="pendingLeavesSection" class="section" style="display: none;">
+        <h3>Pending Leaves</h3>
+        <button id="getPendingLeaves" class="btn btn-warning">Load Pending Leaves</button>
+        <div id="pendingLeavesResult" class="result-container"></div>
+      </div>
+
+      <!-- Total Leave Days -->
+      <div id="totalLeaveDaysSection" class="section" style="display: none;">
+        <h3>Total Leave Days</h3>
+        <select id="employeeIdForDays" class="form-select"></select>
+        <input id="yearInput" class="form-control mt-2" placeholder="Enter Year">
+        <button id="getTotalDays" class="btn btn-info mt-2">Calculate Days</button>
+        <div id="totalLeaveDaysResult" class="result-container"></div>
+      </div>
+
+      <!-- Leave Requests -->
+      <div id="leaveRequestsSection" class="section" style="display: none;">
+        <h3>Leave Requests</h3>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Employee</th>
+              <th>Leave Type</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Status</th>
+              <th>Comments</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="leaveRequestsTable"></tbody>
+        </table>
       </div>
     </div>
   </div>
 
-  <!-- JavaScript for handling section toggling and API calls -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
-    // Function to show only the selected section
+    // Load employee dropdown
+    async function loadEmployees() {
+      const res = await fetch('https://localhost:7136/api/Employees');
+      const employees = await res.json();
+      const employeeDropdowns = [document.getElementById('employeeIdInput'), document.getElementById('employeeIdForDays')];
+      employeeDropdowns.forEach(dropdown => {
+        dropdown.innerHTML = employees.map(emp => `<option value="${emp.employeeId}">${emp.firstName} ${emp.lastName}</option>`).join('');
+      });
+    }
+    loadEmployees();
+
+    // Show section
     function showSection(sectionId) {
-      const sections = document.querySelectorAll('.section');
-      sections.forEach(sec => sec.classList.remove('active'));
-      const selectedSection = document.getElementById(sectionId);
-      if (selectedSection) {
-        selectedSection.classList.add('active');
-        selectedSection.scrollIntoView({ behavior: 'smooth' });
-      }
+      document.querySelectorAll('.section').forEach(section => (section.style.display = 'none'));
+      document.getElementById(sectionId).style.display = 'block';
     }
 
-    // Helper function to format date strings
-    const formatDate = (dateStr) => {
-      if (!dateStr) return 'N/A';
-      const date = new Date(dateStr);
-      return date.toLocaleDateString();
+    // Fetch All Leaves
+    document.getElementById('loadAllLeaves').onclick = async function () {
+      const res = await fetch('https://localhost:7136/api/Leaves');
+      const data = await res.json();
+      displayResults('allLeavesResult', data);
     };
 
-    // 1. Get All Leaves
-    document.getElementById('loadLeavesBtn').addEventListener('click', function() {
-      fetch('/api/Leaves')
-        .then(response => {
-          if (!response.ok) throw new Error('Failed to fetch leaves.');
-          return response.json();
-        })
-        .then(data => {
-          let html = '';
-          if (!data || data.length === 0) {
-            html = '<div class="alert alert-info">No leaves found.</div>';
-          } else {
-            html += `<div class="table-responsive">
-                      <table class="table table-bordered table-striped table-hover">
-                        <thead class="table-dark">
-                          <tr>
-                            <th>Leave ID</th>
-                            <th>Employee ID</th>
-                            <th>Leave Date</th>
-                            <th>Type</th>
-                            <th>Status</th>
-                          </tr>
-                        </thead>
-                        <tbody>`;
-            data.forEach(leave => {
-              html += `<tr>
-                        <td>${leave.leaveId || 'N/A'}</td>
-                        <td>${leave.employeeId || 'N/A'}</td>
-                        <td>${leave.leaveDate ? formatDate(leave.leaveDate) : 'N/A'}</td>
-                        <td>${leave.leaveType || 'N/A'}</td>
-                        <td>${leave.leaveStatus || 'N/A'}</td>
-                      </tr>`;
-            });
-            html += `</tbody></table></div>`;
-          }
-          document.getElementById('allLeavesResult').innerHTML = html;
-        })
-        .catch(error => {
-          document.getElementById('allLeavesResult').innerHTML =
-            `<div class="alert alert-danger">${error.message}</div>`;
-        });
-    });
+    // Fetch Leave by ID
+    document.getElementById('getLeaveById').onclick = async function () {
+      const leaveId = document.getElementById('leaveIdInput').value;
+      const res = await fetch(`https://localhost:7136/api/Leaves/${leaveId}`);
+      const data = await res.json();
+      displayResults('leaveByIdResult', [data]);
+    };
 
-    // 2. Get Leave by ID
-    document.getElementById('leaveByIdForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const leaveId = document.getElementById('leaveIdInput').value.trim();
-      if (!leaveId) {
-        document.getElementById('leaveByIdResult').innerHTML =
-          `<div class="alert alert-warning">Please enter a valid Leave ID.</div>`;
-        return;
-      }
-      fetch('/api/Leaves/' + encodeURIComponent(leaveId))
-        .then(response => {
-          if (!response.ok) throw new Error('Leave not found.');
-          return response.json();
-        })
-        .then(data => {
-          let html = `<div class="card">
-                        <div class="card-body">
-                          <h5 class="card-title">Leave Details</h5>
-                          <p><strong>Leave ID:</strong> ${data.leaveId || 'N/A'}</p>
-                          <p><strong>Employee ID:</strong> ${data.employeeId || 'N/A'}</p>
-                          <p><strong>Leave Date:</strong> ${data.leaveDate ? formatDate(data.leaveDate) : 'N/A'}</p>
-                          <p><strong>Leave Type:</strong> ${data.leaveType || 'N/A'}</p>
-                          <p><strong>Status:</strong> ${data.leaveStatus || 'N/A'}</p>
-                        </div>
-                      </div>`;
-          document.getElementById('leaveByIdResult').innerHTML = html;
-        })
-        .catch(error => {
-          document.getElementById('leaveByIdResult').innerHTML =
-            `<div class="alert alert-danger">${error.message}</div>`;
-        });
-    });
+    // Fetch Leaves by Employee
+    document.getElementById('getLeavesByEmployee').onclick = async function () {
+      const employeeId = document.getElementById('employeeIdInput').value;
+      const res = await fetch(`https://localhost:7136/api/Leaves/employee/${employeeId}`);
+      const data = await res.json();
+      displayResults('leavesByEmployeeResult', [data]);
+    };
 
-    // 3. Get Leaves by Employee ID
-    document.getElementById('leavesByEmployeeForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const employeeId = document.getElementById('employeeIdInput').value.trim();
-      if (!employeeId) {
-        document.getElementById('leavesByEmployeeResult').innerHTML =
-          `<div class="alert alert-warning">Please enter a valid Employee ID.</div>`;
-        return;
-      }
-      const url = '/api/Leaves/employee/' + encodeURIComponent(employeeId);
-      fetch(url)
-        .then(response => {
-          if (!response.ok) throw new Error('Leaves not found for this employee.');
-          return response.json();
+    // Fetch Pending Leaves
+    document.getElementById('getPendingLeaves').onclick = async function () {
+      const res = await fetch('https://localhost:7136/api/Leaves/pending');
+      const data = await res.json();
+      displayResults('pendingLeavesResult', data);
+    };
+
+    // Fetch Total Leave Days
+    document.getElementById('getTotalDays').onclick = async function () {
+      const employeeId = document.getElementById('employeeIdForDays').value;
+      const year = document.getElementById('yearInput').value;
+      const res = await fetch(`https://localhost:7136/api/Leaves/employee/${employeeId}/year/${year}/total-days`);
+      const data = await res.json();
+      document.getElementById('totalLeaveDaysResult').innerHTML = `
+        <div class="result-card">
+          <h5>Total Leave Days: ${data.totalLeaveDays}</h5>
+        </div>
+      `;
+    };
+
+    // Fetch Leave Requests (Pending)
+    async function loadLeaveRequests() {
+      const res = await fetch('https://localhost:7136/api/Leaves/pending');
+      const data = await res.json();
+      const tableBody = document.getElementById('leaveRequestsTable');
+      tableBody.innerHTML = data.map(leave => `
+        <tr id="leave-row-${leave.leaveId}">
+          <td>${leave.employeeName}</td>
+          <td>${leave.leaveType}</td>
+          <td>${new Date(leave.startDate).toLocaleDateString()}</td>
+          <td>${new Date(leave.endDate).toLocaleDateString()}</td>
+          <td id="status-${leave.leaveId}">${leave.status === 1 ? 'Pending' : 'Approved'}</td>
+          <td><textarea id="comments-${leave.leaveId}" class="form-control">${leave.approverComments || ''}</textarea></td>
+          <td>
+            <button class="btn btn-success" onclick="approveLeave('${leave.leaveId}')">Approve</button>
+            <button class="btn btn-danger" onclick="rejectLeave('${leave.leaveId}')">Reject</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+    loadLeaveRequests();
+
+    // Approve Leave
+    function approveLeave(leaveId) {
+      const comments = document.getElementById(`comments-${leaveId}`).value;
+      axios.put(`https://localhost:7136/api/Leaves/approve/${leaveId}`, { status: 'Approved', approverComments: comments })
+        .then(() => {
+          document.getElementById(`status-${leaveId}`).textContent = 'Approved';
+          alert('Leave request approved!');
+          location.reload();
         })
-        .then(data => {
-          let html = '';
-          if (!data || data.length === 0) {
-            html = '<div class="alert alert-info">No leaves found for this employee.</div>';
-          } else {
-            html += `<div class="table-responsive">
-                      <table class="table table-bordered table-striped table-hover">
-                        <thead class="table-dark">
-                          <tr>
-                            <th>Leave ID</th>
-                            <th>Leave Date</th>
-                            <th>Type</th>
-                            <th>Status</th>
-                          </tr>
-                        </thead>
-                        <tbody>`;
-            data.forEach(leave => {
-              html += `<tr>
-                        <td>${leave.leaveId || 'N/A'}</td>
-                        <td>${leave.leaveDate ? formatDate(leave.leaveDate) : 'N/A'}</td>
-                        <td>${leave.leaveType || 'N/A'}</td>
-                        <td>${leave.leaveStatus || 'N/A'}</td>
-                      </tr>`;
-            });
-            html += `</tbody></table></div>`;
-          }
-          document.getElementById('leavesByEmployeeResult').innerHTML = html;
+        .catch(() => alert('Failed to approve leave.'));
+    }
+
+    // Reject Leave
+    function rejectLeave(leaveId) {
+      const comments = document.getElementById(`comments-${leaveId}`).value;
+      axios.put(`https://localhost:7136/api/Leaves/reject/${leaveId}`, { status: 'Rejected', approverComments: comments })
+        .then(() => {
+          document.getElementById(`status-${leaveId}`).textContent = 'Rejected';
+          alert('Leave request rejected!');
+          location.reload();
         })
-        .catch(error => {
-          document.getElementById('leavesByEmployeeResult').innerHTML =
-            `<div class="alert alert-danger">${error.message}</div>`;
-        });
-    });
+        .catch(() => alert('Failed to reject leave.'));
+    }
+
+    // Display results in Bootstrap cards
+    function displayResults(containerId, data) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = data.map(item => `
+        <div class="result-card">
+          <h5 class="card-title">Leave ID: ${item.leaveId}</h5>
+          <div class="card-body">
+            <p><strong>Employee Name:</strong> ${item.employeeName}</p>
+            <p><strong>Leave Type:</strong> ${item.leaveType}</p>
+            <p><strong>Start Date:</strong> ${new Date(item.startDate).toLocaleDateString()}</p>
+            <p><strong>End Date:</strong> ${new Date(item.endDate).toLocaleDateString()}</p>
+            <p><strong>Total Days:</strong> ${item.totalDays}</p>
+            <p><strong>Status:</strong> ${item.status === 1 ? 'Pending' : 'Approved'}</p>
+            <p><strong>Approver Comments:</strong> ${item.approverComments || 'N/A'}</p>
+          </div>
+        </div>
+      `).join('');
+    }
   </script>
-
-  <!-- Bootstrap 5 JS Bundle (includes Popper) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

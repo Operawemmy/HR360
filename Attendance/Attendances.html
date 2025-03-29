@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>HR360 APP - Attendance Dashboard</title>
-  <!-- Bootstrap 5 CSS CDN -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Bootstrap Icons CDN -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
   <style>
     body {
       background-color: #f8f9fa;
@@ -16,9 +16,9 @@
     .dashboard-title {
       background: linear-gradient(45deg, #007bff, #6610f2);
       color: #fff;
-      padding: 20px;
+      padding: 30px;
       border-radius: 10px;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
       text-align: center;
       text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
     }
@@ -98,17 +98,17 @@
       </div>
     </div>
 
-    <!-- Sections -->
+    <!-- Sections Container -->
     <div id="sectionsContainer">
       <!-- Section 1: All Attendances -->
       <div id="allAttendancesSection" class="section active">
         <h2 class="section-title text-primary">All Attendance Records</h2>
-        <div class="text-center">
+        <div class="text-center mb-3">
           <button id="loadAttendancesBtn" class="btn btn-primary btn-lg">Load All Attendances</button>
         </div>
         <div id="allAttendancesResult" class="result-container"></div>
       </div>
-      
+
       <!-- Section 2: Attendance by Employee -->
       <div id="attendanceByEmployeeSection" class="section">
         <h2 class="section-title text-success">Search Attendance by Employee ID</h2>
@@ -117,13 +117,13 @@
             <label for="employeeIdAttendance" class="form-label">Employee ID</label>
             <input type="text" class="form-control" id="employeeIdAttendance" placeholder="Enter Employee ID (GUID)" required>
           </div>
-          <div class="d-grid">
+          <div class="d-grid mb-3">
             <button type="submit" class="btn btn-success btn-lg">Search Attendance</button>
           </div>
         </form>
         <div id="attendanceByEmployeeResult" class="result-container"></div>
       </div>
-      
+
       <!-- Section 3: Attendance by Date -->
       <div id="attendanceByDateSection" class="section">
         <h2 class="section-title text-warning">Search Attendance by Date</h2>
@@ -132,13 +132,13 @@
             <label for="attendanceDate" class="form-label">Date</label>
             <input type="date" class="form-control" id="attendanceDate" required>
           </div>
-          <div class="d-grid">
+          <div class="d-grid mb-3">
             <button type="submit" class="btn btn-warning btn-lg">Search Attendance</button>
           </div>
         </form>
         <div id="attendanceByDateResult" class="result-container"></div>
       </div>
-      
+
       <!-- Section 4: Day Attendance -->
       <div id="dayAttendanceSection" class="section">
         <h2 class="section-title text-danger">Search Day Attendance</h2>
@@ -151,7 +151,7 @@
             <label for="employeeIdForDay" class="form-label">Employee ID</label>
             <input type="text" class="form-control" id="employeeIdForDay" placeholder="Enter Employee ID (GUID)" required>
           </div>
-          <div class="d-grid">
+          <div class="d-grid mb-3">
             <button type="submit" class="btn btn-danger btn-lg">Search Day Attendance</button>
           </div>
         </form>
@@ -160,29 +160,29 @@
     </div>
   </div>
 
-  <!-- JavaScript for section toggling and API calls -->
+  <!-- Bootstrap Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // Function to show only the selected section and hide the others
+    // Toggle visible section
     function showSection(sectionId) {
-      const sections = document.querySelectorAll('.section');
-      sections.forEach(sec => sec.classList.remove('active'));
-      const selectedSection = document.getElementById(sectionId);
-      if (selectedSection) {
-        selectedSection.classList.add('active');
-        selectedSection.scrollIntoView({ behavior: 'smooth' });
+      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+      const target = document.getElementById(sectionId);
+      if (target) {
+        target.classList.add('active');
+        target.scrollIntoView({ behavior: 'smooth' });
       }
     }
 
-    // Helper function to format dates
+    // Format date string for display
     const formatDate = (dateStr) => {
       if (!dateStr) return 'N/A';
-      const date = new Date(dateStr);
-      return date.toLocaleDateString();
+      const d = new Date(dateStr);
+      return d.toLocaleDateString();
     };
 
-    // 1. Get All Attendances
+    // 1. Load All Attendances
     document.getElementById('loadAttendancesBtn').addEventListener('click', function() {
-      fetch('/api/Attendance')
+      fetch('https://localhost:7136/api/Attendances')
         .then(response => {
           if (!response.ok) throw new Error('Failed to fetch attendance records.');
           return response.json();
@@ -193,22 +193,26 @@
             html = '<div class="alert alert-info">No attendance records found.</div>';
           } else {
             html += `<div class="table-responsive">
-                      <table class="table table-bordered table-striped table-hover">
-                        <thead class="table-dark">
-                          <tr>
-                            <th>Attendance ID</th>
-                            <th>Employee ID</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                          </tr>
-                        </thead>
-                        <tbody>`;
+                        <table class="table table-bordered table-striped table-hover">
+                          <thead class="table-dark">
+                            <tr>
+                              <th>Attendance ID</th>
+                              <th>Employee Number</th>
+                              <th>Date</th>
+                              <th>Checkin Time</th>
+                              <th>Checkout Time</th>
+                              <th>Status</th>
+                            </tr>
+                          </thead>
+                          <tbody>`;
             data.forEach(a => {
               html += `<tr>
-                        <td>${a.attendanceId || 'N/A'}</td>
-                        <td>${a.employeeId || 'N/A'}</td>
-                        <td>${a.date ? formatDate(a.date) : 'N/A'}</td>
-                        <td>${a.status || 'N/A'}</td>
+                        <td>${a.data.attendanceId || 'N/A'}</td>
+                        <td>${a.data.employeeNumber || 'N/A'}</td>
+                        <td>${a.data.date  ||'N/A'}</td>
+                        <td>${a.data.checkInTime  ||'N/A'}</td>
+                        <td>${a.data.checkOutTime ||'N/A'}</td>
+                        <td>${a.data.statusType || 'N/A'}</td>
                       </tr>`;
             });
             html += `</tbody></table></div>`;
@@ -221,7 +225,7 @@
         });
     });
 
-    // 2. Get Attendance by Employee
+    // 2. Search Attendance by Employee ID
     document.getElementById('attendanceByEmployeeForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const employeeId = document.getElementById('employeeIdAttendance').value.trim();
@@ -230,7 +234,7 @@
           `<div class="alert alert-warning">Please enter a valid Employee ID.</div>`;
         return;
       }
-      fetch('/api/Attendance/ByEmployee/' + encodeURIComponent(employeeId))
+      fetch(`https://localhost:7136/api/Attendances/ByEmployee/${encodeURIComponent(employeeId)}`)
         .then(response => {
           if (!response.ok) throw new Error('Attendance records not found for this employee.');
           return response.json();
@@ -241,20 +245,20 @@
             html = '<div class="alert alert-info">No attendance records found for this employee.</div>';
           } else {
             html += `<div class="table-responsive">
-                      <table class="table table-bordered table-striped table-hover">
-                        <thead class="table-dark">
-                          <tr>
-                            <th>Attendance ID</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                          </tr>
-                        </thead>
-                        <tbody>`;
+                        <table class="table table-bordered table-striped table-hover">
+                          <thead class="table-dark">
+                            <tr>
+                              <th>Attendance ID</th>
+                              <th>Date</th>
+                              <th>Status</th>
+                            </tr>
+                          </thead>
+                          <tbody>`;
             data.forEach(a => {
               html += `<tr>
                         <td>${a.attendanceId || 'N/A'}</td>
                         <td>${a.date ? formatDate(a.date) : 'N/A'}</td>
-                        <td>${a.status || 'N/A'}</td>
+                        <td>${(a.statusType !== undefined) ? a.statusType : 'N/A'}</td>
                       </tr>`;
             });
             html += `</tbody></table></div>`;
@@ -267,7 +271,7 @@
         });
     });
 
-    // 3. Get Attendance by Date
+    // 3. Search Attendance by Date
     document.getElementById('attendanceByDateForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const date = document.getElementById('attendanceDate').value;
@@ -276,7 +280,7 @@
           `<div class="alert alert-warning">Please select a valid date.</div>`;
         return;
       }
-      fetch('/api/Attendance/ByDate/' + encodeURIComponent(date))
+      fetch(`https://localhost:7136/api/Attendances/ByDate/${encodeURIComponent(date)}`)
         .then(response => {
           if (!response.ok) throw new Error('No attendance records found for the selected date.');
           return response.json();
@@ -287,22 +291,22 @@
             html = '<div class="alert alert-info">No attendance records found for this date.</div>';
           } else {
             html += `<div class="table-responsive">
-                      <table class="table table-bordered table-striped table-hover">
-                        <thead class="table-dark">
-                          <tr>
-                            <th>Attendance ID</th>
-                            <th>Employee ID</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                          </tr>
-                        </thead>
-                        <tbody>`;
+                        <table class="table table-bordered table-striped table-hover">
+                          <thead class="table-dark">
+                            <tr>
+                              <th>Attendance ID</th>
+                              <th>Employee ID</th>
+                              <th>Date</th>
+                              <th>Status</th>
+                            </tr>
+                          </thead>
+                          <tbody>`;
             data.forEach(a => {
               html += `<tr>
                         <td>${a.attendanceId || 'N/A'}</td>
                         <td>${a.employeeId || 'N/A'}</td>
                         <td>${a.date ? formatDate(a.date) : 'N/A'}</td>
-                        <td>${a.status || 'N/A'}</td>
+                        <td>${(a.statusType !== undefined) ? a.statusType : 'N/A'}</td>
                       </tr>`;
             });
             html += `</tbody></table></div>`;
@@ -315,7 +319,7 @@
         });
     });
 
-    // 4. Get Day Attendance
+    // 4. Search Day Attendance
     document.getElementById('dayAttendanceForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const day = document.getElementById('dayInput').value;
@@ -325,7 +329,7 @@
           `<div class="alert alert-warning">Please enter both date and Employee ID.</div>`;
         return;
       }
-      const url = `/api/Attendance/GetDayAttendance?day=${encodeURIComponent(day)}&employeeId=${encodeURIComponent(employeeId)}`;
+      const url = `https://localhost:7136/api/Attendances/GetDayAttendance?day=${encodeURIComponent(day)}&employeeId=${encodeURIComponent(employeeId)}`;
       fetch(url)
         .then(response => {
           if (!response.ok) throw new Error('Attendance not found for the given day and employee.');
@@ -338,7 +342,7 @@
                           <p><strong>Attendance ID:</strong> ${data.attendanceId || 'N/A'}</p>
                           <p><strong>Employee ID:</strong> ${data.employeeId || 'N/A'}</p>
                           <p><strong>Date:</strong> ${data.date ? formatDate(data.date) : 'N/A'}</p>
-                          <p><strong>Status:</strong> ${data.status || 'N/A'}</p>
+                          <p><strong>Status:</strong> ${(data.statusType !== undefined) ? data.statusType : 'N/A'}</p>
                         </div>
                       </div>`;
           document.getElementById('dayAttendanceResult').innerHTML = html;
@@ -349,8 +353,5 @@
         });
     });
   </script>
-
-  <!-- Bootstrap 5 JS Bundle (includes Popper) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

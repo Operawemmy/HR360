@@ -209,7 +209,7 @@
                         <td>${emp.employeeNumber || 'N/A'}</td>
                         <td>${emp.firstName} ${emp.lastName}</td>
                         <td>${emp.email || 'N/A'}</td>
-                        <td>${emp.department ? emp.department.departmentName : 'N/A'}</td>
+                        <td>${emp.department ? emp.department: 'N/A'}</td>
                       </tr>`;
             });
             html += `</tbody></table></div>`;
@@ -244,7 +244,7 @@
                           <p><strong>Employee Number:</strong> ${data.employeeNumber || 'N/A'}</p>
                           <p><strong>Name:</strong> ${data.firstName} ${data.lastName}</p>
                           <p><strong>Email:</strong> ${data.email || 'N/A'}</p>
-                          <p><strong>Department:</strong> ${data.department ? data.department.departmentName : 'N/A'}</p>
+                          <p><strong>Department:</strong> ${data.department ? data.department: 'N/A'}</p>
                         </div>
                       </div>`;
           document.getElementById('employeeByIdResult').innerHTML = html;
@@ -276,7 +276,7 @@
                           <p><strong>Employee ID:</strong> ${data.employeeId || 'N/A'}</p>
                           <p><strong>Name:</strong> ${data.firstName} ${data.lastName}</p>
                           <p><strong>Email:</strong> ${data.email || 'N/A'}</p>
-                          <p><strong>Department:</strong> ${data.department ? data.department.departmentName : 'N/A'}</p>
+                          <p><strong>Department:</strong> ${data.department ? data.department: 'N/A'}</p>
                         </div>
                       </div>`;
           document.getElementById('employeeByDeptResult').innerHTML = html;

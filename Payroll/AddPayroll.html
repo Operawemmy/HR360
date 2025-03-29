@@ -1,125 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Payroll Record</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Payroll Record</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card shadow-lg">
-                    <div class="card-header text-center bg-primary text-white">
-                        <h4>Add Payroll Record</h4>
-                    </div>
-                    <div class="card-body p-4">
-                        <form id="payrollForm">
-                            <div class="mb-3">
-                                <label for="employeeId" class="form-label">Employee ID</label>
-                                <input type="number" class="form-control" id="employeeId" placeholder="Enter Employee ID" required>
-                                <div class="invalid-feedback" id="employeeIdError">Payroll record already exists for this Employee ID.</div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="paymentDate" class="form-label">Payment Date</label>
-                                <input type="date" class="form-control" id="paymentDate" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="month" class="form-label">Month</label>
-                                <select class="form-select" id="month" required>
-                                    <option value="">Select Month</option>
-                                    <option value="1">January</option>
-                                    <option value="2">February</option>
-                                    <option value="3">March</option>
-                                    <option value="4">April</option>
-                                    <option value="5">May</option>
-                                    <option value="6">June</option>
-                                    <option value="7">July</option>
-                                    <option value="8">August</option>
-                                    <option value="9">September</option>
-                                    <option value="10">October</option>
-                                    <option value="11">November</option>
-                                    <option value="12">December</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="year" class="form-label">Year</label>
-                                <input type="number" class="form-control" id="year" placeholder="Enter Year" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100">Add Payroll Record</button>
-                        </form>
-                    </div>
-                </div>
-                <div class="mt-4" id="responseMessage"></div>
-            </div>
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card shadow-lg">
+          <div class="card-header text-center bg-primary text-white">
+            <h4>Add Payroll Record</h4>
+          </div>
+          <div class="card-body p-4">
+            <form id="payrollForm">
+              <!-- Employee Dropdown -->
+              <div class="mb-3">
+                <label for="employeeId" class="form-label">Employee</label>
+                <select class="form-select" id="employeeId" required>
+                  <option value="">Select Employee</option>
+                </select>
+              </div>
+              <!-- Month -->
+              <div class="mb-3">
+                <label for="month" class="form-label">Month</label>
+                <select class="form-select" id="month" required>
+                  <option value="">Select Month</option>
+                  <option value="January">January</option>
+                  <option value="February">February</option>
+                  <option value="March">March</option>
+                  <option value="April">April</option>
+                  <option value="May">May</option>
+                  <option value="June">June</option>
+                  <option value="July">July</option>
+                  <option value="August">August</option>
+                  <option value="September">September</option>
+                  <option value="October">October</option>
+                  <option value="November">November</option>
+                  <option value="December">December</option>
+                </select>
+              </div>
+              <!-- Year -->
+              <div class="mb-3">
+                <label for="year" class="form-label">Year</label>
+                <input type="number" class="form-control" id="year" placeholder="Enter Year" required>
+              </div>
+              <!-- Payment Date -->
+              <div class="mb-3">
+                <label for="paymentDate" class="form-label">Payment Date</label>
+                <input type="date" class="form-control" id="paymentDate" required>
+              </div>
+              <!-- Gross Salary -->
+              <div class="mb-3">
+                <label for="grossSalary" class="form-label">Gross Salary</label>
+                <input type="number" class="form-control" id="grossSalary" placeholder="Enter Gross Salary" required>
+              </div>
+              <button type="submit" class="btn btn-primary w-100">Add Payroll Record</button>
+            </form>
+          </div>
         </div>
+        <div class="mt-4" id="responseMessage"></div>
+      </div>
     </div>
+  </div>
 
-    <!-- Bootstrap JS and Dependencies -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.getElementById('employeeId').addEventListener('blur', function () {
-            const employeeId = document.getElementById('employeeId').value;
-            if (employeeId) {
-                checkPayrollRecordExists(employeeId);
-            }
+  <!-- Bootstrap JS Bundle (includes Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Axios for API calls -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Fetch employees to populate dropdown
+      axios.get("https://localhost:7136/api/Employees")
+        .then(response => {
+          const employees = response.data;
+          const employeeSelect = document.getElementById("employeeId");
+          employees.forEach(emp => {
+            const option = document.createElement("option");
+            option.value = emp.employeeId;
+            option.text = `${emp.firstName} ${emp.lastName} (${emp.jobTitle})`;
+            employeeSelect.appendChild(option);
+          });
+        })
+        .catch(error => console.error("Error fetching employees:", error));
+    });
+
+    // Handle form submission
+    document.getElementById('payrollForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      // Prepare the request body
+      const data = {
+        employeeId: document.getElementById('employeeId').value,
+        month: document.getElementById('month').value,
+        year: parseInt(document.getElementById('year').value, 10),
+        paymentDate: document.getElementById('paymentDate').value, // Date format: YYYY-MM-DD
+        grossSalary: parseFloat(document.getElementById('grossSalary').value)
+      };
+
+      // API POST request
+      axios.post("https://localhost:7136/api/Payrolls", data)
+        .then(response => {
+          document.getElementById('responseMessage').innerHTML =
+            `<div class="alert alert-success">Payroll record added successfully! Payroll ID: ${response.data.payrollId}</div>`;
+          document.getElementById('payrollForm').reset();
+        })
+        .catch(error => {
+          console.error("Error adding payroll record:", error);
+          document.getElementById('responseMessage').innerHTML =
+            `<div class="alert alert-danger">Failed to add payroll record. Please try again.</div>`;
         });
-
-        async function checkPayrollRecordExists(employeeId) {
-            try {
-                const response = await fetch(`/CheckPayrollRecordExists?employeeId=${employeeId}`);
-                const data = await response.json();
-                if (data.exists) {
-                    document.getElementById('employeeId').classList.add('is-invalid');
-                    document.getElementById('employeeIdError').style.display = 'block';
-                } else {
-                    document.getElementById('employeeId').classList.remove('is-invalid');
-                    document.getElementById('employeeIdError').style.display = 'none';
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-
-        document.getElementById('payrollForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-            
-            if (document.getElementById('employeeId').classList.contains('is-invalid')) {
-                return;
-            }
-
-            const data = {
-                employeeId: document.getElementById('employeeId').value,
-                paymentDate: document.getElementById('paymentDate').value,
-                month: document.getElementById('month').value,
-                year: document.getElementById('year').value
-            };
-
-            fetch('/AddPayrollRecord', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(data => {
-                const responseDiv = document.getElementById('responseMessage');
-                if (data.Message) {
-                    responseDiv.innerHTML = `<div class="alert alert-danger">${data.Message}</div>`;
-                } else {
-                    responseDiv.innerHTML = `<div class="alert alert-success">Payroll record added successfully!</div>`;
-                    document.getElementById('payrollForm').reset();
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                document.getElementById('responseMessage').innerHTML = `<div class="alert alert-danger">An error occurred. Please try again.</div>`;
-            });
-        });
-    </script>
+    });
+  </script>
 </body>
 </html>

@@ -38,7 +38,8 @@
             
             const payrollId = document.getElementById('payrollId').value;
 
-            fetch(`/api/payroll/${payrollId}`, {
+            // Update the API endpoint to use the correct URL
+            fetch(`https://localhost:7136/api/Payrolls/${payrollId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'
@@ -46,10 +47,11 @@
             })
             .then(response => response.json())
             .then(data => {
-                if (data.Message) {
+                // Assuming the response contains a "message" field
+                if (data.message) {
                     document.getElementById('responseMessage').innerHTML = `
                         <div class="alert alert-success">
-                            ${data.Message}
+                            ${data.message}
                         </div>`;
                 }
             })

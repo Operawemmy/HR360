@@ -57,47 +57,23 @@
       <p class="lead">Manage your payroll records with ease</p>
     </div>
     
-    <!-- Boxes arranged in a grid -->
-    <div class="row row-cols-1 row-cols-md-2 g-4 mb-5">
-      <!-- Box 1: All Payrolls -->
+    <!-- Buttons arranged in a grid -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
+      <!-- Button for All Payrolls -->
       <div class="col">
-        <div class="card box-card text-white bg-primary h-100" onclick="showSection('allPayrollsSection')">
-          <div class="card-body text-center">
-            <i class="bi bi-card-list" style="font-size: 3rem;"></i>
-            <h5 class="card-title mt-3">All Payrolls</h5>
-            <p class="card-text">View all payroll records.</p>
-          </div>
-        </div>
+        <button class="btn btn-primary w-100" style="font-size: 1.2rem; padding: 20px;" onclick="showSection('allPayrollsSection')">All Payrolls</button>
       </div>
-      <!-- Box 2: Payroll by Employee -->
+      <!-- Button for Payroll by Employee -->
       <div class="col">
-        <div class="card box-card text-white bg-success h-100" onclick="showSection('payrollByEmployeeSection')">
-          <div class="card-body text-center">
-            <i class="bi bi-person" style="font-size: 3rem;"></i>
-            <h5 class="card-title mt-3">Payroll by Employee</h5>
-            <p class="card-text">Search payroll by Employee ID.</p>
-          </div>
-        </div>
+        <button class="btn btn-success w-100" style="font-size: 1.2rem; padding: 20px;" onclick="showSection('payrollByEmployeeSection')">Payroll by Employee</button>
       </div>
-      <!-- Box 3: Payrolls by Date Range -->
+      <!-- Button for Payrolls by Date Range -->
       <div class="col">
-        <div class="card box-card text-dark bg-warning h-100" onclick="showSection('payrollByDateSection')">
-          <div class="card-body text-center">
-            <i class="bi bi-calendar3" style="font-size: 3rem;"></i>
-            <h5 class="card-title mt-3">Payrolls by Date Range</h5>
-            <p class="card-text">View payrolls within a date range.</p>
-          </div>
-        </div>
+        <button class="btn btn-warning w-100" style="font-size: 1.2rem; padding: 20px;" onclick="showSection('payrollByDateSection')">Payrolls by Date Range</button>
       </div>
-      <!-- Box 4: Total Payroll Cost -->
+      <!-- Button for Total Payroll Cost -->
       <div class="col">
-        <div class="card box-card text-white bg-info h-100" onclick="showSection('totalPayrollCostSection')">
-          <div class="card-body text-center">
-            <i class="bi bi-cash-coin" style="font-size: 3rem;"></i>
-            <h5 class="card-title mt-3">Total Payroll Cost</h5>
-            <p class="card-text">Calculate overall payroll cost.</p>
-          </div>
-        </div>
+        <button class="btn btn-info w-100" style="font-size: 1.2rem; padding: 20px;" onclick="showSection('totalPayrollCostSection')">Total Payroll Cost</button>
       </div>
     </div>
     
@@ -107,7 +83,7 @@
       <div id="allPayrollsSection" class="section active">
         <h2 class="section-title text-primary">All Payroll Records</h2>
         <div class="text-center">
-          <button id="loadPayrollsBtn" class="btn btn-primary btn-lg">Load All Payrolls</button>
+          <button id="loadPayrollsBtn" class="btn btn-primary btn-lg w-100">Load All Payrolls</button>
         </div>
         <div id="allPayrollsResult" class="result-container"></div>
       </div>
@@ -117,11 +93,13 @@
         <h2 class="section-title text-success">Search Payroll by Employee ID</h2>
         <form id="payrollByEmployeeForm">
           <div class="mb-3">
-            <label for="employeeIdInput" class="form-label">Employee ID</label>
-            <input type="text" class="form-control" id="employeeIdInput" placeholder="Enter Employee ID (GUID)" required>
+            <label for="employeeIdInput" class="form-label">Employee</label>
+            <select class="form-control" id="employeeIdInput" required>
+              <!-- Employee options will be populated here -->
+            </select>
           </div>
           <div class="d-grid">
-            <button type="submit" class="btn btn-success btn-lg">Search Payroll</button>
+            <button type="submit" class="btn btn-success btn-lg w-100">Search Payroll</button>
           </div>
         </form>
         <div id="payrollByEmployeeResult" class="result-container"></div>
@@ -140,7 +118,7 @@
             <input type="date" class="form-control" id="endDateInput" required>
           </div>
           <div class="d-grid">
-            <button type="submit" class="btn btn-warning btn-lg">Search Payrolls</button>
+            <button type="submit" class="btn btn-warning btn-lg w-100">Search Payrolls</button>
           </div>
         </form>
         <div id="payrollByDateResult" class="result-container"></div>
@@ -150,7 +128,7 @@
       <div id="totalPayrollCostSection" class="section">
         <h2 class="section-title text-info">Total Payroll Cost</h2>
         <div class="text-center">
-          <button id="calculatePayrollCostBtn" class="btn btn-info btn-lg">Calculate Total Cost</button>
+          <button id="calculatePayrollCostBtn" class="btn btn-info btn-lg w-100">Calculate Total Cost</button>
         </div>
         <div id="totalPayrollCostResult" class="result-container"></div>
       </div>
@@ -170,16 +148,9 @@
       }
     }
 
-    // Helper function to format date strings
-    const formatDate = (dateStr) => {
-      if (!dateStr) return 'N/A';
-      const date = new Date(dateStr);
-      return date.toLocaleDateString();
-    };
-
     // 1. Get All Payrolls
     document.getElementById('loadPayrollsBtn').addEventListener('click', function() {
-      fetch('/api/Payrolls')
+      fetch('https://localhost:7136/api/Payrolls')
         .then(response => {
           if (!response.ok) throw new Error('Failed to fetch payroll records.');
           return response.json();
@@ -195,20 +166,28 @@
                           <tr>
                             <th>Payroll ID</th>
                             <th>Employee ID</th>
-                            <th>Payment Date</th>
+                            <th>Employee Name</th>
+                            <th>Month</th>
+                            <th>Year</th>
+                            <th>Gross Salary</th>
                             <th>Net Salary</th>
+                            <th>Payment Date</th>
                           </tr>
                         </thead>
-                        <tbody>`;
+                        <tbody>`; 
             data.forEach(payroll => {
               html += `<tr>
                         <td>${payroll.payrollId || 'N/A'}</td>
                         <td>${payroll.employeeId || 'N/A'}</td>
-                        <td>${payroll.paymentDate ? formatDate(payroll.paymentDate) : 'N/A'}</td>
+                        <td>${payroll.employeeName || 'N/A'}</td>
+                        <td>${payroll.month || 'N/A'}</td>
+                        <td>${payroll.year || 'N/A'}</td>
+                        <td>${payroll.grossSalary || 'N/A'}</td>
                         <td>${payroll.netSalary || 'N/A'}</td>
-                      </tr>`;
+                        <td>${payroll.paymentDate ? formatDate(payroll.paymentDate) : 'N/A'}</td>
+                      </tr>`; 
             });
-            html += `</tbody></table></div>`;
+            html += `</tbody></table></div>`; 
           }
           document.getElementById('allPayrollsResult').innerHTML = html;
         })
@@ -218,14 +197,32 @@
     });
 
     // 2. Get Payroll by Employee ID
+    fetch('https://localhost:7136/api/Employees') // Fetch the list of employees
+      .then(response => {
+        if (!response.ok) throw new Error('Failed to fetch employee list.');
+        return response.json();
+      })
+      .then(data => {
+        const employeeSelect = document.getElementById('employeeIdInput');
+        data.forEach(employee => {
+          const option = document.createElement('option');
+          option.value = employee.employeeId;
+          option.textContent = `${employee.firstName} ${employee.lastName}`;
+          employeeSelect.appendChild(option);
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching employee list:', error);
+      });
+
     document.getElementById('payrollByEmployeeForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      const employeeId = document.getElementById('employeeIdInput').value.trim();
+      const employeeId = document.getElementById('employeeIdInput').value;
       if (!employeeId) {
-        document.getElementById('payrollByEmployeeResult').innerHTML = `<div class="alert alert-warning">Please enter a valid Employee ID.</div>`;
+        document.getElementById('payrollByEmployeeResult').innerHTML = `<div class="alert alert-warning">Please select an employee.</div>`;
         return;
       }
-      fetch('/api/Payrolls/' + encodeURIComponent(employeeId))
+      fetch(`https://localhost:7136/api/Payrolls/${encodeURIComponent(employeeId)}`)
         .then(response => {
           if (!response.ok) throw new Error('Payroll record not found.');
           return response.json();
@@ -236,8 +233,12 @@
                           <h5 class="card-title">Payroll Details</h5>
                           <p><strong>Payroll ID:</strong> ${data.payrollId || 'N/A'}</p>
                           <p><strong>Employee ID:</strong> ${data.employeeId || 'N/A'}</p>
-                          <p><strong>Payment Date:</strong> ${data.paymentDate ? formatDate(data.paymentDate) : 'N/A'}</p>
+                          <p><strong>Employee Name:</strong> ${data.employeeName || 'N/A'}</p>
+                          <p><strong>Month:</strong> ${data.month || 'N/A'}</p>
+                          <p><strong>Year:</strong> ${data.year || 'N/A'}</p>
+                          <p><strong>Gross Salary:</strong> ${data.grossSalary || 'N/A'}</p>
                           <p><strong>Net Salary:</strong> ${data.netSalary || 'N/A'}</p>
+                          <p><strong>Payment Date:</strong> ${data.paymentDate ? formatDate(data.paymentDate) : 'N/A'}</p>
                         </div>
                       </div>`;
           document.getElementById('payrollByEmployeeResult').innerHTML = html;
@@ -253,13 +254,12 @@
       const startDate = document.getElementById('startDateInput').value;
       const endDate = document.getElementById('endDateInput').value;
       if (!startDate || !endDate) {
-        document.getElementById('payrollByDateResult').innerHTML = `<div class="alert alert-warning">Please enter both start and end dates.</div>`;
+        document.getElementById('payrollByDateResult').innerHTML = `<div class="alert alert-warning">Please provide both start and end dates.</div>`;
         return;
       }
-      const url = `/api/Payrolls/GetPayrollsByDateRange?startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`;
-      fetch(url)
+      fetch(`https://localhost:7136/api/Payrolls/GetPayrollsByDateRange?startDate=${startDate}&endDate=${endDate}`)
         .then(response => {
-          if (!response.ok) throw new Error('Failed to fetch payrolls by date range.');
+          if (!response.ok) throw new Error('Failed to fetch payroll records for this date range.');
           return response.json();
         })
         .then(data => {
@@ -273,20 +273,28 @@
                           <tr>
                             <th>Payroll ID</th>
                             <th>Employee ID</th>
-                            <th>Payment Date</th>
+                            <th>Employee Name</th>
+                            <th>Month</th>
+                            <th>Year</th>
+                            <th>Gross Salary</th>
                             <th>Net Salary</th>
+                            <th>Payment Date</th>
                           </tr>
                         </thead>
-                        <tbody>`;
+                        <tbody>`; 
             data.forEach(payroll => {
               html += `<tr>
                         <td>${payroll.payrollId || 'N/A'}</td>
                         <td>${payroll.employeeId || 'N/A'}</td>
-                        <td>${payroll.paymentDate ? formatDate(payroll.paymentDate) : 'N/A'}</td>
+                        <td>${payroll.employeeName || 'N/A'}</td>
+                        <td>${payroll.month || 'N/A'}</td>
+                        <td>${payroll.year || 'N/A'}</td>
+                        <td>${payroll.grossSalary || 'N/A'}</td>
                         <td>${payroll.netSalary || 'N/A'}</td>
-                      </tr>`;
+                        <td>${payroll.paymentDate ? formatDate(payroll.paymentDate) : 'N/A'}</td>
+                      </tr>`; 
             });
-            html += `</tbody></table></div>`;
+            html += `</tbody></table></div>`; 
           }
           document.getElementById('payrollByDateResult').innerHTML = html;
         })
@@ -296,24 +304,31 @@
     });
 
     // 4. Calculate Total Payroll Cost
-    document.getElementById('calculatePayrollCostBtn').addEventListener('click', function() {
-      fetch('/api/Payrolls/payrollCost')
-        .then(response => {
-          if (!response.ok) throw new Error('Failed to calculate total payroll cost.');
-          return response.json();
-        })
-        .then(data => {
-          const totalCost = data.TotalPayrollCost || data.totalPayrollCost || 0;
-          document.getElementById('totalPayrollCostResult').innerHTML =
-            `<div class="alert alert-info">Total Payroll Cost: ${totalCost}</div>`;
-        })
-        .catch(error => {
-          document.getElementById('totalPayrollCostResult').innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
-        });
+document.getElementById('calculatePayrollCostBtn').addEventListener('click', function() {
+  fetch('https://localhost:7136/api/Payrolls/payrollCost')
+    .then(response => {
+      if (!response.ok) throw new Error('Failed to calculate total payroll cost.');
+      return response.json();
+    })
+    .then(data => {
+      let html = `<div class="alert alert-success">Total Payroll Cost: ${data.totalPayrollCost || 'N/A'}</div>`;
+      document.getElementById('totalPayrollCostResult').innerHTML = html;
+    })
+    .catch(error => {
+      document.getElementById('totalPayrollCostResult').innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
     });
+});
+
+
+    // Format Date for better readability
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+    }
   </script>
 
-  <!-- Bootstrap 5 JS Bundle (includes Popper) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Bootstrap 5 JS and Popper.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
