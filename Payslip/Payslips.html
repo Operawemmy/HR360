@@ -1,144 +1,465 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>HR360 APP - Payslip Dashboard</title>
-  <!-- Bootstrap 5 CSS CDN -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Bootstrap Icons CDN -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HR360 - Payslips</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <style>
     body {
-      background-color: #f8f9fa;
-      scroll-behavior: smooth;
+      font-family: 'Poppins', sans-serif;
+      background-color: #f0f2f5;
+      color: #333;
     }
-    .dashboard-title {
-      background: linear-gradient(45deg, #007bff, #6610f2);
-      color: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 30px;
+    
+    .background-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      opacity: 0.8;
+      z-index: -1;
+    }
+    
+    .pattern-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      z-index: -1;
+      opacity: 0.3;
+    }
+    
+    .main-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+    
+    .content-wrapper {
+      width: 100%;
+      max-width: 1200px;
+    }
+    
+    .header-container {
       text-align: center;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      margin-bottom: 2rem;
     }
-    .box-link {
-      text-decoration: none;
+    
+    .header-title {
+      color: #fff;
+      font-weight: 700;
+      text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+      margin-bottom: 0.5rem;
     }
-    .box-card {
-      cursor: pointer;
-      transition: transform 0.2s ease;
+    
+    .header-subtitle {
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 400;
     }
-    .box-card:hover {
-      transform: scale(1.03);
+    
+    .card-custom {
+      border: none;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(5px);
+      background-color: rgba(255, 255, 255, 0.95);
+      transition: transform 0.3s, box-shadow 0.3s;
     }
-    .section {
-      display: none;
-      margin-top: 30px;
+    
+    .card-custom:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
     }
-    .section.active {
-      display: block;
+    
+    .card-header {
+      background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+      padding: 1.5rem;
+      border-bottom: none;
     }
-    .section-title {
-      padding: 15px;
-      border-bottom: 2px solid #ddd;
-      margin-bottom: 20px;
+    
+    .card-header h4 {
+      font-weight: 600;
+      margin: 0;
+      color: white;
     }
-    .result-container {
-      margin-top: 20px;
+    
+    .card-body {
+      padding: 2rem;
+    }
+    
+    .btn {
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      transition: all 0.3s;
+      border: none;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+    }
+    
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #5a6fd1, #68448f);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-success {
+      background: linear-gradient(135deg, #11998e, #38ef7d);
+    }
+    
+    .btn-success:hover {
+      background: linear-gradient(135deg, #0e8a7f, #32d56f);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(56, 239, 125, 0.4);
+    }
+    
+    .btn-warning {
+      background: linear-gradient(135deg, #f46b45, #eea849);
+    }
+    
+    .btn-warning:hover {
+      background: linear-gradient(135deg, #db5f3d, #d69642);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(238, 168, 73, 0.4);
+    }
+    
+    .btn-danger {
+      background: linear-gradient(135deg, #ff416c, #ff4b2b);
+    }
+    
+    .btn-danger:hover {
+      background: linear-gradient(135deg, #e53962, #e04427);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 75, 43, 0.4);
+    }
+    
+    .btn-group-custom {
+      display: flex;
+      gap: 1rem;
+    }
+    
+    .alert {
+      border-radius: 10px;
+      padding: 1rem;
+      margin-top: 1.5rem;
+      border: none;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .animate-in {
+      animation: fadeInUp 0.5s ease-out forwards;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .floating-shape {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: -1;
+    }
+    
+    .shape-1 {
+      width: 300px;
+      height: 300px;
+      background-color: rgba(58, 123, 213, 0.4);
+      top: 20%;
+      left: 15%;
+      animation: float 8s ease-in-out infinite;
+    }
+    
+    .shape-2 {
+      width: 200px;
+      height: 200px;
+      background-color: rgba(0, 210, 255, 0.4);
+      bottom: 20%;
+      right: 10%;
+      animation: float 12s ease-in-out infinite alternate;
+    }
+    
+    @keyframes float {
+      0% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(5deg); }
+      100% { transform: translateY(0) rotate(0deg); }
+    }
+    
+    .nav-pills-custom .nav-link {
+      color: #555;
+      border-radius: 10px;
+      margin: 0.25rem;
+      transition: all 0.3s;
+    }
+    
+    .nav-pills-custom .nav-link.active {
+      background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+      color: white;
+      box-shadow: 0 4px 15px rgba(58, 123, 213, 0.3);
+    }
+    
+    .nav-pills-custom .nav-link:hover:not(.active) {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+    
+    .table-responsive {
+      border-radius: 15px;
+      overflow: hidden;
+    }
+    
+    .table {
+      margin-bottom: 0;
+    }
+    
+    .table thead th {
+      background-color: #3a7bd5;
+      color: white;
+      font-weight: 500;
+      border: none;
+    }
+    
+    .table tbody tr {
+      transition: all 0.2s;
+    }
+    
+    .table tbody tr:hover {
+      background-color: rgba(58, 123, 213, 0.05);
+      transform: translateX(5px);
+    }
+    
+    .badge-pill {
+      border-radius: 50px;
+      padding: 0.5em 1em;
+      font-weight: 500;
+    }
+    
+    .search-box {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+    
+    .search-box i {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      left: 1rem;
+      color: #aaa;
+    }
+    
+    .search-box input {
+      padding-left: 3rem;
+      border-radius: 50px;
+      border: 1px solid #e1e5ea;
+      background-color: #f8fafc;
+    }
+    
+    .search-box input:focus {
+      border-color: #3a7bd5;
+      box-shadow: 0 0 0 0.25rem rgba(58, 123, 213, 0.25);
+      background-color: #fff;
+    }
+    
+    /* Added style for empty table state */
+    .empty-table-message {
+      text-align: center;
+      padding: 2rem;
+      color: #6c757d;
     }
   </style>
 </head>
 <body>
-  <div class="container my-5">
-    <!-- Dashboard Title -->
-    <div class="dashboard-title">
-      <h1 class="display-4">Payslip Dashboard</h1>
-      <p class="lead">Manage and search payslip records easily</p>
-    </div>
-    
-    <!-- Clickable Boxes -->
-    <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
-      <!-- Box 1: All Payslips -->
-      <div class="col">
-        <div class="card box-card text-white bg-primary h-100" onclick="showSection('allPayslipsSection')">
-          <div class="card-body text-center">
-            <i class="bi bi-card-list" style="font-size: 3rem;"></i>
-            <h5 class="card-title mt-3">All Payslips</h5>
-            <p class="card-text">View all payslip records.</p>
-          </div>
-        </div>
-      </div>
-      <!-- Box 2: Payslip by Employee -->
-      <div class="col">
-        <div class="card box-card text-white bg-success h-100" onclick="showSection('payslipByEmployeeSection')">
-          <div class="card-body text-center">
-            <i class="bi bi-person" style="font-size: 3rem;"></i>
-            <h5 class="card-title mt-3">Payslip by Employee</h5>
-            <p class="card-text">Search by Employee ID.</p>
-          </div>
-        </div>
-      </div>
-      <!-- Box 3: Payslips by Date Range -->
-      <div class="col">
-        <div class="card box-card text-dark bg-warning h-100" onclick="showSection('payslipsByDateSection')">
-          <div class="card-body text-center">
-            <i class="bi bi-calendar3" style="font-size: 3rem;"></i>
-            <h5 class="card-title mt-3">Payslips by Date Range</h5>
-            <p class="card-text">Search within a date range.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Sections -->
-    <div id="sectionsContainer">
-      <!-- Section 1: All Payslips -->
-      <div id="allPayslipsSection" class="section active">
-        <h2 class="section-title text-primary">All Payslip Records</h2>
-        <div class="text-center">
-          <button id="loadPayslipsBtn" class="btn btn-primary btn-lg">Load All Payslips</button>
-        </div>
-        <div id="allPayslipsResult" class="result-container"></div>
+  <!-- Background Elements -->
+  <div class="background-container"></div>
+  <div class="pattern-overlay"></div>
+  <div class="floating-shape shape-1"></div>
+  <div class="floating-shape shape-2"></div>
+  
+  <div class="main-container">
+    <div class="content-wrapper">
+      <!-- Header -->
+      <div class="header-container animate-in">
+        <h1 class="header-title display-5">Employee Payslips</h1>
+        <p class="header-subtitle">Manage and access your payroll information</p>
       </div>
       
-      <!-- Section 2: Payslip by Employee -->
-      <div id="payslipByEmployeeSection" class="section">
-        <h2 class="section-title text-success">Search Payslip by Employee ID</h2>
-        <form id="payslipByEmployeeForm">
-          <div class="mb-3">
-            <label for="employeeIdInput" class="form-label">Employee ID</label>
-            <input type="text" class="form-control" id="employeeIdInput" placeholder="Enter Employee ID (GUID)" required>
+      <!-- Main Card -->
+      <div class="card card-custom animate-in" style="animation-delay: 0.2s;">
+        <div class="card-header text-center">
+          <h4><i class="fas fa-file-invoice-dollar me-2"></i>Payslip Dashboard</h4>
+        </div>
+        <div class="card-body">
+          <!-- Navigation Tabs -->
+          <ul class="nav nav-pills nav-pills-custom mb-4" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="pills-all-tab" data-bs-toggle="pill" data-bs-target="#pills-all" type="button" role="tab">
+                <i class="fas fa-list me-2"></i>All Payslips
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="pills-employee-tab" data-bs-toggle="pill" data-bs-target="#pills-employee" type="button" role="tab">
+                <i class="fas fa-user me-2"></i>By Employee
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="pills-date-tab" data-bs-toggle="pill" data-bs-target="#pills-date" type="button" role="tab">
+                <i class="fas fa-calendar me-2"></i>By Date Range
+              </button>
+            </li>
+          </ul>
+          
+          <!-- Tab Content -->
+          <div class="tab-content" id="pills-tabContent">
+            <!-- All Payslips Tab -->
+            <div class="tab-pane fade show active" id="pills-all" role="tabpanel">
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="search-box w-50">
+                  <i class="fas fa-search"></i>
+                  <input type="text" class="form-control" id="searchAll" placeholder="Search payslips...">
+                </div>
+                <button id="loadPayslipsBtn" class="btn btn-primary">
+                  <i class="fas fa-sync-alt me-2"></i>Load Payslips
+                </button>
+              </div>
+              
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Payslip ID</th>
+                      <th>Employee</th>
+                      <th>Period</th>
+                      <th>Payment Date</th>
+                      <th>Net Salary</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="allPayslipsResult">
+                    <tr>
+                      <td colspan="6" class="empty-table-message">
+                        Click "Load Payslips" to view all payslip records
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            
+            <!-- By Employee Tab -->
+            <div class="tab-pane fade" id="pills-employee" role="tabpanel">
+              <form id="payslipByEmployeeForm">
+                <div class="row mb-4">
+                  <div class="col-md-8">
+                    <label for="employeeIdSelect" class="form-label">Select Employee</label>
+                    <select class="form-select" id="employeeIdSelect" required>
+                      <option value="">Select an Employee</option>
+                      <!-- Options will be populated dynamically -->
+                    </select>
+                  </div>
+                  <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-success w-100">
+                      <i class="fas fa-search me-2"></i>Search
+                    </button>
+                  </div>
+                </div>
+              </form>
+              
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Payslip ID</th>
+                      <th>Period</th>
+                      <th>Payment Date</th>
+                      <th>Net Salary</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="payslipByEmployeeResult">
+                    <tr>
+                      <td colspan="5" class="empty-table-message">
+                        Select an employee and click "Search" to view payslips
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            
+            <!-- By Date Range Tab -->
+            <div class="tab-pane fade" id="pills-date" role="tabpanel">
+              <form id="payslipsByDateForm">
+                <div class="row mb-4">
+                  <div class="col-md-4">
+                    <label for="startDateInput" class="form-label">Start Date</label>
+                    <input type="date" class="form-control" id="startDateInput" required>
+                  </div>
+                  <div class="col-md-4">
+                    <label for="endDateInput" class="form-label">End Date</label>
+                    <input type="date" class="form-control" id="endDateInput" required>
+                  </div>
+                  <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-warning w-100">
+                      <i class="fas fa-filter me-2"></i>Filter
+                    </button>
+                  </div>
+                </div>
+              </form>
+              
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Payslip ID</th>
+                      <th>Employee</th>
+                      <th>Period</th>
+                      <th>Payment Date</th>
+                      <th>Net Salary</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="payslipsByDateResult">
+                    <tr>
+                      <td colspan="6" class="empty-table-message">
+                        Select a date range and click "Filter" to view payslips
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
-          <div class="d-grid">
-            <button type="submit" class="btn btn-success btn-lg">Search Payslip</button>
-          </div>
-        </form>
-        <div id="payslipByEmployeeResult" class="result-container"></div>
-      </div>
-      
-      <!-- Section 3: Payslips by Date Range -->
-      <div id="payslipsByDateSection" class="section">
-        <h2 class="section-title text-warning">Search Payslips by Date Range</h2>
-        <form id="payslipsByDateForm">
-          <div class="mb-3">
-            <label for="startDateInput" class="form-label">Start Date</label>
-            <input type="date" class="form-control" id="startDateInput" required>
-          </div>
-          <div class="mb-3">
-            <label for="endDateInput" class="form-label">End Date</label>
-            <input type="date" class="form-control" id="endDateInput" required>
-          </div>
-          <div class="d-grid">
-            <button type="submit" class="btn btn-warning btn-lg">Search Payslips</button>
-          </div>
-        </form>
-        <div id="payslipsByDateResult" class="result-container"></div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- JavaScript for toggling sections and API calls -->
+  <!-- Bootstrap Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     // Function to show only the selected section
     function showSection(sectionId) {
@@ -155,12 +476,43 @@
     const formatDate = (dateStr) => {
       if (!dateStr) return 'N/A';
       const date = new Date(dateStr);
-      return date.toLocaleDateString();
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
     };
+
+    // Format currency
+    const formatCurrency = (amount) => {
+      if (amount === undefined || amount === null) return 'N/A';
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+      }).format(amount);
+    };
+
+    // Download PDF function
+    function downloadPayslipPdf(payslipId, employeeName) {
+      if (!payslipId) return;
+      
+      const url = `https://localhost:7136/api/Payslips/${payslipId}/pdf`;
+      
+      // Create an invisible iframe to handle the download
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
+      
+      iframe.onload = function() {
+        document.body.removeChild(iframe);
+      };
+      
+      iframe.src = url;
+    }
 
     // 1. Get All Payslips
     document.getElementById('loadPayslipsBtn').addEventListener('click', function() {
-      fetch('/api/Payslip')
+      fetch('https://localhost:7136/api/Payslips')
         .then(response => {
           if (!response.ok) throw new Error('Failed to fetch payslip records.');
           return response.json();
@@ -168,67 +520,84 @@
         .then(data => {
           let html = '';
           if (!data || data.length === 0) {
-            html = '<div class="alert alert-info">No payslip records found.</div>';
+            html = `<tr><td colspan="6" class="text-center py-4">No payslip records found.</td></tr>`;
           } else {
-            html += `<div class="table-responsive">
-                      <table class="table table-bordered table-striped table-hover">
-                        <thead class="table-dark">
-                          <tr>
-                            <th>Payslip ID</th>
-                            <th>Employee ID</th>
-                            <th>Payment Date</th>
-                            <th>Net Salary</th>
-                          </tr>
-                        </thead>
-                        <tbody>`;
             data.forEach(p => {
               html += `<tr>
                         <td>${p.payslipId || 'N/A'}</td>
-                        <td>${p.employeeId || 'N/A'}</td>
+                        <td>
+                          <div class="d-flex align-items-center">
+                            <div class="avatar me-2" style="width: 36px; height: 36px; background-color: #${Math.floor(Math.random()*16777215).toString(16).substr(0,6)}; 
+                              border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                              ${p.employeeName ? p.employeeName.charAt(0).toUpperCase() : '?'}
+                            </div>
+                            <div>
+                              <div class="fw-bold">${p.employeeName || 'N/A'}</div>
+                              <small class="text-muted">${p.employeeNumber || ''}</small>
+                            </div>
+                          </div>
+                        </td>
+                        <td>${p.month} ${p.year}</td>
                         <td>${p.paymentDate ? formatDate(p.paymentDate) : 'N/A'}</td>
-                        <td>${p.netSalary || 'N/A'}</td>
+                        <td class="fw-bold">${formatCurrency(p.netSalary)}</td>
+                        <td>
+                          <button type="button" class="btn btn-sm btn-danger" onclick="downloadPayslipPdf('${p.payslipId}', '${p.employeeName?.replace(/'/g, "\\'")}')">
+                            <i class="fas fa-file-pdf me-1"></i> Download
+                          </button>
+                        </td>
                       </tr>`;
             });
-            html += `</tbody></table></div>`;
           }
           document.getElementById('allPayslipsResult').innerHTML = html;
         })
         .catch(error => {
           document.getElementById('allPayslipsResult').innerHTML =
-            `<div class="alert alert-danger">${error.message}</div>`;
+            `<tr><td colspan="6" class="text-center py-4 text-danger">${error.message}</td></tr>`;
         });
     });
 
     // 2. Get Payslip by Employee ID
     document.getElementById('payslipByEmployeeForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      const employeeId = document.getElementById('employeeIdInput').value.trim();
+      const employeeId = document.getElementById('employeeIdSelect').value.trim();
       if (!employeeId) {
-        document.getElementById('payslipsByDateResult').innerHTML =
-          `<div class="alert alert-warning">Please enter a valid Employee ID.</div>`;
+        document.getElementById('payslipByEmployeeResult').innerHTML =
+          `<tr><td colspan="5" class="text-center py-4 text-warning">Please select an Employee ID.</td></tr>`;
         return;
       }
-      fetch('/api/Payslip/' + encodeURIComponent(employeeId))
+      
+      fetch(`https://localhost:7136/api/Payslips/employee/${encodeURIComponent(employeeId)}`)
         .then(response => {
           if (!response.ok) throw new Error('Payslip record not found.');
           return response.json();
         })
         .then(data => {
-          let html = `<div class="card">
-                        <div class="card-body">
-                          <h5 class="card-title">Payslip Details</h5>
-                          <p><strong>Payslip ID:</strong> ${data.payslipId || 'N/A'}</p>
-                          <p><strong>Employee ID:</strong> ${data.employeeId || 'N/A'}</p>
-                          <p><strong>Payment Date:</strong> ${data.paymentDate ? formatDate(data.paymentDate) : 'N/A'}</p>
-                          <p><strong>Net Salary:</strong> ${data.netSalary || 'N/A'}</p>
-                        </div>
-                      </div>`;
-          document.getElementById('payslipsByDateResult').innerHTML = "";
+          // Handle case where data is an array (API returns array of payslips)
+          const payslips = Array.isArray(data) ? data : [data];
+          
+          let html = '';
+          if (!payslips || payslips.length === 0) {
+            html = `<tr><td colspan="5" class="text-center py-4">No payslip records found for this employee.</td></tr>`;
+          } else {
+            payslips.forEach(p => {
+              html += `<tr>
+                        <td>${p.payslipId || 'N/A'}</td>
+                        <td>${p.month} ${p.year}</td>
+                        <td>${p.paymentDate ? formatDate(p.paymentDate) : 'N/A'}</td>
+                        <td class="fw-bold">${formatCurrency(p.netSalary)}</td>
+                        <td>
+                          <button type="button" class="btn btn-sm btn-danger" onclick="downloadPayslipPdf('${p.payslipId}', '${p.employeeName?.replace(/'/g, "\\'")}')">
+                            <i class="fas fa-file-pdf me-1"></i> Download
+                          </button>
+                        </td>
+                      </tr>`;
+            });
+          }
           document.getElementById('payslipByEmployeeResult').innerHTML = html;
         })
         .catch(error => {
           document.getElementById('payslipByEmployeeResult').innerHTML =
-            `<div class="alert alert-danger">${error.message}</div>`;
+            `<tr><td colspan="5" class="text-center py-4 text-danger">${error.message}</td></tr>`;
         });
     });
 
@@ -237,11 +606,15 @@
       e.preventDefault();
       const startDate = document.getElementById('startDateInput').value;
       const endDate = document.getElementById('endDateInput').value;
+      
       if (!startDate || !endDate) {
-        document.getElementById('payslipsByDateResult').innerHTML = `<div class="alert alert-warning">Please enter both start and end dates.</div>`;
+        document.getElementById('payslipsByDateResult').innerHTML = 
+          `<tr><td colspan="6" class="text-center py-4 text-warning">Please enter both start and end dates.</td></tr>`;
         return;
       }
-      const url = `/api/Payslip/bydaterange?startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`;
+      
+      const url = `https://localhost:7136/api/Payslips/daterange?startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`;
+      
       fetch(url)
         .then(response => {
           if (!response.ok) throw new Error('Failed to fetch payslips for the specified date range.');
@@ -250,38 +623,97 @@
         .then(data => {
           let html = '';
           if (!data || data.length === 0) {
-            html = '<div class="alert alert-info">No payslip records found for the selected date range.</div>';
+            html = `<tr><td colspan="6" class="text-center py-4">No payslip records found for the selected date range.</td></tr>`;
           } else {
-            html += `<div class="table-responsive">
-                      <table class="table table-bordered table-striped table-hover">
-                        <thead class="table-dark">
-                          <tr>
-                            <th>Payslip ID</th>
-                            <th>Employee ID</th>
-                            <th>Payment Date</th>
-                            <th>Net Salary</th>
-                          </tr>
-                        </thead>
-                        <tbody>`;
             data.forEach(p => {
               html += `<tr>
                         <td>${p.payslipId || 'N/A'}</td>
-                        <td>${p.employeeId || 'N/A'}</td>
+                        <td>
+                          <div class="d-flex align-items-center">
+                            <div class="avatar me-2" style="width: 36px; height: 36px; background-color: #${Math.floor(Math.random()*16777215).toString(16).substr(0,6)}; 
+                              border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                              ${p.employeeName ? p.employeeName.charAt(0).toUpperCase() : '?'}
+                            </div>
+                            <div>
+                              <div class="fw-bold">${p.employeeName || 'N/A'}</div>
+                              <small class="text-muted">${p.employeeNumber || ''}</small>
+                            </div>
+                          </div>
+                        </td>
+                        <td>${p.month} ${p.year}</td>
                         <td>${p.paymentDate ? formatDate(p.paymentDate) : 'N/A'}</td>
-                        <td>${p.netSalary || 'N/A'}</td>
+                        <td class="fw-bold">${formatCurrency(p.netSalary)}</td>
+                        <td>
+                          <button type="button" class="btn btn-sm btn-danger" onclick="downloadPayslipPdf('${p.payslipId}', '${p.employeeName?.replace(/'/g, "\\'")}')">
+                            <i class="fas fa-file-pdf me-1"></i> Download
+                          </button>
+                        </td>
                       </tr>`;
             });
-            html += `</tbody></table></div>`;
           }
           document.getElementById('payslipsByDateResult').innerHTML = html;
         })
         .catch(error => {
-          document.getElementById('payslipsByDateResult').innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+          document.getElementById('payslipsByDateResult').innerHTML = 
+            `<tr><td colspan="6" class="text-center py-4 text-danger">${error.message}</td></tr>`;
         });
     });
-  </script>
 
-  <!-- Bootstrap 5 JS Bundle (includes Popper) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    // Function to load employees for dropdown
+    function loadEmployees() {
+      fetch('https://localhost:7136/api/Employees')
+        .then(response => {
+          if (!response.ok) throw new Error('Failed to fetch employees.');
+          return response.json();
+        })
+        .then(employees => {
+          const select = document.getElementById('employeeIdSelect');
+          select.innerHTML = '<option value="">Select an Employee</option>';
+          
+          employees.forEach(employee => {
+            const option = document.createElement('option');
+            option.value = employee.employeeId;
+            option.textContent = `${employee.firstName} ${employee.lastName} (${employee.employeeNumber})`;
+            select.appendChild(option);
+          });
+        })
+        .catch(error => {
+          console.error('Error loading employees:', error);
+          document.getElementById('employeeIdSelect').innerHTML = 
+            '<option value="">Failed to load employees</option>';
+        });
+    }
+
+    // Load employees when the page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      loadEmployees();
+      
+      // Set default dates for date range (current month)
+      const today = new Date();
+      const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+      const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+      
+      document.getElementById('startDateInput').valueAsDate = firstDay;
+      document.getElementById('endDateInput').valueAsDate = lastDay;
+      
+      // Clear any existing data when switching tabs
+      const tabEls = document.querySelectorAll('button[data-bs-toggle="pill"]');
+      tabEls.forEach(tabEl => {
+        tabEl.addEventListener('shown.bs.tab', function (event) {
+          // Reset the tables when switching tabs
+          if (event.target.id === 'pills-all-tab') {
+            document.getElementById('allPayslipsResult').innerHTML = 
+              `<tr><td colspan="6" class="empty-table-message">Click "Load Payslips" to view all payslip records</td></tr>`;
+          } else if (event.target.id === 'pills-employee-tab') {
+            document.getElementById('payslipByEmployeeResult').innerHTML = 
+              `<tr><td colspan="5" class="empty-table-message">Select an employee and click "Search" to view payslips</td></tr>`;
+          } else if (event.target.id === 'pills-date-tab') {
+            document.getElementById('payslipsByDateResult').innerHTML = 
+              `<tr><td colspan="6" class="empty-table-message">Select a date range and click "Filter" to view payslips</td></tr>`;
+          }
+        });
+      });
+    });
+  </script>
 </body>
 </html>

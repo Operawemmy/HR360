@@ -2,101 +2,286 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Update Department</title>
   <!-- Bootstrap 5 CSS CDN -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <style>
     body {
-      background-color: #f8f9fa;
+      font-family: 'Poppins', sans-serif;
+      background-color: #f0f2f5;
+      color: #333;
     }
-    .header-title {
-      background: linear-gradient(45deg, #007bff, #6610f2);
-      color: #fff;
-      padding: 30px;
-      border-radius: 10px;
+
+    .background-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      opacity: 0.8;
+      z-index: -1;
+    }
+
+    .pattern-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      z-index: -1;
+      opacity: 0.3;
+    }
+
+    .main-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .content-wrapper {
+      width: 100%;
+      max-width: 550px;
+    }
+
+    .header-container {
       text-align: center;
-      margin-bottom: 40px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      margin-bottom: 2rem;
     }
+
+    .header-title {
+      color: #fff;
+      font-weight: 700;
+      text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+      margin-bottom: 0.5rem;
+    }
+
+    .header-subtitle {
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 400;
+    }
+
     .card-custom {
       border: none;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(5px);
+      background-color: rgba(255, 255, 255, 0.95);
+      transition: transform 0.3s, box-shadow 0.3s;
     }
+
+    .card-custom:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-header {
+      background: linear-gradient(135deg, #007bff, #6610f2);
+      padding: 1.5rem;
+      border-bottom: none;
+    }
+
+    .card-header h4 {
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .card-body {
+      padding: 2.5rem;
+    }
+
     .form-label {
       font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: #444;
     }
+
+    .form-control, .form-select {
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      border: 1px solid #e1e5ea;
+      background-color: #f8fafc;
+      box-shadow: none;
+      transition: all 0.3s;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+      background-color: #fff;
+    }
+
     .btn-custom {
-      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
       padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      transition: all 0.3s;
     }
+
+    .btn-success {
+      background: linear-gradient(135deg, #28a745, #218838);
+      border: none;
+    }
+
+    .btn-success:hover {
+      background: linear-gradient(135deg, #218838, #1e7e34);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+    }
+
     .response-message {
       margin-top: 20px;
+    }
+
+    .alert-custom {
+      border-radius: 10px;
+      padding: 1rem;
+      margin-top: 1.5rem;
+      border: none;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .alert-success {
+      background-color: rgba(57, 218, 138, 0.15);
+      color: #0b754d;
+    }
+
+    .alert-danger {
+      background-color: rgba(241, 65, 108, 0.15);
+      color: #b81b45;
+    }
+
+    .alert-warning {
+      background-color: rgba(255, 193, 7, 0.15);
+      color: #856404;
+    }
+
+    .animate-in {
+      animation: fadeInUp 0.5s ease-out forwards;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container my-5">
-    <!-- Header -->
-    <div class="header-title">
-      <h1 class="display-5">Update Department</h1>
-      <p class="lead">Modify department details below</p>
-    </div>
-    
-    <!-- Form Card -->
-    <div class="row justify-content-center">
-      <div class="col-md-8 col-lg-6">
-        <div class="card card-custom">
-          <div class="card-header bg-primary text-white text-center py-3">
-            <h4 class="mb-0">Department Information</h4>
-          </div>
-          <div class="card-body p-4">
-            <form id="updateDepartmentForm">
-              <!-- Department ID (Path Parameter) -->
-              <div class="mb-3">
-                <label for="departmentId" class="form-label">Department ID</label>
-                <input type="text" class="form-control" id="departmentId" placeholder="Enter Department ID (GUID)" required>
-              </div>
-              <!-- Department Name -->
-              <div class="mb-3">
-                <label for="departmentName" class="form-label">Department Name</label>
-                <input type="text" class="form-control" id="departmentName" placeholder="e.g., Warehousing" required>
-              </div>
-              <!-- Description -->
-              <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
-                <textarea class="form-control" id="description" rows="3" placeholder="Manages Warehousing Operation" required></textarea>
-              </div>
-              <!-- Department Manager Name -->
-              <div class="mb-3">
-                <label for="departmentManagerName" class="form-label">Department Manager Name</label>
-                <input type="text" class="form-control" id="departmentManagerName" placeholder="Enter Manager Name" required>
-              </div>
-              <div class="text-center">
-                <button type="submit" class="btn btn-success btn-custom">Update Department</button>
-              </div>
-            </form>
-            <div id="responseMessage" class="response-message"></div>
-          </div>
+  <!-- Background Elements -->
+  <div class="background-container"></div>
+  <div class="pattern-overlay"></div>
+
+  <div class="main-container">
+    <div class="content-wrapper">
+      <!-- Header -->
+      <div class="header-container animate-in">
+        <h1 class="header-title display-5">Update Department</h1>
+        <p class="header-subtitle">Modify department details below</p>
+      </div>
+
+      <!-- Update Department Form Card -->
+      <div class="card card-custom animate-in">
+        <div class="card-header text-white text-center">
+          <h4><i class="bi bi-building me-2"></i>Department Information</h4>
+        </div>
+        <div class="card-body">
+          <form id="updateDepartmentForm">
+            <!-- Department Dropdown -->
+            <div class="mb-4">
+              <label for="departmentId" class="form-label">Select Department <span class="text-danger">*</span></label>
+              <select class="form-select" id="departmentId" required>
+                <option value="">Loading departments...</option>
+              </select>
+            </div>
+
+            <!-- Department Name -->
+            <div class="mb-4">
+              <label for="departmentName" class="form-label">Department Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="departmentName" placeholder="e.g., Warehousing" required>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-4">
+              <label for="description" class="form-label">Description <span class="text-danger">*</span></label>
+              <textarea class="form-control" id="description" rows="3" placeholder="Manages Warehousing Operation" required></textarea>
+            </div>
+
+            <!-- Department Manager -->
+            <div class="mb-4">
+              <label for="departmentManagerName" class="form-label">Department Manager Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="departmentManagerName" placeholder="Enter Manager Name" required>
+            </div>
+
+            <div class="d-grid">
+              <button type="submit" class="btn btn-success btn-custom">
+                <i class="bi bi-pencil me-2"></i>Update Department
+              </button>
+            </div>
+          </form>
+
+          <div id="responseMessage" class="response-message"></div>
         </div>
       </div>
     </div>
+  </div>
 
-
-  <!-- Bootstrap 5 JS Bundle (includes Popper) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  
-  <!-- JavaScript to handle form submission -->
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Axios for API calls -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
+    // Fetch departments from API and populate dropdown
+    async function loadDepartments() {
+      try {
+        const response = await axios.get("https://localhost:7136/api/Departments");
+        const departmentDropdown = document.getElementById("departmentId");
+
+        departmentDropdown.innerHTML = '<option value="">Select a department</option>'; // Default option
+
+        response.data.forEach(dept => {
+          const option = document.createElement("option");
+          option.value = dept.departmentId;
+          option.textContent = dept.departmentName;
+          departmentDropdown.appendChild(option);
+        });
+
+      } catch (error) {
+        console.error("Error loading departments:", error);
+        document.getElementById("departmentId").innerHTML = '<option value="">Error loading departments</option>';
+      }
+    }
+
+    // Load departments on page load
+    document.addEventListener("DOMContentLoaded", loadDepartments);
+
+    // Handle form submission
     document.getElementById('updateDepartmentForm').addEventListener('submit', function (e) {
       e.preventDefault();
       
-      const departmentId = document.getElementById('departmentId').value.trim();
+      const departmentId = document.getElementById('departmentId').value;
       const departmentName = document.getElementById('departmentName').value.trim();
       const description = document.getElementById('description').value.trim();
       const departmentManagerName = document.getElementById('departmentManagerName').value.trim();
+
+      if (!departmentId || !departmentName || !description || !departmentManagerName) {
+        document.getElementById("responseMessage").innerHTML = `<div class="alert alert-warning">Please fill all required fields.</div>`;
+        return;
+      }
 
       const payload = {
         departmentName: departmentName,
@@ -104,27 +289,13 @@
         departmentManagerName: departmentManagerName
       };
 
-      // Make sure to enclose URL in quotes
-      fetch(`https://localhost:7136/api/Departments/${encodeURIComponent(departmentId)}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      })
-      .then(response => {
-        if (!response.ok) {
-          return response.text().then(text => { throw new Error(text || 'Failed to update department.'); });
-        }
-        return response.json();
-      })
-      .then(data => {
-        document.getElementById('responseMessage').innerHTML = `<div class="alert alert-success" role="alert">
-          ${data.departmentName} updated successfully!
-        </div>`;
-        document.getElementById('updateDepartmentForm').reset();
-      })
-      .catch(error => {
-        document.getElementById('responseMessage').innerHTML = `<div class="alert alert-danger" role="alert">${error.message}</div>`;
-      });
+      axios.put(`https://localhost:7136/api/Departments/${encodeURIComponent(departmentId)}`, payload)
+        .then(function(response) {
+          document.getElementById("responseMessage").innerHTML = `<div class="alert alert-success">Department updated successfully!</div>`;
+        })
+        .catch(function(error) {
+          document.getElementById("responseMessage").innerHTML = `<div class="alert alert-danger">Failed to update department. Please try again later.</div>`;
+        });
     });
   </script>
 </body>

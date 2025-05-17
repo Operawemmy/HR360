@@ -6,99 +6,248 @@
   <title>HR360 APP - Add Training</title>
   <!-- Bootstrap 5 CSS CDN -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     body {
       background-color: #f8f9fa;
+      background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
     }
     .container {
       margin-top: 50px;
-    }
-    .card {
-      margin-top: 20px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding-bottom: 50px;
     }
     .title-header {
-      background: linear-gradient(45deg, #007bff, #6610f2);
+      background: linear-gradient(45deg, #2c3e50, #3498db);
       color: #fff;
-      padding: 20px;
-      border-radius: 10px;
+      padding: 30px;
+      border-radius: 15px;
       text-align: center;
       margin-bottom: 30px;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      position: relative;
+      overflow: hidden;
+    }
+    .title-header::after {
+      content: "";
+      position: absolute;
+      bottom: -50px;
+      right: -50px;
+      width: 100px;
+      height: 100px;
+      background: rgba(255,255,255,0.1);
+      transform: rotate(45deg);
+    }
+    .card {
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    .form-control:focus {
+      box-shadow: 0 0 0 0.25rem rgba(52,152,219,0.25);
+      border-color: #3498db;
+    }
+    .upload-area {
+      border: 2px dashed #3498db;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      background: rgba(52,152,219,0.05);
+      transition: all 0.3s ease;
+    }
+    .upload-area:hover {
+      background: rgba(52,152,219,0.1);
+    }
+    .file-list {
+      margin-top: 15px;
+      list-style: none;
+      padding-left: 0;
+    }
+    .file-list li {
+      display: flex;
+      align-items: center;
+      padding: 8px;
+      background: #f8f9fa;
+      margin-bottom: 5px;
+      border-radius: 5px;
+    }
+    .file-list i {
+      margin-right: 10px;
+      color: #3498db;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- Beautiful Title -->
+    <!-- Enhanced Title Header -->
     <div class="title-header">
-      <h1 class="display-4">Add Training</h1>
+      <h1 class="display-4 fw-bold"><i class="fas fa-chalkboard-teacher me-3"></i>Add New Training</h1>
+      <p class="lead mt-3">Empowering employee growth through continuous learning</p>
     </div>
+
     <div class="card">
-      <div class="card-body">
-        <form id="addTrainingForm">
-          <div class="mb-3">
-            <label for="trainingName" class="form-label">Training Name</label>
-            <input type="text" class="form-control" id="trainingName" name="trainingName" placeholder="Enter training name" required>
-          </div>
-          <div class="mb-3">
-            <label for="description" class="form-label">Description</label>
-            <textarea class="form-control" id="description" name="description" rows="4" placeholder="Enter training description" required></textarea>
-          </div>
-          <div class="d-grid">
-            <button type="submit" class="btn btn-primary btn-lg">Submit Training</button>
+      <div class="card-body p-4">
+        <form id="addTrainingForm" enctype="multipart/form-data">
+          <div class="row g-4">
+            <!-- Left Column -->
+            <div class="col-md-6">
+              <div class="mb-4">
+                <label for="trainingName" class="form-label fw-bold text-primary">
+                  <i class="fas fa-book me-2"></i>Training Name
+                </label>
+                <input type="text" class="form-control form-control-lg" 
+                       id="trainingName" name="trainingName" 
+                       placeholder="Enter training name" required>
+              </div>
+
+              <div class="mb-4">
+                <label for="description" class="form-label fw-bold text-primary">
+                  <i class="fas fa-align-left me-2"></i>Description
+                </label>
+                <textarea class="form-control form-control-lg" 
+                          id="description" name="description" rows="5" 
+                          placeholder="Enter detailed training description" 
+                          required></textarea>
+              </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-md-6">
+              <div class="mb-4">
+                <label class="form-label fw-bold text-primary">
+                  <i class="fas fa-paperclip me-2"></i>Training Materials
+                </label>
+                <div class="upload-area">
+                  <input type="file" class="form-control" id="trainingFiles" 
+                         name="trainingFiles" multiple 
+                         accept=".pdf,.doc,.docx,.ppt,.pptx,.jpg,.png">
+                  <div class="mt-3 text-muted">
+                    <i class="fas fa-cloud-upload-alt fa-3x mb-3"></i>
+                    <p class="mb-1">Drag & drop files here or click to upload</p>
+                    <small class="text-muted">Supported formats: PDF, DOC, PPT, JPG, PNG</small>
+                  </div>
+                </div>
+                <ul class="file-list" id="fileList"></ul>
+              </div>
+
+              <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary btn-lg">
+                  <i class="fas fa-plus-circle me-2"></i>Create Training Program
+                </button>
+              </div>
+            </div>
           </div>
         </form>
-        <div id="result" class="mt-3"></div>
+        <div id="result" class="mt-4"></div>
       </div>
     </div>
   </div>
 
-  <!-- JavaScript to handle form submission -->
+  <!-- JavaScript -->
   <script>
+    // File input handling
+    const fileInput = document.getElementById('trainingFiles');
+    const fileList = document.getElementById('fileList');
+
+    fileInput.addEventListener('change', () => {
+      fileList.innerHTML = '';
+      Array.from(fileInput.files).forEach(file => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <i class="fas fa-file-${getFileIcon(file.name)}"></i>
+          ${file.name} (${formatFileSize(file.size)})
+        `;
+        fileList.appendChild(li);
+      });
+    });
+
+    // Form submission
     document.getElementById('addTrainingForm').addEventListener('submit', function(e) {
       e.preventDefault();
       
-      const trainingName = document.getElementById('trainingName').value.trim();
-      const description = document.getElementById('description').value.trim();
-      
-      const formData = {
-        TrainingName: trainingName,
-        Description: description
-      };
+      const formData = new FormData(this);
+      const resultDiv = document.getElementById('result');
 
-      // Adjust the endpoint URL as needed (e.g., '/api/Training')
+      // Show loading state
+      resultDiv.innerHTML = `
+        <div class="alert alert-info d-flex align-items-center">
+          <div class="spinner-border me-3" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          Creating training program...
+        </div>
+      `;
+
       fetch('https://localhost:7136/api/Training', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: formData
       })
-      .then(response => {
-        if(response.status === 409) {
-          return response.text().then(text => { 
-            throw new Error(text || "Training already exists."); 
-          });
-        }
+      .then(async response => {
+        const data = await response.json();
         if (!response.ok) {
-          throw new Error("An error occurred while adding the training.");
+          throw new Error(data.message || 'Failed to create training');
         }
-        return response.json();
+        return data;
       })
       .then(data => {
-        document.getElementById('result').innerHTML = 
-          `<div class="alert alert-success" role="alert">
-             ${data.Message || "Training created successfully."}
-           </div>`;
-        document.getElementById('addTrainingForm').reset();
+        resultDiv.innerHTML = `
+          <div class="alert alert-success d-flex align-items-center">
+            <i class="fas fa-check-circle fa-2x me-3"></i>
+            <div>
+              <h5 class="mb-1">${data.Message || 'Training created successfully!'}</h5>
+              ${data.Files ? `<small>Uploaded files: ${data.Files.join(', ')}</small>` : ''}
+            </div>
+          </div>
+        `;
+        this.reset();
+        fileList.innerHTML = '';
       })
       .catch(error => {
-        document.getElementById('result').innerHTML =
-          `<div class="alert alert-danger" role="alert">${error.message}</div>`;
+        resultDiv.innerHTML = `
+          <div class="alert alert-danger d-flex align-items-center">
+            <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
+            <div>
+              <h5 class="mb-1">${error.message}</h5>
+              ${error.message.includes('exist') ? 
+                '<small>Please try a different training name</small>' : ''}
+            </div>
+          </div>
+        `;
       });
     });
+
+    // Helper functions
+    function getFileIcon(filename) {
+      const ext = filename.split('.').pop().toLowerCase();
+      const icons = {
+        pdf: 'pdf',
+        doc: 'word',
+        docx: 'word',
+        ppt: 'powerpoint',
+        pptx: 'powerpoint',
+        jpg: 'image',
+        png: 'image'
+      };
+      return icons[ext] || 'alt';
+    }
+
+    function formatFileSize(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
   </script>
 
   <!-- Bootstrap 5 JS Bundle (includes Popper) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Font Awesome -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Training Dashboard</title>
+  <title>HR360 APP - Training Dashboard</title>
   <!-- Bootstrap 5 CSS CDN -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Bootstrap Icons CDN -->
@@ -14,23 +14,24 @@
       scroll-behavior: smooth;
     }
     .dashboard-title {
-      background: linear-gradient(45deg, #007bff, #6610f2);
+      background: linear-gradient(45deg, #2c3e50, #3498db);
       color: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-      margin-bottom: 30px;
+      padding: 30px;
+      border-radius: 15px;
+      margin-bottom: 40px;
       text-align: center;
-    }
-    .box-link {
-      text-decoration: none;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
     }
     .box-card {
       cursor: pointer;
-      transition: transform 0.2s ease-in-out;
+      transition: transform 0.2s ease;
+      border: none;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
     .box-card:hover {
-      transform: scale(1.03);
+      transform: translateY(-5px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
     }
     .section {
       display: none;
@@ -40,413 +41,382 @@
       display: block;
     }
     .section-title {
-      padding: 15px;
+      padding-bottom: 15px;
       border-bottom: 2px solid #ddd;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
+      color: #2c3e50;
+      font-weight: 600;
     }
     .result-container {
-      margin-top: 20px;
+      margin-top: 25px;
+    }
+    .spinner-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      visibility: hidden;
+    }
+    .spinner-overlay.active {
+      visibility: visible;
+    }
+    .table-hover tbody tr:hover {
+      background-color: rgba(52, 152, 219, 0.1);
+    }
+    .form-control:focus {
+      border-color: #3498db;
+      box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
     }
   </style>
 </head>
 <body>
+  <!-- Loading Spinner -->
+  <div class="spinner-overlay" id="loadingSpinner">
+    <div class="spinner-border text-light" style="width: 3rem; height: 3rem;" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
   <div class="container my-5">
     <!-- Dashboard Title -->
     <div class="dashboard-title">
       <h1 class="display-4">Training Dashboard</h1>
-      <p class="lead">Click a box below to manage training</p>
+      <p class="lead">Manage and track employee training programs</p>
     </div>
 
-    <!-- Boxes arranged in a grid -->
+    <!-- Boxes Grid -->
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
-      <!-- Box 1: All Trainings -->
+      <!-- All Trainings -->
       <div class="col">
         <div class="card box-card text-white bg-primary h-100" onclick="showSection('allTrainingsSection')">
           <div class="card-body text-center">
             <i class="bi bi-card-list" style="font-size: 3rem;"></i>
             <h5 class="card-title mt-3">All Trainings</h5>
-            <p class="card-text">View all training records.</p>
+            <p class="card-text">View all training programs</p>
           </div>
         </div>
       </div>
-      <!-- Box 2: Update Training -->
+      <!-- Update Training -->
       <div class="col">
         <div class="card box-card text-white bg-success h-100" onclick="showSection('updateTrainingSection')">
           <div class="card-body text-center">
             <i class="bi bi-pencil-square" style="font-size: 3rem;"></i>
             <h5 class="card-title mt-3">Update Training</h5>
-            <p class="card-text">Update an employee training record.</p>
+            <p class="card-text">Modify training details</p>
           </div>
         </div>
       </div>
-      <!-- Box 3: Employee Trainings -->
+      <!-- Employee Trainings -->
       <div class="col">
-        <div class="card box-card text-dark bg-warning h-100" onclick="showSection('employeeTrainingsSection')">
+        <div class="card box-card text-white bg-warning h-100" onclick="showSection('employeeTrainingsSection')">
           <div class="card-body text-center">
             <i class="bi bi-person-lines-fill" style="font-size: 3rem;"></i>
             <h5 class="card-title mt-3">Employee Trainings</h5>
-            <p class="card-text">View trainings by employee.</p>
-          </div>
-        </div>
-      </div>
-      <!-- Box 4: Training Employees -->
-      <div class="col">
-        <div class="card box-card text-white bg-info h-100" onclick="showSection('trainingEmployeesSection')">
-          <div class="card-body text-center">
-            <i class="bi bi-people-fill" style="font-size: 3rem;"></i>
-            <h5 class="card-title mt-3">Training Employees</h5>
-            <p class="card-text">See employees in a training.</p>
-          </div>
-        </div>
-      </div>
-      <!-- Box 5: Employees by Training -->
-      <div class="col">
-        <div class="card box-card text-white bg-danger h-100" onclick="showSection('employeesByTrainingSection')">
-          <div class="card-body text-center">
-            <i class="bi bi-person-check-fill" style="font-size: 3rem;"></i>
-            <h5 class="card-title mt-3">Employees by Training</h5>
-            <p class="card-text">Get employees linked to a training.</p>
+            <p class="card-text">View employee training history</p>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Sections: Only one section will be active at a time -->
+    <!-- Sections Container -->
     <div id="sectionsContainer">
-      <!-- Section 1: All Trainings -->
+      <!-- All Trainings Section -->
       <div id="allTrainingsSection" class="section active">
-        <h2 class="section-title text-primary">All Trainings</h2>
+        <h2 class="section-title">All Training Programs</h2>
         <div class="text-center">
-          <button id="loadTrainingsBtn" class="btn btn-primary btn-lg">Load All Trainings</button>
+          <button id="loadTrainingsBtn" class="btn btn-primary btn-lg">
+            <i class="bi bi-cloud-arrow-down me-2"></i>Load All Trainings
+          </button>
         </div>
         <div id="allTrainingsResult" class="result-container"></div>
       </div>
 
-      <!-- Section 2: Update Training -->
+      <!-- Update Training Section -->
       <div id="updateTrainingSection" class="section">
-        <h2 class="section-title text-success">Update Training</h2>
+        <h2 class="section-title text-success">Update Training Program</h2>
         <form id="updateTrainingForm">
-          <div class="mb-3">
-            <label for="updateTrainingId" class="form-label">Training ID</label>
-            <input type="text" class="form-control" id="updateTrainingId" placeholder="Enter Training ID (GUID)" required>
-          </div>
-          <div class="mb-3">
-            <label for="updateStartDate" class="form-label">Start Date</label>
-            <input type="date" class="form-control" id="updateStartDate" required>
-          </div>
-          <div class="mb-3">
-            <label for="updateEndDate" class="form-label">End Date</label>
-            <input type="date" class="form-control" id="updateEndDate" required>
-          </div>
-          <div class="mb-3">
-            <label for="updateTrainingStatus" class="form-label">Training Status</label>
-            <select class="form-select" id="updateTrainingStatus" required>
-              <option value="">Select Status</option>
-              <option value="1">Pending</option>
-              <option value="2">Completed</option>
-              <option value="3">Cancelled</option>
+          <div class="mb-4">
+            <label for="trainingSelect" class="form-label">Select Training</label>
+            <select class="form-select form-select-lg" id="trainingSelect" required>
+              <option value="">Loading trainings...</option>
             </select>
+            <div class="mt-2">
+              <button type="button" id="refreshTrainingsBtn" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-clockwise"></i> Refresh List
+              </button>
+            </div>
           </div>
-          <div class="d-grid">
-            <button type="submit" class="btn btn-warning btn-lg">Update Training</button>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="updateStartDate" class="form-label">Start Date</label>
+              <input type="date" class="form-control form-control-lg" id="updateStartDate" required>
+            </div>
+            <div class="col-md-6">
+              <label for="updateEndDate" class="form-label">End Date</label>
+              <input type="date" class="form-control form-control-lg" id="updateEndDate" required>
+            </div>
+            <div class="col-12">
+              <label for="updateTrainingStatus" class="form-label">Status</label>
+              <select class="form-select form-select-lg" id="updateTrainingStatus" required>
+                <option value="">Select Status</option>
+                <option value="1">Pending</option>
+                <option value="2">Completed</option>
+                <option value="3">Cancelled</option>
+              </select>
+            </div>
+          </div>
+          <div class="d-grid mt-4">
+            <button type="submit" class="btn btn-success btn-lg">
+              <i class="bi bi-save me-2"></i>Update Training
+            </button>
           </div>
         </form>
         <div id="updateTrainingResult" class="result-container"></div>
       </div>
 
-      <!-- Section 3: Employee Trainings -->
+      <!-- Employee Trainings Section -->
       <div id="employeeTrainingsSection" class="section">
-        <h2 class="section-title text-warning">Employee Trainings</h2>
+        <h2 class="section-title text-warning">Employee Training History</h2>
         <form id="employeeTrainingsForm">
-          <div class="mb-3">
-            <label for="employeeIdInput" class="form-label">Employee ID</label>
-            <input type="text" class="form-control" id="employeeIdInput" placeholder="Enter Employee ID (GUID)" required>
+          <div class="mb-4">
+            <label for="employeeSelect" class="form-label">Select Employee</label>
+            <select class="form-select form-select-lg" id="employeeSelect" required>
+              <option value="">Loading employees...</option>
+            </select>
+            <div class="mt-2">
+              <button type="button" id="refreshEmployeesBtn" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-clockwise"></i> Refresh List
+              </button>
+            </div>
           </div>
           <div class="d-grid">
-            <button type="submit" class="btn btn-primary btn-lg">Get Employee Trainings</button>
+            <button type="submit" class="btn btn-warning btn-lg">
+              <i class="bi bi-search me-2"></i>View Trainings
+            </button>
           </div>
         </form>
         <div id="employeeTrainingsResult" class="result-container"></div>
       </div>
-
-      <!-- Section 4: Training Employees -->
-      <div id="trainingEmployeesSection" class="section">
-        <h2 class="section-title text-info">Training Employees</h2>
-        <form id="trainingEmployeesForm">
-          <div class="mb-3">
-            <label for="trainingIdForEmployees" class="form-label">Training ID</label>
-            <input type="text" class="form-control" id="trainingIdForEmployees" placeholder="Enter Training ID (GUID)" required>
-          </div>
-          <div class="d-grid">
-            <button type="submit" class="btn btn-primary btn-lg">Get Training Employees</button>
-          </div>
-        </form>
-        <div id="trainingEmployeesResult" class="result-container"></div>
-      </div>
-
-      <!-- Section 5: Employees by Training -->
-      <div id="employeesByTrainingSection" class="section">
-        <h2 class="section-title text-danger">Employees by Training</h2>
-        <form id="employeesByTrainingForm">
-          <div class="mb-3">
-            <label for="trainingIdForEmpByTraining" class="form-label">Training ID</label>
-            <input type="text" class="form-control" id="trainingIdForEmpByTraining" placeholder="Enter Training ID (GUID)" required>
-          </div>
-          <div class="d-grid">
-            <button type="submit" class="btn btn-primary btn-lg">Get Employees by Training</button>
-          </div>
-        </form>
-        <div id="employeesByTrainingResult" class="result-container"></div>
-      </div>
     </div>
   </div>
 
-  <!-- JavaScript for handling API calls and showing sections -->
+  <!-- Bootstrap 5 JS Bundle (includes Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
   <script>
-    // Function to show only the selected section and hide the others
+    const apiBaseUrl = 'https://localhost:7136/api';
+    let allTrainings = [];
+    let allEmployees = [];
+
+    // Loading functions
+    function showLoading() {
+      document.getElementById('loadingSpinner').classList.add('active');
+    }
+    
+    function hideLoading() {
+      document.getElementById('loadingSpinner').classList.remove('active');
+    }
+
+    // Section navigation
     function showSection(sectionId) {
-      const sections = document.querySelectorAll('.section');
-      sections.forEach(sec => {
-        sec.classList.remove('active');
-      });
-      const selectedSection = document.getElementById(sectionId);
-      if (selectedSection) {
-        selectedSection.classList.add('active');
-        selectedSection.scrollIntoView({ behavior: 'smooth' });
+      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+      const section = document.getElementById(sectionId);
+      if (section) {
+        section.classList.add('active');
+        section.scrollIntoView({ behavior: 'smooth' });
+        
+        if (sectionId === 'updateTrainingSection') loadTrainingsForDropdown();
+        if (sectionId === 'employeeTrainingsSection') loadEmployeesForDropdown();
       }
     }
 
-    // Helper function to format dates
-    const formatDate = (dateStr) => {
-      if (!dateStr) return 'N/A';
-      const date = new Date(dateStr);
-      return date.toLocaleDateString();
-    };
+    // Load trainings for dropdown
+    async function loadTrainingsForDropdown() {
+      showLoading();
+      try {
+        const response = await fetch(`${apiBaseUrl}/Training`);
+        if (!response.ok) throw new Error('Failed to load trainings');
+        allTrainings = await response.json();
+        populateTrainingDropdown();
+      } catch (error) {
+        console.error(error);
+        document.getElementById('trainingSelect').innerHTML = '<option value="">Failed to load trainings</option>';
+      }
+      hideLoading();
+    }
 
-    // 1. Get All Trainings
-    document.getElementById('loadTrainingsBtn').addEventListener('click', function() {
-      fetch('/api/Training')
-        .then(response => {
-          if (!response.ok) throw new Error('Failed to fetch trainings.');
-          return response.json();
-        })
-        .then(data => {
-          let html = '';
-          if (!data || data.length === 0) {
-            html = '<div class="alert alert-info">No trainings found.</div>';
-          } else {
-            html += `<div class="table-responsive">
-                      <table class="table table-bordered table-striped table-hover">
-                        <thead class="table-dark">
-                          <tr>
-                            <th>Training ID</th>
-                            <th>Training Name</th>
-                            <th>Description</th>
-                          </tr>
-                        </thead>
-                        <tbody>`;
-            data.forEach(training => {
-              html += `<tr>
-                        <td>${training.trainingId || 'N/A'}</td>
-                        <td>${training.trainingName || 'N/A'}</td>
-                        <td>${training.description || 'N/A'}</td>
-                      </tr>`;
-            });
-            html += `</tbody></table></div>`;
-          }
-          document.getElementById('allTrainingsResult').innerHTML = html;
-        })
-        .catch(error => {
-          document.getElementById('allTrainingsResult').innerHTML =
-            `<div class="alert alert-danger">${error.message}</div>`;
-        });
+    // Load employees for dropdown
+    async function loadEmployeesForDropdown() {
+      showLoading();
+      try {
+        const response = await fetch(`${apiBaseUrl}/Employees`);
+        if (!response.ok) throw new Error('Failed to load employees');
+        allEmployees = await response.json();
+        populateEmployeeDropdown();
+      } catch (error) {
+        console.error(error);
+        document.getElementById('employeeSelect').innerHTML = '<option value="">Failed to load employees</option>';
+      }
+      hideLoading();
+    }
+
+    // Populate training dropdown
+    function populateTrainingDropdown() {
+      const select = document.getElementById('trainingSelect');
+      select.innerHTML = '<option value="">Select a training...</option>';
+      allTrainings.forEach(training => {
+        const option = document.createElement('option');
+        option.value = training.trainingId;
+        option.textContent = training.trainingName;
+        select.appendChild(option);
+      });
+    }
+
+    // Populate employee dropdown
+    function populateEmployeeDropdown() {
+      const select = document.getElementById('employeeSelect');
+      select.innerHTML = '<option value="">Select an employee...</option>';
+      allEmployees.forEach(employee => {
+        const option = document.createElement('option');
+        option.value = employee.employeeId;
+        option.textContent = `${employee.firstName} ${employee.lastName} (${employee.employeeNumber})`;
+        select.appendChild(option);
+      });
+    }
+
+    // Create training table
+    function createTrainingTable(trainings) {
+      if (!trainings.length) return '<div class="alert alert-info">No trainings found</div>';
+      
+      return `
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th>Training Name</th>
+                <th>Description</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${trainings.map(training => `
+                <tr>
+                  <td>${training.trainingName}</td>
+                  <td>${training.description}</td>
+                  <td>${new Date(training.startDate).toLocaleDateString()}</td>
+                  <td>${new Date(training.endDate).toLocaleDateString()}</td>
+                  <td><span class="badge ${getStatusBadge(training.trainingStatus)}">${getStatusText(training.trainingStatus)}</span></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    // Helper functions
+    function getStatusBadge(status) {
+      switch(status) {
+        case 1: return 'bg-warning text-dark';
+        case 2: return 'bg-success';
+        case 3: return 'bg-danger';
+        default: return 'bg-secondary';
+      }
+    }
+
+    function getStatusText(status) {
+      switch(status) {
+        case 1: return 'Pending';
+        case 2: return 'Completed';
+        case 3: return 'Cancelled';
+        default: return 'Unknown';
+      }
+    }
+
+    // Event Listeners
+    document.getElementById('loadTrainingsBtn').addEventListener('click', async () => {
+      showLoading();
+      try {
+        const response = await fetch(`${apiBaseUrl}/Training`);
+        if (!response.ok) throw new Error('Failed to load trainings');
+        const data = await response.json();
+        document.getElementById('allTrainingsResult').innerHTML = createTrainingTable(data);
+      } catch (error) {
+        document.getElementById('allTrainingsResult').innerHTML = `
+          <div class="alert alert-danger">${error.message}</div>
+        `;
+      }
+      hideLoading();
     });
 
-    // 2. Update Employee Training
-    document.getElementById('updateTrainingForm').addEventListener('submit', function(e) {
+    document.getElementById('updateTrainingForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const trainingId = document.getElementById('updateTrainingId').value.trim();
-      const startDate = document.getElementById('updateStartDate').value;
-      const endDate = document.getElementById('updateEndDate').value;
-      const trainingStatus = parseInt(document.getElementById('updateTrainingStatus').value);
-
-      if (!trainingId || !startDate || !endDate || isNaN(trainingStatus)) {
-        document.getElementById('updateTrainingResult').innerHTML =
-          `<div class="alert alert-warning">Please fill in all fields correctly.</div>`;
-        return;
-      }
-
+      showLoading();
+      
+      const trainingId = document.getElementById('trainingSelect').value;
       const updateData = {
-        StartDate: startDate,
-        EndDate: endDate,
-        TrainingStatus: trainingStatus
+        startDate: document.getElementById('updateStartDate').value,
+        endDate: document.getElementById('updateEndDate').value,
+        trainingStatus: parseInt(document.getElementById('updateTrainingStatus').value)
       };
 
-      fetch('/api/EmployeeTraining/update?id=' + encodeURIComponent(trainingId), {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updateData)
-      })
-      .then(response => {
-        if (!response.ok) {
-          if (response.status === 404) throw new Error('Training record not found.');
-          throw new Error('An error occurred while updating.');
-        }
-        return response.json();
-      })
-      .then(data => {
-        document.getElementById('updateTrainingResult').innerHTML =
-          `<div class="alert alert-success">Training updated successfully.</div>`;
-      })
-      .catch(error => {
-        document.getElementById('updateTrainingResult').innerHTML =
-          `<div class="alert alert-danger">${error.message}</div>`;
-      });
+      try {
+        const response = await fetch(`${apiBaseUrl}/Training/${trainingId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updateData)
+        });
+
+        if (!response.ok) throw new Error('Update failed');
+        
+        document.getElementById('updateTrainingResult').innerHTML = `
+          <div class="alert alert-success">Training updated successfully</div>
+        `;
+        loadTrainingsForDropdown();
+      } catch (error) {
+        document.getElementById('updateTrainingResult').innerHTML = `
+          <div class="alert alert-danger">${error.message}</div>
+        `;
+      }
+      hideLoading();
     });
 
-    // 3. Get Employee Trainings
-    document.getElementById('employeeTrainingsForm').addEventListener('submit', function(e) {
+    document.getElementById('employeeTrainingsForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const employeeId = document.getElementById('employeeIdInput').value.trim();
-      if (!employeeId) {
-        document.getElementById('employeeTrainingsResult').innerHTML =
-          `<div class="alert alert-warning">Please enter a valid Employee ID.</div>`;
-        return;
+      showLoading();
+      const employeeId = document.getElementById('employeeSelect').value;
+
+      try {
+        const response = await fetch(`${apiBaseUrl}/EmployeeTraining/employee/${employeeId}`);
+        if (!response.ok) throw new Error('No trainings found');
+        const data = await response.json();
+        
+        document.getElementById('employeeTrainingsResult').innerHTML = createTrainingTable(data);
+      } catch (error) {
+        document.getElementById('employeeTrainingsResult').innerHTML = `
+          <div class="alert alert-danger">${error.message}</div>
+        `;
       }
-      const url = '/api/EmployeeTraining/employee/' + encodeURIComponent(employeeId);
-      fetch(url)
-        .then(response => {
-          if (!response.ok) throw new Error('Employee trainings not found.');
-          return response.json();
-        })
-        .then(data => {
-          let html = '';
-          if (!data || data.length === 0) {
-            html = '<div class="alert alert-info">No trainings found for this employee.</div>';
-          } else {
-            html += `<div class="table-responsive">
-                      <table class="table table-bordered table-striped table-hover">
-                        <thead class="table-dark">
-                          <tr>
-                            <th>Training ID</th>
-                            <th>Training Name</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                          </tr>
-                        </thead>
-                        <tbody>`;
-            data.forEach(training => {
-              html += `<tr>
-                        <td>${training.trainingId || 'N/A'}</td>
-                        <td>${training.trainingName || 'N/A'}</td>
-                        <td>${formatDate(training.startDate)}</td>
-                        <td>${formatDate(training.endDate)}</td>
-                      </tr>`;
-            });
-            html += `</tbody></table></div>`;
-          }
-          document.getElementById('employeeTrainingsResult').innerHTML = html;
-        })
-        .catch(error => {
-          document.getElementById('employeeTrainingsResult').innerHTML =
-            `<div class="alert alert-danger">${error.message}</div>`;
-        });
+      hideLoading();
     });
 
-    // 4. Get Training Employees
-    document.getElementById('trainingEmployeesForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const trainingId = document.getElementById('trainingIdForEmployees').value.trim();
-      if (!trainingId) {
-        document.getElementById('trainingEmployeesResult').innerHTML =
-          `<div class="alert alert-warning">Please enter a valid Training ID.</div>`;
-        return;
-      }
-      const url = '/api/EmployeeTraining/training/' + encodeURIComponent(trainingId);
-      fetch(url)
-        .then(response => {
-          if (!response.ok) throw new Error('Training employees not found.');
-          return response.json();
-        })
-        .then(data => {
-          let html = '';
-          if (!data || data.length === 0) {
-            html = '<div class="alert alert-info">No employees found for this training.</div>';
-          } else {
-            html += `<div class="table-responsive">
-                      <table class="table table-bordered table-striped table-hover">
-                        <thead class="table-dark">
-                          <tr>
-                            <th>Employee ID</th>
-                            <th>Employee Name</th>
-                            <th>Training Name</th>
-                          </tr>
-                        </thead>
-                        <tbody>`;
-            data.forEach(item => {
-              html += `<tr>
-                        <td>${item.employeeId || 'N/A'}</td>
-                        <td>${item.employeeName || 'N/A'}</td>
-                        <td>${item.trainingName || 'N/A'}</td>
-                      </tr>`;
-            });
-            html += `</tbody></table></div>`;
-          }
-          document.getElementById('trainingEmployeesResult').innerHTML = html;
-        })
-        .catch(error => {
-          document.getElementById('trainingEmployeesResult').innerHTML =
-            `<div class="alert alert-danger">${error.message}</div>`;
-        });
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      loadTrainingsForDropdown();
+      loadEmployeesForDropdown();
     });
 
-    // 5. Get Employees by Training
-    document.getElementById('employeesByTrainingForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const trainingId = document.getElementById('trainingIdForEmpByTraining').value.trim();
-      if (!trainingId) {
-        document.getElementById('employeesByTrainingResult').innerHTML =
-          `<div class="alert alert-warning">Please enter a valid Training ID.</div>`;
-        return;
-      }
-      const url = '/api/Training/by-training/' + encodeURIComponent(trainingId);
-      fetch(url)
-        .then(response => {
-          if (!response.ok) throw new Error('No employees found for this training.');
-          return response.json();
-        })
-        .then(data => {
-          let html = '';
-          if (!data || data.length === 0) {
-            html = '<div class="alert alert-info">No employees found for this training.</div>';
-          } else {
-            html += `<div class="table-responsive">
-                      <table class="table table-bordered table-striped table-hover">
-                        <thead class="table-dark">
-                          <tr>
-                            <th>Training ID</th>
-                            <th>Training Name</th>
-                          </tr>
-                        </thead>
-                        <tbody>`;
-            data.forEach(item => {
-              html += `<tr>
-                        <td>${item.trainingId || 'N/A'}</td>
-                        <td>${item.trainingName || 'N/A'}</td>
-                      </tr>`;
-            });
-            html += `</tbody></table></div>`;
-          }
-          document.getElementById('employeesByTrainingResult').innerHTML = html;
-        })
-        .catch(error => {
-          document.getElementById('employeesByTrainingResult').innerHTML =
-            `<div class="alert alert-danger">${error.message}</div>`;
-        });
-    });
+    // Refresh buttons
+    document.getElementById('refreshTrainingsBtn').addEventListener('click', loadTrainingsForDropdown);
+    document.getElementById('refreshEmployeesBtn').addEventListener('click', loadEmployeesForDropdown);
   </script>
-
-  <!-- Bootstrap 5 JS Bundle (includes Popper) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

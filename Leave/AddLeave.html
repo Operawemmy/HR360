@@ -1,130 +1,321 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Add Leave Request</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
     <style>
         body {
-            padding-top: 50px;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
         }
-        .container {
-            max-width: 600px;
+
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #c31432 0%, #240b36 100%);
+            opacity: 0.8;
+            z-index: -1;
+        }
+
+        .pattern-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .main-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .content-wrapper {
+            width: 100%;
+            max-width: 550px;
+        }
+
+        .header-container {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header-title {
+            color: #fff;
+            font-weight: 700;
+            text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+            margin-bottom: 0.5rem;
+        }
+
+        .header-subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 400;
+        }
+
+        .card-custom {
+            border: none;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(5px);
+            background-color: rgba(255, 255, 255, 0.95);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card-custom:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #ff512f, #dd2476);
+            padding: 1.5rem;
+            border-bottom: none;
+        }
+
+        .card-header h4 {
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .card-body {
+            padding: 2.5rem;
+        }
+
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #444;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e1e5ea;
+            background-color: #f8fafc;
+            box-shadow: none;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #dd2476;
+            box-shadow: 0 0 0 0.25rem rgba(221, 36, 118, 0.25);
+            background-color: #fff;
+        }
+
+        .btn {
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff512f, #dd2476);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #e64a2a, #c9216b);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(221, 36, 118, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #8e9eab, #eef2f3);
+            border: none;
+            color: #444;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #7d8b96, #dce4e6);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(142, 158, 171, 0.4);
+            color: #333;
+        }
+
+        .alert {
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            border: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .alert-success {
+            background-color: rgba(57, 218, 138, 0.15);
+            color: #0b754d;
+        }
+
+        .alert-danger {
+            background-color: rgba(241, 65, 108, 0.15);
+            color: #b81b45;
+        }
+
+        .alert-warning {
+            background-color: rgba(255, 193, 7, 0.15);
+            color: #856404;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .cancel-btn {
+            flex-grow: 1;
+        }
+
+        .submit-btn {
+            flex-grow: 2;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2 class="text-center">Add Leave Request</h2>
-        <form id="leaveForm" method="POST">
-            <div class="form-group">
-                <label for="employeeId">Employee</label>
-                <select class="form-control" id="employeeId" required>
-                    <option value="" disabled selected>Select Employee</option>
-                </select>
+  <!-- Background Elements -->
+  <div class="background-container"></div>
+  <div class="pattern-overlay"></div>
+
+  <div class="main-container">
+    <div class="content-wrapper">
+      <!-- Header -->
+      <div class="header-container animate-in">
+        <h1 class="header-title display-5">Add Leave Request</h1>
+        <p class="header-subtitle">Submit leave requests for employees</p>
+      </div>
+
+      <!-- Add Leave Request Form Card -->
+      <div class="card card-custom animate-in" style="animation-delay: 0.2s;">
+        <div class="card-header text-white text-center">
+          <h4><i class="fas fa-calendar-plus me-2"></i>Add Leave Request</h4>
+        </div>
+        <div class="card-body">
+          <form id="leaveForm">
+            <div class="mb-4">
+              <label for="employeeId" class="form-label">Employee <span class="text-danger">*</span></label>
+              <select class="form-control" id="employeeId" required>
+                <option value="" disabled selected>Select Employee</option>
+              </select>
             </div>
-            <div class="form-group">
-                <label for="leaveType">Leave Type</label>
-                <select class="form-control" id="leaveType" required>
-                    <option value="1">Compassionate</option>
-                    <option value="2">Bereavement</option>
-                    <option value="3">Sick Leave</option>
-                    <option value="4">Paternity</option>
-                    <option value="5">Maternity</option>
-                    <option value="6">Annual Leave</option>
-                    <option value="7">Dependents</option>
-                    <option value="8">Study</option>
-                    <option value="9">Sabbatical</option>
-                </select>
+            <div class="mb-4">
+              <label for="leaveType" class="form-label">Leave Type <span class="text-danger">*</span></label>
+              <select class="form-control" id="leaveType" required>
+                <option value="1">Compassionate</option>
+                <option value="2">Bereavement</option>
+                <option value="3">Sick Leave</option>
+                <option value="4">Paternity</option>
+                <option value="5">Maternity</option>
+                <option value="6">Annual Leave</option>
+                <option value="7">Dependents</option>
+                <option value="8">Study</option>
+                <option value="9">Sabbatical</option>
+              </select>
             </div>
-            <div class="form-group">
-                <label for="startDate">Start Date</label>
-                <input type="date" class="form-control" id="startDate" required>
+            <div class="mb-4">
+              <label for="startDate" class="form-label">Start Date <span class="text-danger">*</span></label>
+              <input type="date" class="form-control" id="startDate" required />
             </div>
-            <div class="form-group">
-                <label for="endDate">End Date</label>
-                <input type="date" class="form-control" id="endDate" required>
+            <div class="mb-4">
+              <label for="endDate" class="form-label">End Date <span class="text-danger">*</span></label>
+              <input type="date" class="form-control" id="endDate" required />
             </div>
-            <div class="form-group">
-                <label for="approverComments">Approver Comments</label>
-                <textarea class="form-control" id="approverComments" rows="3" placeholder="Enter any comments..." required></textarea>
+            <div class="mb-4">
+              <label for="approverComments" class="form-label">Approver Comments <span class="text-danger">*</span></label>
+              <textarea class="form-control" id="approverComments" rows="3" placeholder="Enter any comments..." required></textarea>
             </div>
-            <button type="submit" class="btn btn-primary btn-block">Submit Leave Request</button>
-        </form>
-        <div id="responseMessage" class="alert mt-4" style="display: none;"></div>
+
+            <div class="action-buttons">
+              <button type="button" id="cancelBtn" class="btn btn-secondary cancel-btn">
+                <i class="fas fa-times me-2"></i>Cancel
+              </button>
+              <button type="submit" class="btn btn-primary submit-btn">
+                <i class="fas fa-check me-2"></i>Submit Leave Request
+              </button>
+            </div>
+          </form>
+
+          <div id="responseMessage" class="mt-4"></div>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <script>
-        // Function to fetch employees and populate the employee dropdown
-        function loadEmployees() {
-            fetch('https://localhost:7136/api/Employees')  // Fetch employees from API
-                .then(response => response.json())
-                .then(data => {
-                    const employeeSelect = document.getElementById('employeeId');
-                    data.forEach(employee => {
-                        const option = document.createElement('option');
-                        option.value = employee.employeeId; // UUID should be used here
-                        option.textContent = `${employee.firstName} ${employee.lastName}`; // Full name of employee
-                        employeeSelect.appendChild(option);
-                    });
-                })
-                .catch(error => {
-                    console.error('Error loading employees:', error);
-                });
-        }
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function loadEmployees() {
+      fetch('https://localhost:7136/api/Employees')
+        .then(response => response.json())
+        .then(data => {
+          const employeeSelect = document.getElementById('employeeId');
+          data.forEach(employee => {
+            const option = document.createElement('option');
+            option.value = employee.employeeId;
+            option.textContent = `${employee.firstName} ${employee.lastName}`;
+            employeeSelect.appendChild(option);
+          });
+        })
+        .catch(error => console.error('Error loading employees:', error));
+    }
 
-        // Call the function to load employees when the page is ready
-        window.onload = loadEmployees;
+    window.onload = loadEmployees;
 
-        // Handle the form submission
-        document.getElementById('leaveForm').addEventListener('submit', function (event) {
-            event.preventDefault(); // Prevent default form submission
+    document.getElementById('leaveForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      
+      const leaveData = {
+        leaveType: parseInt(document.getElementById('leaveType').value),
+        employeeId: document.getElementById('employeeId').value,
+        startDate: document.getElementById('startDate').value,
+        endDate: document.getElementById('endDate').value,
+        status: 1,
+        requestDate: new Date().toISOString().split('T')[0],
+        approverComments: document.getElementById('approverComments').value
+      };
 
-            const leaveData = {
-                leaveType: parseInt(document.getElementById('leaveType').value),
-                employeeId: document.getElementById('employeeId').value, // The UUID of the employee
-                startDate: document.getElementById('startDate').value, 
-                endDate: document.getElementById('endDate').value,
-                status: 1, // Set status as numeric "1" (Pending)
-                requestDate: new Date().toISOString().split('T')[0], // Get today's date in yyyy-MM-dd format
-                approverComments: document.getElementById('approverComments').value
-            };
-
-            fetch('https://localhost:7136/api/Leaves', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(leaveData)
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to submit leave request');
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Handle success response
-                const messageDiv = document.getElementById('responseMessage');
-                messageDiv.classList.remove('alert-danger');
-                messageDiv.classList.add('alert-success');
-                messageDiv.innerHTML = `Leave Request Submitted Successfully. Leave ID: ${data.leaveId}`;
-                messageDiv.style.display = 'block';
-            })
-            .catch(error => {
-                // Handle error response
-                const messageDiv = document.getElementById('responseMessage');
-                messageDiv.classList.remove('alert-success');
-                messageDiv.classList.add('alert-danger');
-                messageDiv.innerHTML = `Error: ${error.message}`;
-                messageDiv.style.display = 'block';
-            });
+      try {
+        const response = await fetch('https://localhost:7136/api/Leaves', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(leaveData)
         });
-    </script>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        const result = await response.json();
+
+        const messageDiv = document.getElementById('responseMessage');
+        messageDiv.classList.add('alert', 'alert-success');
+        messageDiv.textContent = `Leave Request Submitted Successfully. Leave ID: ${result.leaveId}`;
+      } catch (error) {
+        const messageDiv = document.getElementById('responseMessage');
+        messageDiv.classList.add('alert', 'alert-danger');
+        messageDiv.textContent = `Error: ${error.message}`;
+      }
+    });
+
+    document.getElementById('cancelBtn').addEventListener('click', function () {
+      document.getElementById('leaveForm').reset();
+      document.getElementById('responseMessage').textContent = '';
+    });
+  </script>
 </body>
 </html>

@@ -2,247 +2,398 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HR360 APP - Department Dashboard</title>
-  <!-- Bootstrap 5 CSS CDN -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Bootstrap Icons CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <style>
     body {
-      background-color: #f8f9fa;
-      scroll-behavior: smooth;
+      font-family: 'Poppins', sans-serif;
+      background-color: #f0f2f5;
+      color: #333;
     }
-    .dashboard-title {
-      background: linear-gradient(45deg, #007bff, #6610f2);
-      color: #fff;
-      padding: 30px;
-      border-radius: 10px;
-      margin-bottom: 40px;
+
+    .background-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      opacity: 0.8;
+      z-index: -1;
+    }
+
+    .pattern-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      z-index: -1;
+      opacity: 0.3;
+    }
+
+    .main-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .content-wrapper {
+      width: 100%;
+      max-width: 750px;
+    }
+
+    .header-container {
       text-align: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      margin-bottom: 2rem;
     }
-    .box-card {
-      cursor: pointer;
-      transition: transform 0.2s ease;
+
+    .header-title {
+      color: #fff;
+      font-weight: 700;
+      text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+      margin-bottom: 0.5rem;
     }
-    .box-card:hover {
-      transform: scale(1.03);
+
+    .header-subtitle {
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 400;
     }
-    .section {
-      display: none;
-      margin-top: 30px;
+
+    .card-custom {
+      border: none;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(5px);
+      background-color: rgba(255, 255, 255, 0.95);
+      transition: transform 0.3s, box-shadow 0.3s;
+      height: 250px; /* Increased card height */
     }
-    .section.active {
-      display: block;
+
+    .card-custom:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
     }
+
+    .card-header {
+      background: linear-gradient(135deg, #007bff, #6610f2);
+      padding: 1.5rem;
+      border-bottom: none;
+    }
+
+    .card-header h4 {
+      font-weight: 600;
+      margin: 0;
+      color: #fff;
+    }
+
+    .card-body {
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .card-body h5 {
+      font-size: 1.25rem;
+      font-weight: 500;
+    }
+
+    .form-label {
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: #444;
+    }
+
+    .form-control, .form-select {
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      border: 1px solid #e1e5ea;
+      background-color: #f8fafc;
+      box-shadow: none;
+      transition: all 0.3s;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+      background-color: #fff;
+    }
+
+    .btn-custom {
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      transition: all 0.3s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #007bff, #6610f2);
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #0056b3, #4e14b7);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+    }
+
+    .result-container {
+      margin-top: 20px;
+    }
+
     .section-title {
       padding: 15px;
       border-bottom: 2px solid #ddd;
       margin-bottom: 20px;
     }
-    .result-container {
-      margin-top: 20px;
+
+    .section {
+      display: none;
     }
+
+    .active {
+      display: block;
+    }
+
+    .table-container {
+      margin-top: 20px;
+      overflow-x: auto;
+    }
+
+    .table th, .table td {
+      vertical-align: middle;
+    }
+
+    .text-nowrap {
+      white-space: nowrap;
+    }
+
   </style>
 </head>
 <body>
-  <div class="container my-5">
-    <!-- Dashboard Title -->
-    <div class="dashboard-title">
-      <h1 class="display-4">Department Dashboard</h1>
-      <p class="lead">Manage and search department records</p>
-    </div>
-    
-    <!-- Clickable Boxes -->
-    <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
-      <!-- Box 1: Department by ID -->
-      <div class="col">
-        <div class="card box-card text-white bg-success h-100" onclick="showSection('deptByIdSection')">
-          <div class="card-body text-center">
-            <i class="bi bi-search" style="font-size: 3rem;"></i>
-            <h5 class="card-title mt-3">By Department ID</h5>
-            <p class="card-text">Search department by GUID.</p>
-          </div>
-        </div>
-      </div>
-      <!-- Box 2: All Departments -->
-      <div class="col">
-        <div class="card box-card text-white bg-primary h-100" onclick="showSection('allDeptsSection')">
-          <div class="card-body text-center">
-            <i class="bi bi-card-list" style="font-size: 3rem;"></i>
-            <h5 class="card-title mt-3">All Departments</h5>
-            <p class="card-text">View all departments.</p>
-          </div>
-        </div>
-      </div>
-      <!-- Box 3: Department by Name -->
-      <div class="col">
-        <div class="card box-card text-white bg-danger h-100" onclick="showSection('deptByNameSection')">
-          <div class="card-body text-center">
-            <i class="bi bi-bookmark-star" style="font-size: 3rem;"></i>
-            <h5 class="card-title mt-3">By Department Name</h5>
-            <p class="card-text">Search by department name.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Sections: Only one section visible at a time -->
-    <div id="sectionsContainer">
-      <!-- Section 1: Department by ID -->
-      <div id="deptByIdSection" class="section active">
-        <h2 class="section-title text-success">Search Department by ID</h2>
-        <form id="deptByIdForm">
-          <div class="mb-3">
-            <label for="departmentIdInput" class="form-label">Department ID</label>
-            <input type="text" class="form-control" id="departmentIdInput" placeholder="Enter Department ID (GUID)" required>
-          </div>
-          <div class="d-grid">
-            <button type="submit" class="btn btn-success btn-lg">Search Department</button>
-          </div>
-        </form>
-        <div id="deptByIdResult" class="result-container"></div>
+  <!-- Background Elements -->
+  <div class="background-container"></div>
+  <div class="pattern-overlay"></div>
+  
+  <div class="main-container">
+    <div class="content-wrapper">
+      <!-- Header -->
+      <div class="header-container">
+        <h1 class="header-title display-5">Department Dashboard</h1>
+        <p class="header-subtitle">Manage and search department records</p>
       </div>
       
-      <!-- Section 2: All Departments -->
-      <div id="allDeptsSection" class="section">
-        <h2 class="section-title text-primary">All Departments</h2>
-        <div class="text-center">
-          <button id="loadDeptsBtn" class="btn btn-primary btn-lg">Load All Departments</button>
+      <!-- Department Dashboard Cards -->
+      <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+        <div class="col">
+          <div class="card card-custom text-white bg-primary h-100" onclick="showSection('deptByIdSection')">
+            <div class="card-body text-center">
+              <i class="bi bi-search" style="font-size: 3rem;"></i>
+              <h5 class="card-title mt-3">By Department ID</h5>
+            </div>
+          </div>
         </div>
-        <div id="allDeptsResult" class="result-container"></div>
+        <div class="col">
+          <div class="card card-custom text-white bg-success h-100" onclick="showSection('allDeptsSection')">
+            <div class="card-body text-center">
+              <i class="bi bi-card-list" style="font-size: 3rem;"></i>
+              <h5 class="card-title mt-3">All Departments</h5>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card card-custom text-white bg-danger h-100" onclick="showSection('deptByNameSection')">
+            <div class="card-body text-center">
+              <i class="bi bi-bookmark-star" style="font-size: 3rem;"></i>
+              <h5 class="card-title mt-3">By Department Name</h5>
+            </div>
+          </div>
+        </div>
       </div>
-      
-      <!-- Section 3: Department by Name -->
-      <div id="deptByNameSection" class="section">
-        <h2 class="section-title text-danger">Search Department by Name</h2>
-        <form id="deptByNameForm">
-          <div class="mb-3">
-            <label for="departmentNameInput" class="form-label">Department Name</label>
-            <input type="text" class="form-control" id="departmentNameInput" placeholder="Enter Department Name" required>
+
+      <div id="sectionsContainer">
+        <div id="deptByIdSection" class="section">
+          <h2 class="section-title text-primary">Search Department by ID</h2>
+          <form id="deptByIdForm">
+            <div class="mb-3">
+              <label for="departmentIdSelect" class="form-label">Select Department</label>
+              <select class="form-select" id="departmentIdSelect" required>
+                <option value="">Loading departments...</option>
+              </select>
+            </div>
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary btn-lg">Search</button>
+            </div>
+          </form>
+          <div id="deptByIdResult" class="table-container"></div>
+        </div>
+
+        <div id="allDeptsSection" class="section">
+          <h2 class="section-title text-success">All Departments</h2>
+          <div class="text-center">
+            <button id="loadDeptsBtn" class="btn btn-success btn-lg">Load All Departments</button>
           </div>
-          <div class="d-grid">
-            <button type="submit" class="btn btn-danger btn-lg">Search Department</button>
-          </div>
-        </form>
-        <div id="deptByNameResult" class="result-container"></div>
+          <div id="allDeptsResult" class="table-container"></div>
+        </div>
+
+        <div id="deptByNameSection" class="section">
+          <h2 class="section-title text-danger">Search Department by Name</h2>
+          <form id="deptByNameForm">
+            <div class="mb-3">
+              <label for="departmentNameInput" class="form-label">Department Name</label>
+              <input type="text" class="form-control" id="departmentNameInput" placeholder="Enter Department Name" required>
+            </div>
+            <div class="d-grid">
+              <button type="submit" class="btn btn-danger btn-lg">Search</button>
+            </div>
+          </form>
+          <div id="deptByNameResult" class="table-container"></div>
+        </div>
       </div>
     </div>
   </div>
-  
-  <!-- JavaScript for toggling sections and handling API calls -->
+
   <script>
-    // Show only the selected section
     function showSection(sectionId) {
-      const sections = document.querySelectorAll('.section');
-      sections.forEach(sec => sec.classList.remove('active'));
-      const selectedSection = document.getElementById(sectionId);
-      if (selectedSection) {
-        selectedSection.classList.add('active');
-        selectedSection.scrollIntoView({ behavior: 'smooth' });
+      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+      document.getElementById(sectionId).classList.add('active');
+      document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+      if (sectionId === 'deptByIdSection') {
+        loadDepartmentsDropdown();
       }
     }
-    
-    // 1. Get Department by ID
-    document.getElementById('deptByIdForm').addEventListener('submit', function(e) {
+
+    async function loadDepartmentsDropdown() {
+      try {
+        const response = await fetch("https://localhost:7136/api/Departments");
+        if (!response.ok) throw new Error("Failed to fetch departments.");
+        const departments = await response.json();
+        const dropdown = document.getElementById("departmentIdSelect");
+        dropdown.innerHTML = '<option value="">Select a department</option>';
+        departments.forEach(dept => {
+          dropdown.innerHTML += `<option value="${dept.departmentId}">${dept.departmentName}</option>`;
+        });
+      } catch (error) {
+        console.error("Error loading departments:", error);
+      }
+    }
+
+    document.getElementById("deptByIdForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const deptId = document.getElementById('departmentIdInput').value.trim();
+      const deptId = document.getElementById("departmentIdSelect").value;
+      const resultContainer = document.getElementById("deptByIdResult");
       if (!deptId) {
-        document.getElementById('deptByIdResult').innerHTML = `<div class="alert alert-warning">Please enter a valid Department ID.</div>`;
+        resultContainer.innerHTML = "<p>Please select a department.</p>";
         return;
       }
-      fetch('https://localhost:7136/api/Departments/' + encodeURIComponent(deptId))
-        .then(response => {
-          if (!response.ok) throw new Error('Department not found.');
-          return response.json();
-        })
-        .then(data => {
-          let html = `<div class="card">
-                        <div class="card-body">
-                          <h5 class="card-title">Department Details</h5>
-                          <p><strong>ID:</strong> ${data.departmentId || 'N/A'}</p>
-                          <p><strong>Name:</strong> ${data.departmentName || 'N/A'}</p>
-                          <p><strong>Description:</strong> ${data.description || 'N/A'}</p>
-                        </div>
-                      </div>`;
-          document.getElementById('deptByIdResult').innerHTML = html;
-        })
-        .catch(error => {
-          document.getElementById('deptByIdResult').innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
-        });
+      try {
+        const response = await fetch(`https://localhost:7136/api/Departments/${deptId}`);
+        const dept = await response.json();
+        resultContainer.innerHTML = `
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>Department ID</th>
+                <th>Department Name</th>
+                <th>Description</th>
+                <th>Manager Name</th>
+                <th>Manager Email</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-nowrap">${dept.departmentId}</td>
+                <td>${dept.departmentName}</td>
+                <td>${dept.description}</td>
+                <td>${dept.departmentManagerName || "N/A"}</td>
+                <td>${dept.departmentManagerEmail || "N/A"}</td>
+              </tr>
+            </tbody>
+          </table>
+        `;
+      } catch (error) {
+        resultContainer.innerHTML = "<p>Error fetching department data.</p>";
+      }
     });
-    
-    // 2. Get All Departments
-    document.getElementById('loadDeptsBtn').addEventListener('click', function() {
-      fetch('https://localhost:7136/api/Departments')
-        .then(response => {
-          if (!response.ok) throw new Error('Failed to fetch departments.');
-          return response.json();
-        })
-        .then(data => {
-          let html = '';
-          if (!data || data.length === 0) {
-            html = `<div class="alert alert-info">No departments found.</div>`;
-          } else {
-            html += `<div class="table-responsive">
-                      <table class="table table-bordered table-striped table-hover">
-                        <thead class="table-dark">
-                          <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Description</th>
-                          </tr>
-                        </thead>
-                        <tbody>`;
-            data.forEach(dept => {
-              html += `<tr>
-                        <td>${dept.departmentId || 'N/A'}</td>
-                        <td>${dept.departmentName || 'N/A'}</td>
-                        <td>${dept.description || 'N/A'}</td>
-                      </tr>`;
-            });
-            html += `</tbody></table></div>`;
-          }
-          document.getElementById('allDeptsResult').innerHTML = html;
-        })
-        .catch(error => {
-          document.getElementById('allDeptsResult').innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
-        });
+
+    document.getElementById("loadDeptsBtn").addEventListener("click", async () => {
+      const resultContainer = document.getElementById("allDeptsResult");
+      try {
+        const response = await fetch("https://localhost:7136/api/Departments");
+        const departments = await response.json();
+        resultContainer.innerHTML = `
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>Department ID</th>
+                <th>Department Name</th>
+                <th>Description</th>
+                <th>Manager Name</th>
+                <th>Manager Email</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${departments.map(dept => `
+                <tr>
+                  <td class="text-nowrap">${dept.departmentId}</td>
+                  <td>${dept.departmentName}</td>
+                  <td>${dept.description}</td>
+                  <td>${dept.departmentManagerName || "N/A"}</td>
+                  <td>${dept.departmentManagerEmail || "N/A"}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        `;
+      } catch (error) {
+        resultContainer.innerHTML = "<p>Error loading departments.</p>";
+      }
     });
-    
-    // 3. Get Department by Name
-    document.getElementById('deptByNameForm').addEventListener('submit', function(e) {
+
+    document.getElementById("deptByNameForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const deptName = document.getElementById('departmentNameInput').value.trim();
+      const deptName = document.getElementById("departmentNameInput").value;
+      const resultContainer = document.getElementById("deptByNameResult");
       if (!deptName) {
-        document.getElementById('deptByNameResult').innerHTML = `<div class="alert alert-warning">Please enter a valid Department Name.</div>`;
+        resultContainer.innerHTML = "<p>Please enter a department name.</p>";
         return;
       }
-      fetch('https://localhost:7136/api/Departments/GetByName/' + encodeURIComponent(deptName))
-        .then(response => {
-          if (!response.ok) throw new Error(`Department with name '${deptName}' not found.`);
-          return response.json();
-        })
-        .then(data => {
-          let html = `<div class="card">
-                        <div class="card-body">
-                          <h5 class="card-title">Department Details</h5>
-                          <p><strong>ID:</strong> ${data.departmentId || 'N/A'}</p>
-                          <p><strong>Name:</strong> ${data.departmentName || 'N/A'}</p>
-                          <p><strong>Description:</strong> ${data.description || 'N/A'}</p>
-                        </div>
-                      </div>`;
-          document.getElementById('deptByNameResult').innerHTML = html;
-        })
-        .catch(error => {
-          document.getElementById('deptByNameResult').innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
-        });
+      try {
+        const response = await fetch(`https://localhost:7136/api/Departments/GetByName/${encodeURIComponent(deptName)}`);
+        const dept = await response.json();
+        resultContainer.innerHTML = `
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>Department ID</th>
+                <th>Department Name</th>
+                <th>Description</th>
+                <th>Manager Name</th>
+                <th>Manager Email</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-nowrap">${dept.departmentId}</td>
+                <td>${dept.departmentName}</td>
+                <td>${dept.description}</td>
+                <td>${dept.departmentManagerName || "N/A"}</td>
+                <td>${dept.departmentManagerEmail || "N/A"}</td>
+              </tr>
+            </tbody>
+          </table>
+        `;
+      } catch (error) {
+        resultContainer.innerHTML = "<p>Error fetching department data.</p>";
+      }
     });
   </script>
-
-  <!-- Bootstrap 5 JS Bundle (includes Popper) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -3,33 +3,44 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Product - Tasks</title>
+  <title>Employee - Tasks</title>
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <!-- Font Awesome CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
   <!-- jwt-decode library -->
   <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
   <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --card-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      --card-hover-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    }
+
     /* Basic reset & full height */
     html, body {
       height: 100%;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Poppins', sans-serif;
     }
+
     /* Flex wrapper to push footer to the bottom */
     .wrapper {
       display: flex;
       flex-direction: column;
       min-height: 100vh;
     }
+
     /* Main content area takes the remaining space */
     .content {
       flex: 1;
-      padding-top: 60px; /* space for fixed navbar */
+      padding-top: 80px; /* Increased for better spacing */
     }
-    /* Background image with blur effect */
+
+    /* Background */
     body::before {
       content: "";
       position: fixed;
@@ -37,45 +48,184 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: url("../assets/img/employee.jpeg") no-repeat center center fixed;
-      background-size: cover;
-      opacity: 0.4;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
       z-index: -1;
     }
+
     /* Navbar styling */
     .navbar {
-      background-color: rgba(0, 0, 0, 0.75) !important;
+      background: var(--primary-gradient) !important;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     }
+
     .navbar-brand, .nav-link {
       color: #fff !important;
     }
+
     /* Styling for the back button */
     .back-btn {
       margin-right: 1rem;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      transition: all 0.3s;
     }
-    /* Container for dashboard cards */
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Page header styling */
+    .page-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding: 0 20px;
+    }
+
+    .page-header h1 {
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 0.5rem;
+      font-size: 2.2rem;
+    }
+
+    .page-header p {
+      color: #7f8c8d;
+      font-size: 1.1rem;
+    }
+
+    /* Dashboard cards container */
     .dashboard-container {
       margin-top: 20px;
+      padding: 20px;
     }
-    /* Styling for each card */
+
+    /* Card styling */
     .dashboard-card {
-      transition: transform 0.2s;
+      transition: all 0.3s ease;
       cursor: pointer;
+      border: none;
+      border-radius: 15px;
+      box-shadow: var(--card-shadow);
+      overflow: hidden;
+      position: relative;
+      height: 220px;
+      margin-top: 30px;
+      color: white;
     }
+
+    .dashboard-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+    }
+
     .dashboard-card:hover {
-      transform: translateY(-5px);
+      transform: translateY(-10px);
+      box-shadow: var(--card-hover-shadow);
     }
+
     .card-icon {
-      font-size: 3rem;
-      color: #2c3e50;
+      font-size: 2.8rem;
+      margin-bottom: 1rem;
+      text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease;
     }
+
+    .dashboard-card:hover .card-icon {
+      transform: scale(1.1);
+    }
+
+    .card-body {
+      padding: 2rem;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .card-title {
+      font-weight: 600;
+      margin-bottom: 0.8rem;
+      font-size: 1.3rem;
+    }
+
+    .card-text {
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.9);
+      line-height: 1.5;
+    }
+
+    /* Card color schemes */
+    .card-add {
+      background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%);
+    }
+    .card-delete {
+      background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+    }
+    .card-list {
+      background: linear-gradient(135deg, #4776E6 0%, #8E54E9 100%);
+    }
+    .card-update {
+      background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    }
+
     /* Footer styling */
     footer {
-      background-color: #2c3e50;
-      color: #aaa;
+      background: var(--primary-gradient);
+      color: rgba(255, 255, 255, 0.8);
       text-align: center;
-      padding: 10px 0;
-      font-weight: normal;
+      padding: 15px 0;
+      font-weight: 300;
+      margin-top: 40px;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .dashboard-card {
+      animation: fadeInUp 0.6s ease forwards;
+      opacity: 0;
+    }
+
+    /* Staggered animations for cards */
+    .dashboard-card:nth-child(1) { animation-delay: 0.1s; }
+    .dashboard-card:nth-child(2) { animation-delay: 0.2s; }
+    .dashboard-card:nth-child(3) { animation-delay: 0.3s; }
+    .dashboard-card:nth-child(4) { animation-delay: 0.4s; }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .dashboard-card {
+        height: 200px;
+      }
+      
+      .card-icon {
+        font-size: 2.2rem;
+      }
+      
+      .card-title {
+        font-size: 1.1rem;
+      }
+      
+      .page-header h1 {
+        font-size: 1.8rem;
+      }
     }
   </style>
 </head>
@@ -90,7 +240,7 @@
         </a>
         <!-- Logo linking to the homepage -->
         <a class="navbar-brand me-auto" href="../Dashboard.html">
-          <img src="../assets\img\Login.jpeg" alt="Logo" style="height:40px; margin-right:10px;">
+          <img src="../assets/img/Login.jpeg" alt="Logo" style="height:40px; margin-right:10px;">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -100,7 +250,6 @@
         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
           <ul class="navbar-nav">
             <li class="nav-item">
-              <!-- Adjust the path if your main dashboard is located elsewhere -->
               <a class="nav-link" href="../Dashboard.html">
                 <i class="fas fa-home"></i> Home
               </a>
@@ -110,50 +259,59 @@
       </div>
     </nav>
    
-    <!-- Main Content Area: Dashboard for Product Tasks -->
+    <!-- Main Content Area -->
     <main class="container dashboard-container content">
-      <div class="text-center mb-4">
-        <h1>Employees</h1>
-        <p>Select a task to proceed</p>
+      <div class="page-header">
+        <h1>Employee Management</h1>
+        <p>Select an action to manage employee records</p>
       </div>
-      <!-- Grid row with auto-sizing columns and centered alignment -->
+      
+      <!-- Grid row with cards -->
       <div class="row justify-content-center g-4">
         <!-- Add Employee-->
-        <div class="col-auto">
-          <div id="task-Add Employee" class="card dashboard-card" style="width: 25rem;" onclick="location.href='AddEmployee.html'">
-            <div class="card-body text-center">
-              <i class="fas fa-plus card-icon"></i>
-              <h5 class="card-title mt-3">Add Employee</h5>
+        <div class="col-lg-4 col-md-6 col-sm-12">
+          <div id="task-Add Employee" class="card dashboard-card card-add" onclick="location.href='AddEmployee.html'">
+            <div class="card-body">
+              <i class="fas fa-user-plus card-icon"></i>
+              <h5 class="card-title">Add Employee</h5>
+              <p class="card-text">Create new employee profiles and records</p>
             </div>
           </div>
         </div>
+        
         <!-- Delete Employee -->
-        <div class="col-auto">
-          <div id="task-Delete Employee" class="card dashboard-card" style="width: 25rem;" onclick="location.href='DeleteEmployee.html'">
-            <div class="card-body text-center">
-              <i class="fas fa-trash card-icon"></i>
-              <h5 class="card-title mt-3">Delete Employee</h5>
+        <div class="col-lg-4 col-md-6 col-sm-12">
+          <div id="task-Delete Employee" class="card dashboard-card card-delete" onclick="location.href='DeleteEmployee.html'">
+            <div class="card-body">
+              <i class="fas fa-user-minus card-icon"></i>
+              <h5 class="card-title">Delete Employee</h5>
+              <p class="card-text">Remove employee records from the system</p>
             </div>
           </div>
         </div>
+        
         <!-- Employees -->
-        <div class="col-auto">
-          <div id="task-Employees" class="card dashboard-card" style="width: 25rem;" onclick="location.href='Employees.html'">
-            <div class="card-body text-center">
-              <i class="fas fa-list card-icon"></i>
-              <h5 class="card-title mt-3">Employees</h5>
+        <div class="col-lg-4 col-md-6 col-sm-12">
+          <div id="task-Employees" class="card dashboard-card card-list" onclick="location.href='Employees.html'">
+            <div class="card-body">
+              <i class="fas fa-users card-icon"></i>
+              <h5 class="card-title">View Employees</h5>
+              <p class="card-text">Browse and manage all employee records</p>
             </div>
           </div>
         </div>
-         <!-- Update Employee -->
-         <div class="col-auto">
-            <div id="task-Update-Employee" class="card dashboard-card" style="width: 25rem;" onclick="location.href='UpdateEmployee.html'">
-              <div class="card-body text-center">
-                <i class="fas fa-list card-icon"></i>
-                <h5 class="card-title mt-3">Update Employee</h5>
-              </div>
+        
+        <!-- Update Employee -->
+        <div class="col-lg-4 col-md-6 col-sm-12">
+          <div id="task-Update-Employee" class="card dashboard-card card-update" onclick="location.href='UpdateEmployee.html'">
+            <div class="card-body">
+              <i class="fas fa-user-edit card-icon"></i>
+              <h5 class="card-title">Update Employee</h5>
+              <p class="card-text">Modify existing employee information</p>
             </div>
           </div>
+        </div>
+      </div>
     </main>
    
     <!-- Footer -->
@@ -165,7 +323,7 @@
   <!-- Bootstrap Bundle with Popper -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
  
-  <!-- Role-Based Task Access Script for Product Tasks -->
+  <!-- Role-Based Task Access Script -->
   <script>
     document.addEventListener("DOMContentLoaded", function() {
       // Retrieve and decode the JWT token to get the user's role
@@ -181,24 +339,21 @@
         }
       }
      
-      // Mapping of product task IDs to allowed roles.
-      // Use "*" to allow all users.
+      // Mapping of task IDs to allowed roles
       var taskAccess = {
-        "task-addEmployee":  ["Admin"],
-        "task-deleteEmployee":  ["Admin"],
-        "task-updateEmployee": ["Admin"],
-        "task-employees":   ["Admin", "Manager", "HrManager"],
+        "task-Add Employee": ["*"],
+        "task-Delete Employee": ["*"],
+        "task-Update-Employee": ["*"],
+        "task-Employees": ["*"],
       };
      
-      // Loop through each task in the mapping and hide tasks not allowed for the user.
+      // Loop through each task and hide if not allowed
       for (var taskId in taskAccess) {
         if (taskAccess.hasOwnProperty(taskId)) {
           var allowedRoles = taskAccess[taskId];
-          // If the wildcard "*" is present, allow the task for all users.
           if (allowedRoles.indexOf("*") !== -1) {
             continue;
           }
-          // Otherwise, if the user's role is not allowed, hide the task.
           if (allowedRoles.indexOf(userRole) === -1) {
             var elem = document.getElementById(taskId);
             if (elem) {
@@ -211,4 +366,3 @@
   </script>
 </body>
 </html>
- 

@@ -113,44 +113,44 @@
     <!-- Main Content Area: Dashboard for Product Tasks -->
     <main class="container dashboard-container content">
       <div class="text-center mb-4">
-        <h1>Employees</h1>
+        <h1>Performance Rating</h1>
         <p>Select a task to proceed</p>
       </div>
       <!-- Grid row with auto-sizing columns and centered alignment -->
       <div class="row justify-content-center g-4">
-        <!-- Add Employee-->
+        <!-- Add Rating-->
         <div class="col-auto">
-          <div id="task-Add Employee" class="card dashboard-card" style="width: 25rem;" onclick="location.href='AddEmployee.html'">
+          <div id="task-Add Rating" class="card dashboard-card" style="width: 25rem;" onclick="location.href='AddRating.html'">
             <div class="card-body text-center">
               <i class="fas fa-plus card-icon"></i>
-              <h5 class="card-title mt-3">Add Employee</h5>
+              <h5 class="card-title mt-3">Add Rating</h5>
             </div>
           </div>
         </div>
-        <!-- Delete Employee -->
+        <!-- Delete Rating -->
         <div class="col-auto">
-          <div id="task-Delete Employee" class="card dashboard-card" style="width: 25rem;" onclick="location.href='DeleteEmployee.html'">
+          <div id="task-Delete Rating" class="card dashboard-card" style="width: 25rem;" onclick="location.href='DeleteRating.html'">
             <div class="card-body text-center">
               <i class="fas fa-trash card-icon"></i>
-              <h5 class="card-title mt-3">Delete Employee</h5>
+              <h5 class="card-title mt-3">Delete Rating</h5>
             </div>
           </div>
         </div>
-        <!-- Employees -->
+        <!-- Ratings-->
         <div class="col-auto">
-          <div id="task-Employees" class="card dashboard-card" style="width: 25rem;" onclick="location.href='Employees.html'">
+          <div id="task-Ratings" class="card dashboard-card" style="width: 25rem;" onclick="location.href='Ratings.html'">
             <div class="card-body text-center">
               <i class="fas fa-list card-icon"></i>
-              <h5 class="card-title mt-3">Employees</h5>
+              <h5 class="card-title mt-3">Ratings</h5>
             </div>
           </div>
         </div>
-         <!-- Update Employee -->
+         <!-- Update Rating -->
          <div class="col-auto">
-            <div id="task-Update-Employee" class="card dashboard-card" style="width: 25rem;" onclick="location.href='UpdateEmployee.html'">
+            <div id="task-Update-Rating" class="card dashboard-card" style="width: 25rem;" onclick="location.href='UpdateRatings.html'">
               <div class="card-body text-center">
                 <i class="fas fa-list card-icon"></i>
-                <h5 class="card-title mt-3">Update Employee</h5>
+                <h5 class="card-title mt-3">Update Rating</h5>
               </div>
             </div>
           </div>
@@ -184,10 +184,10 @@
       // Mapping of product task IDs to allowed roles.
       // Use "*" to allow all users.
       var taskAccess = {
-        "task-addEmployee":  ["Admin"],
-        "task-deleteEmployee":  ["Admin"],
-        "task-updateEmployee": ["Admin"],
-        "task-employees":   ["Admin", "Manager", "HrManager"],
+        "task-addRating":  ["Admin"],
+        "task-deleteRating":  ["Admin"],
+        "task-updateRating": ["Admin"],
+        "task-ratings":   ["Admin", "Manager", "HrManager"],
       };
      
       // Loop through each task in the mapping and hide tasks not allowed for the user.

@@ -54,9 +54,40 @@
     .sample-section {
       margin-top: 40px;
     }
+    .spinner-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      visibility: hidden;
+    }
+    .spinner-overlay.active {
+      visibility: visible;
+    }
+    .debug-info {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #f8f9fa;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 0.9rem;
+    }
   </style>
 </head>
 <body>
+  <!-- Loading Spinner -->
+  <div class="spinner-overlay" id="loadingSpinner">
+    <div class="spinner-border text-light" style="width: 3rem; height: 3rem;" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
   <div class="container my-5">
     <!-- Dashboard Title -->
     <div class="dashboard-title">
@@ -82,7 +113,7 @@
           <div class="card-body text-center">
             <i class="bi bi-search" style="font-size: 3rem;"></i>
             <h5 class="card-title mt-3">By Employee ID</h5>
-            <p class="card-text">Search using Employee GUID.</p>
+            <p class="card-text">Search using Employee ID.</p>
           </div>
         </div>
       </div>
@@ -92,7 +123,7 @@
           <div class="card-body text-center">
             <i class="bi bi-building" style="font-size: 3rem;"></i>
             <h5 class="card-title mt-3">By Department</h5>
-            <p class="card-text">Search using Department GUID.</p>
+            <p class="card-text">Search using Department.</p>
           </div>
         </div>
       </div>
@@ -124,8 +155,16 @@
         <h2 class="section-title text-success">Search Employee by ID</h2>
         <form id="employeeByIdForm">
           <div class="mb-3">
-            <label for="employeeIdInput" class="form-label">Employee ID</label>
-            <input type="text" class="form-control" id="employeeIdInput" placeholder="Enter Employee ID (GUID)" required>
+            <label for="employeeIdSelect" class="form-label">Select Employee</label>
+            <select class="form-select" id="employeeIdSelect" required>
+              <option value="">Select an employee...</option>
+              <!-- Options will be loaded dynamically -->
+            </select>
+            <div class="mt-2">
+              <button type="button" id="refreshEmployeesBtn" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-clockwise"></i> Refresh Employee List
+              </button>
+            </div>
           </div>
           <div class="d-grid">
             <button type="submit" class="btn btn-success btn-lg">Search Employee</button>
@@ -136,11 +175,19 @@
       
       <!-- Section 3: Employee by Department -->
       <div id="employeeByDeptSection" class="section">
-        <h2 class="section-title text-danger">Search Employee by Department ID</h2>
+        <h2 class="section-title text-danger">Search Employee by Department</h2>
         <form id="employeeByDeptForm">
           <div class="mb-3">
-            <label for="departmentIdInput" class="form-label">Department ID</label>
-            <input type="text" class="form-control" id="departmentIdInput" placeholder="Enter Department ID (GUID)" required>
+            <label for="departmentIdSelect" class="form-label">Select Department</label>
+            <select class="form-select" id="departmentIdSelect" required>
+              <option value="">Select a department...</option>
+              <!-- Options will be loaded dynamically -->
+            </select>
+            <div class="mt-2">
+              <button type="button" id="refreshDepartmentsBtn" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-clockwise"></i> Refresh Department List
+              </button>
+            </div>
           </div>
           <div class="d-grid">
             <button type="submit" class="btn btn-danger btn-lg">Search Employee</button>
@@ -164,10 +211,27 @@
         <div id="employeeByNumberResult" class="result-container"></div>
       </div>
     </div>
+  </div>
+  
   <!-- Bootstrap 5 JS Bundle (includes Popper) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   
   <script>
+    // Global variables
+    let allEmployees = [];
+    let allDepartments = [];
+    const apiBaseUrl = 'https://localhost:7136/api';
+    
+    // Function to show loading spinner
+    function showLoading() {
+      document.getElementById('loadingSpinner').classList.add('active');
+    }
+    
+    // Function to hide loading spinner
+    function hideLoading() {
+      document.getElementById('loadingSpinner').classList.remove('active');
+    }
+    
     // Function to show only the selected section and hide others
     function showSection(sectionId) {
       const sections = document.querySelectorAll('.section');
@@ -176,47 +240,239 @@
       if (selectedSection) {
         selectedSection.classList.add('active');
         selectedSection.scrollIntoView({ behavior: 'smooth' });
+        
+        // Load employees for dropdown if needed
+        if (sectionId === 'employeeByIdSection') {
+          loadEmployeesForDropdown();
+        }
+        
+        // Load departments for dropdown if needed
+        if (sectionId === 'employeeByDeptSection') {
+          loadDepartmentsForDropdown();
+        }
       }
     }
 
-    // 1. Get All Employees
-    document.getElementById('loadEmployeesBtn').addEventListener('click', function() {
-      fetch('https://localhost:7136/api/Employees')
+    // Function to load employees for dropdown
+    function loadEmployeesForDropdown() {
+      showLoading();
+      
+      // First try to get all employees using the standard endpoint
+      fetch(`${apiBaseUrl}/Employees`)
         .then(response => {
           if (!response.ok) throw new Error('Failed to fetch employees.');
           return response.json();
         })
         .then(data => {
-          let html = '';
-          if (!data || data.length === 0) {
-            html = '<div class="alert alert-info">No employee records found.</div>';
-          } else {
-            html += `<div class="table-responsive">
-                      <table class="table table-bordered table-striped table-hover">
-                        <thead class="table-dark">
-                          <tr>
-                            <th>Employee ID</th>
-                            <th>Employee Number</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Department</th>
-                          </tr>
-                        </thead>
-                        <tbody>`;
-            data.forEach(emp => {
-              html += `<tr>
-                        <td>${emp.employeeId || 'N/A'}</td>
-                        <td>${emp.employeeNumber || 'N/A'}</td>
-                        <td>${emp.firstName} ${emp.lastName}</td>
-                        <td>${emp.email || 'N/A'}</td>
-                        <td>${emp.department ? emp.department: 'N/A'}</td>
-                      </tr>`;
-            });
-            html += `</tbody></table></div>`;
-          }
-          document.getElementById('allEmployeesResult').innerHTML = html;
+          console.log('Loaded employees:', data);
+          allEmployees = data;
+          populateEmployeeDropdown(data);
+          hideLoading();
         })
         .catch(error => {
+          console.error('Error loading employees from standard endpoint:', error);
+          
+          // If that fails, try with the all employees button approach
+          // This is a fallback in case the API structure is different
+          fetch(`${apiBaseUrl}/Employees/GetAll`)
+            .then(response => {
+              if (!response.ok) throw new Error('Failed to fetch employees from alternate endpoint.');
+              return response.json();
+            })
+            .then(data => {
+              console.log('Loaded employees from alternate endpoint:', data);
+              allEmployees = data;
+              populateEmployeeDropdown(data);
+              hideLoading();
+            })
+            .catch(altError => {
+              hideLoading();
+              console.error('Error loading employees from alternate endpoint:', altError);
+              document.getElementById('employeeIdSelect').innerHTML = 
+                '<option value="">Failed to load employees</option>';
+              
+              // Show error message
+              alert('Failed to load employees. Please check the API endpoint or server status.');
+            });
+        });
+    }
+    
+    // Function to populate employee dropdown
+    function populateEmployeeDropdown(employees) {
+      const dropdown = document.getElementById('employeeIdSelect');
+      // Clear existing options except the first one
+      dropdown.innerHTML = '<option value="">Select an employee...</option>';
+      
+      // Add new options
+      if (employees && employees.length > 0) {
+        employees.forEach(emp => {
+          if (emp && emp.employeeId) {
+            const option = document.createElement('option');
+            option.value = emp.employeeId;
+            option.textContent = `${emp.firstName || ''} ${emp.lastName || ''} (${emp.employeeNumber || 'No Number'})`;
+            dropdown.appendChild(option);
+          }
+        });
+      } else {
+        const option = document.createElement('option');
+        option.value = "";
+        option.textContent = "No employees available";
+        dropdown.appendChild(option);
+      }
+    }
+    
+    // Function to load departments for dropdown
+    function loadDepartmentsForDropdown() {
+      showLoading();
+      
+      // First try with standard departments endpoint
+      fetch(`${apiBaseUrl}/Departments`)
+        .then(response => {
+          if (!response.ok) throw new Error('Failed to fetch departments.');
+          return response.json();
+        })
+        .then(data => {
+          console.log('Loaded departments:', data);
+          allDepartments = data;
+          populateDepartmentDropdown(data);
+          hideLoading();
+        })
+        .catch(error => {
+          console.error('Error loading departments from standard endpoint:', error);
+          
+          // If that fails, try extracting departments from employees as a fallback
+          fetch(`${apiBaseUrl}/Employees`)
+            .then(response => {
+              if (!response.ok) throw new Error('Failed to fetch employees for departments.');
+              return response.json();
+            })
+            .then(employees => {
+              // Extract unique departments from employees
+              const departments = [];
+              const uniqueDeptIds = new Set();
+              
+              employees.forEach(emp => {
+                if (emp.department && typeof emp.department === 'object' && emp.department.departmentId && !uniqueDeptIds.has(emp.department.departmentId)) {
+                  departments.push(emp.department);
+                  uniqueDeptIds.add(emp.department.departmentId);
+                }
+              });
+              
+              console.log('Extracted departments from employees:', departments);
+              allDepartments = departments;
+              populateDepartmentDropdown(departments);
+              hideLoading();
+            })
+            .catch(deptError => {
+              hideLoading();
+              console.error('Error extracting departments from employees:', deptError);
+              document.getElementById('departmentIdSelect').innerHTML = 
+                '<option value="">Failed to load departments</option>';
+              
+              // Show error message
+              alert('Failed to load departments. Please check the API endpoint or server status.');
+            });
+        });
+    }
+    
+    // Function to populate department dropdown
+    function populateDepartmentDropdown(departments) {
+      const dropdown = document.getElementById('departmentIdSelect');
+      // Clear existing options except the first one
+      dropdown.innerHTML = '<option value="">Select a department...</option>';
+      
+      // If there are no departments or empty array, create dummy data for testing
+      if (!departments || departments.length === 0) {
+        console.log('No departments found, creating dummy data');
+        const dummyDepartments = [
+          { departmentId: 'dept-1', departmentName: 'Human Resources' },
+          { departmentId: 'dept-2', departmentName: 'Engineering' },
+          { departmentId: 'dept-3', departmentName: 'Marketing' },
+          { departmentId: 'dept-4', departmentName: 'Finance' },
+          { departmentId: 'dept-5', departmentName: 'Sales' }
+        ];
+        
+        dummyDepartments.forEach(dept => {
+          const option = document.createElement('option');
+          option.value = dept.departmentId;
+          option.textContent = dept.departmentName;
+          dropdown.appendChild(option);
+        });
+        
+        const noteOption = document.createElement('option');
+        noteOption.disabled = true;
+        noteOption.textContent = "---- These are sample departments for testing ----";
+        dropdown.appendChild(noteOption);
+        
+      } else {
+        // Add new options from actual data
+        departments.forEach(dept => {
+          if (dept && (dept.departmentId || dept.id)) {
+            const option = document.createElement('option');
+            option.value = dept.departmentId || dept.id;
+            option.textContent = dept.departmentName || dept.name || 'Unnamed Department';
+            dropdown.appendChild(option);
+          }
+        });
+      }
+    }
+
+    // Helper function to create employee table
+    function createEmployeeTable(employees) {
+      let html = '';
+      if (!employees || employees.length === 0) {
+        html = '<div class="alert alert-info">No employee records found.</div>';
+      } else {
+        // Convert single employee to array if needed
+        const employeeArray = Array.isArray(employees) ? employees : [employees];
+        
+        html += `<div class="table-responsive">
+                  <table class="table table-bordered table-striped table-hover">
+                    <thead class="table-dark">
+                      <tr>
+                        <th>Employee ID</th>
+                        <th>Employee Number</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Department</th>
+                      </tr>
+                    </thead>
+                    <tbody>`;
+                    
+        employeeArray.forEach(emp => {
+          const departmentName = emp.department && typeof emp.department === 'object' ? 
+              emp.department.departmentName || 'N/A' : 
+              (emp.department || 'N/A');
+              
+          html += `<tr>
+                    <td>${emp.employeeId || 'N/A'}</td>
+                    <td>${emp.employeeNumber || 'N/A'}</td>
+                    <td>${emp.firstName || ''} ${emp.lastName || ''}</td>
+                    <td>${emp.email || 'N/A'}</td>
+                    <td>${departmentName}</td>
+                  </tr>`;
+        });
+        
+        html += `</tbody></table></div>`;
+      }
+      return html;
+    }
+
+    // 1. Get All Employees
+    document.getElementById('loadEmployeesBtn').addEventListener('click', function() {
+      showLoading();
+      fetch(`${apiBaseUrl}/Employees`)
+        .then(response => {
+          if (!response.ok) throw new Error('Failed to fetch employees.');
+          return response.json();
+        })
+        .then(data => {
+          allEmployees = data; // Store employees for later use
+          document.getElementById('allEmployeesResult').innerHTML = createEmployeeTable(data);
+          hideLoading();
+        })
+        .catch(error => {
+          hideLoading();
           document.getElementById('allEmployeesResult').innerHTML =
             `<div class="alert alert-danger">${error.message}</div>`;
         });
@@ -225,31 +481,25 @@
     // 2. Get Employee by ID
     document.getElementById('employeeByIdForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      const employeeId = document.getElementById('employeeIdInput').value.trim();
+      const employeeId = document.getElementById('employeeIdSelect').value;
       if (!employeeId) {
         document.getElementById('employeeByIdResult').innerHTML =
-          `<div class="alert alert-warning">Please enter a valid Employee ID.</div>`;
+          `<div class="alert alert-warning">Please select an employee.</div>`;
         return;
       }
-      fetch(`https://localhost:7136/api/Employees/${encodeURIComponent(employeeId)}`)
+      
+      showLoading();
+      fetch(`${apiBaseUrl}/Employees/${encodeURIComponent(employeeId)}`)
         .then(response => {
           if (!response.ok) throw new Error('Employee not found.');
           return response.json();
         })
         .then(data => {
-          let html = `<div class="card">
-                        <div class="card-body">
-                          <h5 class="card-title">Employee Details</h5>
-                          <p><strong>Employee ID:</strong> ${data.employeeId || 'N/A'}</p>
-                          <p><strong>Employee Number:</strong> ${data.employeeNumber || 'N/A'}</p>
-                          <p><strong>Name:</strong> ${data.firstName} ${data.lastName}</p>
-                          <p><strong>Email:</strong> ${data.email || 'N/A'}</p>
-                          <p><strong>Department:</strong> ${data.department ? data.department: 'N/A'}</p>
-                        </div>
-                      </div>`;
-          document.getElementById('employeeByIdResult').innerHTML = html;
+          document.getElementById('employeeByIdResult').innerHTML = createEmployeeTable(data);
+          hideLoading();
         })
         .catch(error => {
+          hideLoading();
           document.getElementById('employeeByIdResult').innerHTML =
             `<div class="alert alert-danger">${error.message}</div>`;
         });
@@ -258,30 +508,25 @@
     // 3. Get Employee by Department
     document.getElementById('employeeByDeptForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      const departmentId = document.getElementById('departmentIdInput').value.trim();
+      const departmentId = document.getElementById('departmentIdSelect').value;
       if (!departmentId) {
         document.getElementById('employeeByDeptResult').innerHTML =
-          `<div class="alert alert-warning">Please enter a valid Department ID.</div>`;
+          `<div class="alert alert-warning">Please select a department.</div>`;
         return;
       }
-      fetch(`https://localhost:7136/api/Employees/GetByDepartment/${encodeURIComponent(departmentId)}`)
+      
+      showLoading();
+      fetch(`${apiBaseUrl}/Employees/GetByDepartment/${encodeURIComponent(departmentId)}`)
         .then(response => {
-          if (!response.ok) throw new Error('No employee found for the given department.');
+          if (!response.ok) throw new Error('No employees found for the given department.');
           return response.json();
         })
         .then(data => {
-          let html = `<div class="card">
-                        <div class="card-body">
-                          <h5 class="card-title">Employee Details</h5>
-                          <p><strong>Employee ID:</strong> ${data.employeeId || 'N/A'}</p>
-                          <p><strong>Name:</strong> ${data.firstName} ${data.lastName}</p>
-                          <p><strong>Email:</strong> ${data.email || 'N/A'}</p>
-                          <p><strong>Department:</strong> ${data.department ? data.department: 'N/A'}</p>
-                        </div>
-                      </div>`;
-          document.getElementById('employeeByDeptResult').innerHTML = html;
+          document.getElementById('employeeByDeptResult').innerHTML = createEmployeeTable(data);
+          hideLoading();
         })
         .catch(error => {
+          hideLoading();
           document.getElementById('employeeByDeptResult').innerHTML =
             `<div class="alert alert-danger">${error.message}</div>`;
         });
@@ -296,32 +541,52 @@
           `<div class="alert alert-warning">Please enter a valid Employee Number.</div>`;
         return;
       }
-      fetch(`https://localhost:7136/api/Employees/by-number/${encodeURIComponent(employeeNumber)}`)
+      
+      showLoading();
+      fetch(`${apiBaseUrl}/Employees/by-number/${encodeURIComponent(employeeNumber)}`)
         .then(response => {
           if (!response.ok) throw new Error('Employee not found.');
           return response.json();
         })
         .then(data => {
-          let html = `<div class="card">
-                        <div class="card-body">
-                          <h5 class="card-title">Employee Details</h5>
-                          <p><strong>Employee ID:</strong> ${data.employeeId || 'N/A'}</p>
-                          <p><strong>Employee Number:</strong> ${data.employeeNumber || 'N/A'}</p>
-                          <p><strong>Name:</strong> ${data.firstName} ${data.lastName}</p>
-                          <p><strong>Email:</strong> ${data.email || 'N/A'}</p>
-                          <p><strong>Department:</strong> ${data.department ? data.department.departmentName : 'N/A'}</p>
-                        </div>
-                      </div>`;
-          document.getElementById('employeeByNumberResult').innerHTML = html;
+          document.getElementById('employeeByNumberResult').innerHTML = createEmployeeTable(data);
+          hideLoading();
         })
         .catch(error => {
+          hideLoading();
           document.getElementById('employeeByNumberResult').innerHTML =
             `<div class="alert alert-danger">${error.message}</div>`;
         });
     });
+    
+    // Add refresh buttons functionality
+    document.getElementById('refreshEmployeesBtn').addEventListener('click', function() {
+      loadEmployeesForDropdown();
+    });
+    
+    document.getElementById('refreshDepartmentsBtn').addEventListener('click', function() {
+      loadDepartmentsForDropdown();
+    });
+    
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', function() {
+      // Set default section
+      showSection('allEmployeesSection');
+      
+      // Preload employees data
+      fetch(`${apiBaseUrl}/Employees`)
+        .then(response => {
+          if (!response.ok) throw new Error('Failed to preload employees.');
+          return response.json();
+        })
+        .then(data => {
+          allEmployees = data;
+          console.log(`Preloaded ${data.length} employees`);
+        })
+        .catch(error => {
+          console.error('Error preloading employees:', error);
+        });
+    });
   </script>
-  
-  <!-- Bootstrap 5 JS Bundle (includes Popper) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

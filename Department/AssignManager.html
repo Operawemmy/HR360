@@ -5,152 +5,292 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Assign Manager to Department</title>
   <!-- Bootstrap 5 CSS CDN -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Bootstrap Icons CDN -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <style>
     body {
-      background-color: #f8f9fa;
-      scroll-behavior: smooth;
+      font-family: 'Poppins', sans-serif;
+      background-color: #f0f2f5;
+      color: #333;
     }
-    .header-title {
-      background: linear-gradient(45deg, #dc3545, #bd2130);
-      color: #fff;
-      padding: 30px;
-      border-radius: 10px;
+    
+    .background-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      opacity: 0.8;
+      z-index: -1;
+    }
+    
+    .pattern-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      z-index: -1;
+      opacity: 0.3;
+    }
+    
+    .main-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+    
+    .content-wrapper {
+      width: 100%;
+      max-width: 550px;
+    }
+    
+    .header-container {
       text-align: center;
-      margin-bottom: 40px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      margin-bottom: 2rem;
     }
+    
+    .header-title {
+      color: #fff;
+      font-weight: 700;
+      text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+      margin-bottom: 0.5rem;
+    }
+    
+    .header-subtitle {
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 400;
+    }
+    
     .card-custom {
       border: none;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(5px);
+      background-color: rgba(255, 255, 255, 0.95);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .card-custom:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+    
+    .card-header {
+      background: linear-gradient(135deg, #dc3545, #bd2130);
+      padding: 1.5rem;
+      border-bottom: none;
+    }
+    
+    .card-header h4 {
+      font-weight: 600;
+      margin: 0;
+    }
+    
+    .card-body {
+      padding: 2.5rem;
+    }
+    
+    .form-label {
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: #444;
+    }
+    
+    .form-control, .form-select {
       border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      padding: 0.75rem 1rem;
+      border: 1px solid #e1e5ea;
+      background-color: #f8fafc;
+      box-shadow: none;
+      transition: all 0.3s;
     }
+    
+    .form-control:focus, .form-select:focus {
+      border-color: #dc3545;
+      box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+      background-color: #fff;
+    }
+    
     .btn-custom {
-      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
       padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      transition: all 0.3s;
     }
+    
+    .btn-danger {
+      background: linear-gradient(135deg, #dc3545, #bd2130);
+      border: none;
+    }
+    
+    .btn-danger:hover {
+      background: linear-gradient(135deg, #c82333, #9a1f29);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+    }
+    
     .response-message {
       margin-top: 20px;
+    }
+    
+    .alert-custom {
+      border-radius: 10px;
+      padding: 1rem;
+      margin-top: 1.5rem;
+      border: none;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .alert-success {
+      background-color: rgba(57, 218, 138, 0.15);
+      color: #0b754d;
+    }
+    
+    .alert-danger {
+      background-color: rgba(241, 65, 108, 0.15);
+      color: #b81b45;
+    }
+    
+    .alert-warning {
+      background-color: rgba(255, 193, 7, 0.15);
+      color: #856404;
+    }
+    
+    .animate-in {
+      animation: fadeInUp 0.5s ease-out forwards;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container my-5">
-    <!-- Header Title -->
-    <div class="header-title">
-      <h1 class="display-5">Assign Manager to Department</h1>
-      <p class="lead">Select a Department and an Employee to assign as Manager</p>
-    </div>
-    
-    <!-- Form Card -->
-    <div class="row justify-content-center">
-      <div class="col-md-6">
-        <div class="card card-custom">
-          <div class="card-header bg-danger text-white text-center py-3">
-            <h4 class="mb-0">Assign Manager</h4>
-          </div>
-          <div class="card-body p-4">
-            <form id="assignManagerForm">
-              <div class="mb-3">
-                <label for="departmentId" class="form-label">Department</label>
-                <select class="form-select" id="departmentId" required>
-                  <option value="">Select Department</option>
-                </select>
-              </div>
-              <div class="mb-3">
-                <label for="employeeId" class="form-label">Employee</label>
-                <select class="form-select" id="employeeId" required>
-                  <option value="">Select Employee</option>
-                </select>
-              </div>
-              <div class="d-grid">
-                <button type="submit" class="btn btn-danger btn-custom">Assign Manager</button>
-              </div>
-            </form>
-            <div id="responseMessage" class="response-message"></div>
-          </div>
+  <!-- Background Elements -->
+  <div class="background-container"></div>
+  <div class="pattern-overlay"></div>
+  
+  <div class="main-container">
+    <div class="content-wrapper">
+      <!-- Header -->
+      <div class="header-container animate-in">
+        <h1 class="header-title display-5">Assign Manager to Department</h1>
+        <p class="header-subtitle">Select a Department and an Employee to assign as Manager</p>
+      </div>
+      
+      <!-- Assign Manager Form Card -->
+      <div class="card card-custom animate-in">
+        <div class="card-header text-white text-center">
+          <h4><i class="bi bi-person-check me-2"></i>Assign Manager</h4>
+        </div>
+        <div class="card-body">
+          <form id="assignManagerForm">
+            <div class="mb-4">
+              <label for="departmentId" class="form-label">Department <span class="text-danger">*</span></label>
+              <select class="form-select" id="departmentId" required>
+                <option value="">Select Department</option>
+              </select>
+            </div>
+            <div class="mb-4">
+              <label for="employeeId" class="form-label">Employee <span class="text-danger">*</span></label>
+              <select class="form-select" id="employeeId" required>
+                <option value="">Select Employee</option>
+              </select>
+            </div>
+            
+            <div class="d-grid">
+              <button type="submit" class="btn btn-danger btn-custom">
+                <i class="bi bi-person-check me-2"></i>Assign Manager
+              </button>
+            </div>
+          </form>
+          <div id="responseMessage" class="response-message"></div>
         </div>
       </div>
     </div>
-  
-    <!-- Bootstrap 5 JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Axios for API calls -->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script>
-      // Global arrays for departments and employees.
-      let departmentsData = [];
-      let employeesData = [];
-
-      // Fetch departments and employees on page load.
-      document.addEventListener("DOMContentLoaded", function() {
-        // Fetch departments.
-        axios.get("https://localhost:7136/api/Departments")
-          .then(function(response) {
-            departmentsData = response.data;
-            const deptSelect = document.getElementById("departmentId");
-            departmentsData.forEach(function(dept) {
-              const option = document.createElement("option");
-              option.value = dept.departmentId;
-              option.text = dept.departmentName;
-              deptSelect.appendChild(option);
-            });
-          })
-          .catch(function(error) {
-            console.error("Error loading departments:", error);
-          });
-
-        // Fetch employees.
-        axios.get("https://localhost:7136/api/Employees")
-          .then(function(response) {
-            employeesData = response.data;
-            const empSelect = document.getElementById("employeeId");
-            employeesData.forEach(function(emp) {
-              const option = document.createElement("option");
-              option.value = emp.employeeId;
-              option.text = `${emp.firstName} ${emp.lastName} (${emp.jobTitle})`;
-              empSelect.appendChild(option);
-            });
-          })
-          .catch(function(error) {
-            console.error("Error loading employees:", error);
-          });
-      });
-
-      // Handle the form submission.
-      document.getElementById("assignManagerForm").addEventListener("submit", function(e) {
-        e.preventDefault();
-
-        const departmentId = document.getElementById("departmentId").value;
-        const employeeId = document.getElementById("employeeId").value;
-
-        if (!departmentId || !employeeId) {
-          document.getElementById("responseMessage").innerHTML = `<div class="alert alert-warning">Please select both a department and an employee.</div>`;
-          return;
-        }
-
-        // Call the AssignManager endpoint.
-        axios.patch(`https://localhost:7136/api/Departments/Assign?departmentId=${encodeURIComponent(departmentId)}&employeeId=${encodeURIComponent(employeeId)}`)
-          .then(function(response) {
-            const data = response.data;
-            document.getElementById("responseMessage").innerHTML = `<div class="alert alert-success" role="alert">
-              <strong>Department ID:</strong> ${data.departmentId}<br>
-              <strong>Department Name:</strong> ${data.departmentName}<br>
-              <strong>Description:</strong> ${data.description}<br>
-              <strong>Manager Name:</strong> ${data.departmentManagerName || 'Not Assigned'}<br>
-              <strong>Manager Email:</strong> ${data.departmentManagerEmail || 'Not Assigned'}
-            </div>`;
-          })
-          .catch(function(error) {
-            document.getElementById("responseMessage").innerHTML = `<div class="alert alert-danger" role="alert">
-              Error: ${error.response?.data?.message || error.message}
-            </div>`;
-          });
-      });
-    </script>
   </div>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Axios for API calls -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    // Global arrays for departments and employees.
+    let departmentsData = [];
+    let employeesData = [];
+
+    // Fetch departments and employees on page load.
+    document.addEventListener("DOMContentLoaded", function() {
+      // Fetch departments.
+      axios.get("https://localhost:7136/api/Departments")
+        .then(function(response) {
+          departmentsData = response.data;
+          const deptSelect = document.getElementById("departmentId");
+          departmentsData.forEach(function(dept) {
+            const option = document.createElement("option");
+            option.value = dept.departmentId;
+            option.text = dept.departmentName;
+            deptSelect.appendChild(option);
+          });
+        })
+        .catch(function(error) {
+          console.error("Error loading departments:", error);
+        });
+
+      // Fetch employees.
+      axios.get("https://localhost:7136/api/Employees")
+        .then(function(response) {
+          employeesData = response.data;
+          const empSelect = document.getElementById("employeeId");
+          employeesData.forEach(function(emp) {
+            const option = document.createElement("option");
+            option.value = emp.employeeId;
+            option.text = `${emp.firstName} ${emp.lastName} (${emp.jobTitle})`;
+            empSelect.appendChild(option);
+          });
+        })
+        .catch(function(error) {
+          console.error("Error loading employees:", error);
+        });
+    });
+
+    // Handle the form submission.
+    document.getElementById("assignManagerForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const departmentId = document.getElementById("departmentId").value;
+      const employeeId = document.getElementById("employeeId").value;
+
+      if (!departmentId || !employeeId) {
+        document.getElementById("responseMessage").innerHTML = `<div class="alert alert-warning">Please select both a department and an employee.</div>`;
+        return;
+      }
+
+      // Call the AssignManager endpoint.
+      axios.patch(`https://localhost:7136/api/Departments/${departmentId}/assign-manager/${employeeId}`)
+        .then(function(response) {
+          document.getElementById("responseMessage").innerHTML = `<div class="alert alert-success">Manager assigned successfully!</div>`;
+        })
+        .catch(function(error) {
+          document.getElementById("responseMessage").innerHTML = `<div class="alert alert-danger">Failed to assign manager. Please try again later.</div>`;
+        });
+    });
+  </script>
 </body>
 </html>

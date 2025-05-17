@@ -1,99 +1,431 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Delete Employee</title>
   <!-- Bootstrap 5 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <style>
     body {
-      background-color: #f8f9fa;
+      font-family: 'Poppins', sans-serif;
+      background-color: #f0f2f5;
+      color: #333;
     }
-    .card {
-      border-radius: 1rem;
+    
+    .background-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, #c31432 0%, #240b36 100%);
+      opacity: 0.8;
+      z-index: -1;
     }
-    .card-header {
-      background-color: #dc3545;
+    
+    .pattern-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      z-index: -1;
+      opacity: 0.3;
+    }
+    
+    .main-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+    
+    .content-wrapper {
+      width: 100%;
+      max-width: 550px;
+    }
+    
+    .header-container {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .header-title {
       color: #fff;
-      border-top-left-radius: 1rem;
-      border-top-right-radius: 1rem;
+      font-weight: 700;
+      text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+      margin-bottom: 0.5rem;
     }
-    .form-label {
+    
+    .header-subtitle {
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 400;
+    }
+    
+    .card-custom {
+      border: none;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(5px);
+      background-color: rgba(255, 255, 255, 0.95);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .card-custom:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+    
+    .card-header {
+      background: linear-gradient(135deg, #ff512f, #dd2476);
+      padding: 1.5rem;
+      border-bottom: none;
+    }
+    
+    .card-header h4 {
       font-weight: 600;
+      margin: 0;
     }
-    .btn-group {
+    
+    .card-body {
+      padding: 2.5rem;
+    }
+    
+    .form-label {
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: #444;
+    }
+    
+    .form-control, .form-select {
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      border: 1px solid #e1e5ea;
+      background-color: #f8fafc;
+      box-shadow: none;
+      transition: all 0.3s;
+    }
+    
+    .form-control:focus, .form-select:focus {
+      border-color: #dd2476;
+      box-shadow: 0 0 0 0.25rem rgba(221, 36, 118, 0.25);
+      background-color: #fff;
+    }
+    
+    .btn {
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      transition: all 0.3s;
+    }
+    
+    .btn-danger {
+      background: linear-gradient(135deg, #ff512f, #dd2476);
+      border: none;
+    }
+    
+    .btn-danger:hover {
+      background: linear-gradient(135deg, #e64a2a, #c9216b);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(221, 36, 118, 0.4);
+    }
+    
+    .btn-secondary {
+      background: linear-gradient(135deg, #8e9eab, #eef2f3);
+      border: none;
+      color: #444;
+    }
+    
+    .btn-secondary:hover {
+      background: linear-gradient(135deg, #7d8b96, #dce4e6);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(142, 158, 171, 0.4);
+      color: #333;
+    }
+    
+    .btn-group-custom {
+      display: flex;
       gap: 1rem;
+    }
+    
+    .alert {
+      border-radius: 10px;
+      padding: 1rem;
+      margin-top: 1.5rem;
+      border: none;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .alert-success {
+      background-color: rgba(57, 218, 138, 0.15);
+      color: #0b754d;
+    }
+    
+    .alert-danger {
+      background-color: rgba(241, 65, 108, 0.15);
+      color: #b81b45;
+    }
+    
+    .alert-warning {
+      background-color: rgba(255, 193, 7, 0.15);
+      color: #856404;
+    }
+    
+    .input-icon-container {
+      position: relative;
+    }
+    
+    .input-icon {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      left: 1rem;
+      color: #aaa;
+    }
+    
+    .icon-input {
+      padding-left: 3rem;
+    }
+    
+    .animate-in {
+      animation: fadeInUp 0.5s ease-out forwards;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .floating-shape {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: -1;
+    }
+    
+    .shape-1 {
+      width: 300px;
+      height: 300px;
+      background-color: rgba(255, 81, 47, 0.4);
+      top: 20%;
+      left: 15%;
+      animation: float 8s ease-in-out infinite;
+    }
+    
+    .shape-2 {
+      width: 200px;
+      height: 200px;
+      background-color: rgba(221, 36, 118, 0.4);
+      bottom: 20%;
+      right: 10%;
+      animation: float 12s ease-in-out infinite alternate;
+    }
+    
+    @keyframes float {
+      0% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(5deg); }
+      100% { transform: translateY(0) rotate(0deg); }
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+    
+    .cancel-btn {
+      flex-grow: 1;
+    }
+    
+    .delete-btn {
+      flex-grow: 2;
+    }
+    
+    .employee-select-container {
+      position: relative;
+    }
+    
+    .employee-select-icon {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      right: 1rem;
+      color: #aaa;
+      pointer-events: none;
     }
   </style>
 </head>
 <body>
-  <div class="container py-5">
-    <!-- Delete Employee Card -->
-    <div class="row justify-content-center">
-      <div class="col-md-6">
-        <div class="card shadow">
-          <div class="card-header text-center">
-            <h3>Delete Employee</h3>
-          </div>
-          <div class="card-body">
-            <p class="text-center mb-4">
-              Enter the Employee ID below to delete the record.
-            </p>
-            <form id="deleteEmployeeForm">
-              <div class="mb-4">
-                <label for="employeeId" class="form-label">
-                  Employee ID <span class="text-danger">*</span>
-                </label>
-                <input type="text" class="form-control" id="employeeId" placeholder="3d777c40-e76b-4079-8b10-e2c71e136868" required />
+  <!-- Background Elements -->
+  <div class="background-container"></div>
+  <div class="pattern-overlay"></div>
+  <div class="floating-shape shape-1"></div>
+  <div class="floating-shape shape-2"></div>
+  
+  <div class="main-container">
+    <div class="content-wrapper">
+      <!-- Header -->
+      <div class="header-container animate-in">
+        <h1 class="header-title display-5">Delete Employee</h1>
+        <p class="header-subtitle">Remove employee records from the system</p>
+      </div>
+      
+      <!-- Delete Employee Form Card -->
+      <div class="card card-custom animate-in" style="animation-delay: 0.2s;">
+        <div class="card-header text-white text-center">
+          <h4><i class="fas fa-user-times me-2"></i>Delete Employee Record</h4>
+        </div>
+        <div class="card-body">
+          <form id="deleteEmployeeForm">
+            <div class="mb-4">
+              <label for="employeeId" class="form-label">Select Employee <span class="text-danger">*</span></label>
+              <div class="employee-select-container">
+                <select class="form-select" id="employeeId" required>
+                  <option value="" selected disabled>-- Select an employee --</option>
+                  <!-- Options will be populated by JavaScript -->
+                </select>
+                <i class="fas fa-chevron-down employee-select-icon"></i>
               </div>
-              <div class="d-flex justify-content-center mb-3 btn-group">
-                <button type="button" id="clearBtn" class="btn btn-secondary">Clear</button>
-                <button type="submit" class="btn btn-danger">Delete Employee</button>
-              </div>
-            </form>
-            <div id="result" class="alert d-none" role="alert"></div>
-          </div>
+              <small class="text-muted mt-2 d-block">
+                <i class="fas fa-info-circle me-1"></i>
+                This action cannot be undone. All associated data will be permanently deleted.
+              </small>
+            </div>
+            
+            <div class="action-buttons mt-4">
+              <button type="button" id="cancelBtn" class="btn btn-secondary cancel-btn">
+                <i class="fas fa-times me-2"></i>Cancel
+              </button>
+              <button type="submit" class="btn btn-danger delete-btn">
+                <i class="fas fa-trash-alt me-2"></i>Delete Employee
+              </button>
+            </div>
+          </form>
+          
+          <div id="responseMessage" class="mt-4"></div>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- Bootstrap Bundle JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    document.getElementById("deleteEmployeeForm").addEventListener("submit", function (e) {
+    // Fetch employees and populate dropdown
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const response = await fetch('https://localhost:7136/api/Employees');
+        if (!response.ok) throw new Error('Failed to fetch employees');
+        
+        const employees = await response.json();
+        const select = document.getElementById('employeeId');
+        
+        employees.forEach(employee => {
+          const option = document.createElement('option');
+          option.value = employee.id;
+          option.textContent = `${employee.firstName} ${employee.lastName} (${employee.department || 'No Dept'})`;
+          select.appendChild(option);
+        });
+        
+      } catch (error) {
+        showMessage('danger', `Failed to load employees: ${error.message}`);
+      }
+    });
+
+    // Handle form submission
+    document.getElementById('deleteEmployeeForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const employeeId = document.getElementById("employeeId").value.trim();
-      const resultDiv = document.getElementById("result");
       
-      fetch(`https://localhost:7136/api/Employees/${employeeId}`, {
-        method: "DELETE",
-        headers: {
-          accept: "*/*"
-        }
-      })
-      .then(response => {
+      const employeeId = document.getElementById('employeeId').value;
+      const responseMessage = document.getElementById('responseMessage');
+      
+      if (!employeeId) {
+        showMessage('warning', 'Please select an employee to delete');
+        return;
+      }
+      
+      // Confirm before deleting
+      if (!confirm('Are you sure you want to permanently delete this employee and all their data?')) {
+        return;
+      }
+      
+      // Show loading indicator
+      responseMessage.innerHTML = `<div class="alert alert-info text-center animate-in">
+        <div class="d-flex align-items-center justify-content-center">
+          <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+          Deleting employee record...
+        </div>
+      </div>`;
+      
+      try {
+        const response = await fetch(`https://localhost:7136/api/Employees/${employeeId}`, {
+          method: 'DELETE',
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+        
         if (response.ok) {
-          resultDiv.className = "alert alert-success";
-          resultDiv.textContent = "Employee deleted successfully.";
+          showMessage('success', 'Employee deleted successfully');
+          // Remove the deleted employee from the dropdown
+          document.getElementById('employeeId').remove(document.getElementById('employeeId').selectedIndex);
         } else {
-          resultDiv.className = "alert alert-danger";
-          resultDiv.textContent = "Failed to delete employee. Please verify the Employee ID.";
+          const error = await response.json();
+          showMessage('danger', error.message || 'Failed to delete employee');
         }
-        resultDiv.classList.remove("d-none");
-      })
-      .catch(error => {
-        resultDiv.className = "alert alert-danger";
-        resultDiv.textContent = "An error occurred: " + error.message;
-        resultDiv.classList.remove("d-none");
+      } catch (error) {
+        showMessage('danger', error.message || 'Network error occurred');
+      }
+    });
+    
+    // Cancel button functionality
+    document.getElementById('cancelBtn').addEventListener('click', () => {
+      document.getElementById('employeeId').selectedIndex = 0;
+      document.getElementById('responseMessage').innerHTML = '';
+    });
+    
+    // Helper function to show messages
+    function showMessage(type, text) {
+      const icon = {
+        success: 'fa-check-circle',
+        danger: 'fa-times-circle',
+        warning: 'fa-exclamation-triangle',
+        info: 'fa-info-circle'
+      }[type];
+      
+      const responseMessage = document.getElementById('responseMessage');
+      responseMessage.innerHTML = `<div class="alert alert-${type} text-center animate-in">
+        <i class="fas ${icon} me-2"></i>${text}
+      </div>`;
+    }
+    
+    // Add animation to response messages
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+          const addedNode = mutation.addedNodes[0];
+          if (addedNode.classList && addedNode.classList.contains('alert')) {
+            addedNode.classList.add('animate-in');
+          }
+        }
       });
     });
-
-    document.getElementById("clearBtn").addEventListener("click", function () {
-      document.getElementById("employeeId").value = "";
-      document.getElementById("result").classList.add("d-none");
-    });
+    
+    observer.observe(document.getElementById('responseMessage'), { childList: true });
   </script>
 </body>
 </html>

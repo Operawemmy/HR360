@@ -1,143 +1,440 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Update Employee</title>
   <!-- Bootstrap 5 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <style>
     body {
-      background-color: #f8f9fa;
+      font-family: 'Poppins', sans-serif;
+      background-color: #f0f2f5;
+      color: #333;
     }
-    .header-title {
-      background: linear-gradient(45deg, #007bff, #6610f2);
-      color: #fff;
-      padding: 40px;
-      border-radius: 10px;
+    
+    .background-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, #2980b9 0%, #6dd5fa 100%);
+      opacity: 0.8;
+      z-index: -1;
+    }
+    
+    .pattern-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      z-index: -1;
+      opacity: 0.3;
+    }
+    
+    .main-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+    
+    .content-wrapper {
+      width: 100%;
+      max-width: 800px;
+    }
+    
+    .header-container {
       text-align: center;
-      margin-bottom: 40px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      margin-bottom: 2rem;
     }
+    
+    .header-title {
+      color: #fff;
+      font-weight: 700;
+      text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+      margin-bottom: 0.5rem;
+    }
+    
+    .header-subtitle {
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 400;
+    }
+    
     .card-custom {
       border: none;
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(5px);
+      background-color: rgba(255, 255, 255, 0.95);
+      transition: transform 0.3s, box-shadow 0.3s;
     }
-    .form-label {
+    
+    .card-custom:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+    
+    .card-header {
+      background: linear-gradient(135deg, #2980b9, #2c3e50);
+      padding: 1.5rem;
+      border-bottom: none;
+    }
+    
+    .card-header h4 {
       font-weight: 600;
+      margin: 0;
     }
+    
+    .card-body {
+      padding: 2.5rem;
+    }
+    
+    .form-section {
+      background-color: rgba(255, 255, 255, 0.5);
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s;
+    }
+    
+    .form-section:hover {
+      background-color: rgba(255, 255, 255, 0.8);
+      transform: translateY(-2px);
+    }
+    
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #2980b9;
+      font-weight: 600;
+      margin-bottom: 1.2rem;
+    }
+    
+    .form-label {
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: #444;
+    }
+    
     .form-control, .form-select {
       border-radius: 10px;
+      padding: 0.75rem 1rem;
+      border: 1px solid #e1e5ea;
+      background-color: #f8fafc;
+      box-shadow: none;
+      transition: all 0.3s;
     }
-    .btn-custom {
-      border-radius: 10px;
-      font-size: 1.1rem;
+    
+    .form-control:focus, .form-select:focus {
+      border-color: #2980b9;
+      box-shadow: 0 0 0 0.25rem rgba(41, 128, 185, 0.25);
+      background-color: #fff;
+    }
+    
+    .btn {
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
       padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      transition: all 0.3s;
     }
+    
+    .btn-success {
+      background: linear-gradient(135deg, #2ecc71, #27ae60);
+      border: none;
+    }
+    
+    .btn-success:hover {
+      background: linear-gradient(135deg, #27ae60, #219651);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+    }
+    
+    .btn-secondary {
+      background: linear-gradient(135deg, #8e9eab, #eef2f3);
+      border: none;
+      color: #444;
+    }
+    
+    .btn-secondary:hover {
+      background: linear-gradient(135deg, #7d8b96, #dce4e6);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(142, 158, 171, 0.4);
+      color: #333;
+    }
+    
     .btn-group-custom {
       display: flex;
       gap: 1rem;
     }
-    .container {
-      max-width: 700px;
+    
+    .alert {
+      border-radius: 10px;
+      padding: 1rem;
+      margin-top: 1.5rem;
+      border: none;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     }
-    pre {
-      background: #e9ecef;
-      padding: 15px;
-      border-radius: 5px;
-      font-size: 0.9rem;
+    
+    .alert-success {
+      background-color: rgba(57, 218, 138, 0.15);
+      color: #0b754d;
+    }
+    
+    .alert-danger {
+      background-color: rgba(241, 65, 108, 0.15);
+      color: #b81b45;
+    }
+    
+    .employee-select-container {
+      position: relative;
+    }
+    
+    .employee-select-icon {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      right: 1rem;
+      color: #aaa;
+      pointer-events: none;
+    }
+    
+    .animate-in {
+      animation: fadeInUp 0.5s ease-out forwards;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .floating-shape {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: -1;
+    }
+    
+    .shape-1 {
+      width: 300px;
+      height: 300px;
+      background-color: rgba(41, 128, 185, 0.4);
+      top: 20%;
+      left: 15%;
+      animation: float 8s ease-in-out infinite;
+    }
+    
+    .shape-2 {
+      width: 200px;
+      height: 200px;
+      background-color: rgba(46, 204, 113, 0.4);
+      bottom: 20%;
+      right: 10%;
+      animation: float 12s ease-in-out infinite alternate;
+    }
+    
+    @keyframes float {
+      0% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(5deg); }
+      100% { transform: translateY(0) rotate(0deg); }
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+    
+    .cancel-btn {
+      flex-grow: 1;
+    }
+    
+    .update-btn {
+      flex-grow: 2;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .card-body {
+        padding: 1.5rem;
+      }
+      
+      .form-section {
+        padding: 1.2rem;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+      }
+      
+      .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container my-5">
-    <!-- Header Title -->
-    <div class="header-title">
-      <h1 class="display-5">Update Employee</h1>
-      <p class="lead">Modify the employee details below</p>
-    </div>
-
-    <!-- Update Employee Card -->
-    <div class="card card-custom shadow-lg mb-4">
-      <div class="card-header bg-primary text-white text-center py-3">
-        <h4 class="mb-0">Employee Update Form</h4>
+  <!-- Background Elements -->
+  <div class="background-container"></div>
+  <div class="pattern-overlay"></div>
+  <div class="floating-shape shape-1"></div>
+  <div class="floating-shape shape-2"></div>
+  
+  <div class="main-container">
+    <div class="content-wrapper">
+      <!-- Header -->
+      <div class="header-container animate-in">
+        <h1 class="header-title display-5">Update Employee</h1>
+        <p class="header-subtitle">Modify employee information in the system</p>
       </div>
-      <div class="card-body p-4">
-        <form id="updateEmployeeForm">
-          <!-- Employee ID (Path Parameter) -->
-          <div class="mb-4">
-            <label for="employeeId" class="form-label">
-              Employee ID <span class="text-danger">*</span>
-            </label>
-            <input type="text" class="form-control" id="employeeId" value="db29f472-a4b9-422c-a086-5da39f22d953" required>
-          </div>
-          <!-- Request Body Fields -->
-          <div class="mb-4">
-            <label for="lastName" class="form-label">Last Name</label>
-            <input type="text" class="form-control" id="lastName" placeholder="Oyeniyi" required>
-          </div>
-          <div class="mb-4">
-            <label for="phoneNumber" class="form-label">Phone Number</label>
-            <input type="text" class="form-control" id="phoneNumber" placeholder="09078780990" required>
-          </div>
-          <div class="mb-4">
-            <label for="jobTitle" class="form-label">Job Title</label>
-            <input type="text" class="form-control" id="jobTitle" placeholder="Welfare Officer" required>
-          </div>
-          <!-- Department Dropdown -->
-          <div class="mb-4">
-            <label for="departmentId" class="form-label">Department</label>
-            <select class="form-select" id="departmentId" required>
-              <option value="">Select Department</option>
-            </select>
-          </div>
-          <div class="mb-4">
-            <label for="address" class="form-label">Address</label>
-            <input type="text" class="form-control" id="address" placeholder="isokun ilesa" required>
-          </div>
-          <div class="mb-4">
-            <label for="level" class="form-label">Level</label>
-            <select class="form-select" id="level" required>
-              <option value="1">Manager</option>
-              <option value="2">Employee</option>
-            </select>
-          </div>
-          <div class="mb-4">
-            <label for="role" class="form-label">Role</label>
-            <select class="form-select" id="role" required>
-              <option value="1">Admin</option>
-              <option value="2">Manager</option>
-              <option value="3">Employee</option>
-              <option value="4">HR Manager</option>
-            </select>
-          </div>
-          <div class="mb-4">
-            <label for="isActive" class="form-label">Is Active</label>
-            <select class="form-select" id="isActive" required>
-              <option value="true">Active</option>
-              <option value="false">Inactive</option>
-            </select>
-          </div>
-          <div class="mb-4">
-            <label for="emergencyContact" class="form-label">Emergency Contact</label>
-            <input type="text" class="form-control" id="emergencyContact" placeholder="09076766545" required>
-          </div>
-          <!-- Buttons -->
-          <div class="d-flex justify-content-center mb-3 btn-group-custom">
-            <button type="button" id="clearBtn" class="btn btn-secondary btn-custom">Clear</button>
-            <button type="submit" class="btn btn-success btn-custom">Execute</button>
-          </div>
-        </form>
-        <div id="responseMessage" class="mt-4"></div>
+      
+      <!-- Update Employee Form Card -->
+      <div class="card card-custom animate-in" style="animation-delay: 0.2s;">
+        <div class="card-header text-white text-center">
+          <h4><i class="fas fa-user-edit me-2"></i>Employee Update Form</h4>
+        </div>
+        <div class="card-body">
+          <form id="updateEmployeeForm">
+            <!-- Employee Selection -->
+            <div class="form-section animate-in" style="animation-delay: 0.3s;">
+              <h5 class="section-title"><i class="fas fa-user-tie"></i> Select Employee</h5>
+              <div class="mb-4 employee-select-container">
+                <label for="employeeId" class="form-label">
+                  Employee <span class="text-danger">*</span>
+                </label>
+                <select class="form-select" id="employeeId" required>
+                  <option value="">-- Select an employee --</option>
+                  <!-- Options will be populated by JavaScript -->
+                </select>
+                <i class="fas fa-chevron-down employee-select-icon"></i>
+              </div>
+            </div>
+            
+            <!-- Personal Information -->
+            <div class="form-section animate-in" style="animation-delay: 0.4s;">
+              <h5 class="section-title"><i class="fas fa-info-circle"></i> Personal Information</h5>
+              <div class="row">
+                <div class="col-md-6 mb-4">
+                  <label for="lastName" class="form-label">Last Name</label>
+                  <input type="text" class="form-control" id="lastName" placeholder="Enter last name" required>
+                </div>
+                <div class="col-md-6 mb-4">
+                  <label for="phoneNumber" class="form-label">Phone Number</label>
+                  <input type="text" class="form-control" id="phoneNumber" placeholder="Enter phone number" required>
+                </div>
+              </div>
+              <div class="mb-4">
+                <label for="address" class="form-label">Address</label>
+                <input type="text" class="form-control" id="address" placeholder="Enter address" required>
+              </div>
+              <div class="mb-4">
+                <label for="emergencyContact" class="form-label">Emergency Contact</label>
+                <input type="text" class="form-control" id="emergencyContact" placeholder="Enter emergency contact" required>
+              </div>
+            </div>
+            
+            <!-- Employment Details -->
+            <div class="form-section animate-in" style="animation-delay: 0.5s;">
+              <h5 class="section-title"><i class="fas fa-briefcase"></i> Employment Details</h5>
+              <div class="row">
+                <div class="col-md-6 mb-4">
+                  <label for="jobTitle" class="form-label">Job Title</label>
+                  <input type="text" class="form-control" id="jobTitle" placeholder="Enter job title" required>
+                </div>
+                <div class="col-md-6 mb-4">
+                  <label for="departmentId" class="form-label">Department</label>
+                  <select class="form-select" id="departmentId" required>
+                    <option value="">Select Department</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-4">
+                  <label for="level" class="form-label">Level</label>
+                  <select class="form-select" id="level" required>
+                    <option value="1">Manager</option>
+                    <option value="2">Employee</option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-4">
+                  <label for="role" class="form-label">Role</label>
+                  <select class="form-select" id="role" required>
+                    <option value="1">Admin</option>
+                    <option value="2">Manager</option>
+                    <option value="3">Employee</option>
+                    <option value="4">HR Manager</option>
+                  </select>
+                </div>
+              </div>
+              <div class="mb-4">
+                <label for="isActive" class="form-label">Employment Status</label>
+                <select class="form-select" id="isActive" required>
+                  <option value="true">Active</option>
+                  <option value="false">Inactive</option>
+                </select>
+              </div>
+            </div>
+            
+            <!-- Buttons -->
+            <div class="action-buttons mt-4 animate-in" style="animation-delay: 0.6s;">
+              <button type="button" id="clearBtn" class="btn btn-secondary cancel-btn">
+                <i class="fas fa-eraser me-2"></i>Clear
+              </button>
+              <button type="submit" class="btn btn-success update-btn">
+                <i class="fas fa-save me-2"></i>Update Employee
+              </button>
+            </div>
+          </form>
+          
+          <div id="responseMessage" class="mt-4"></div>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Bootstrap Bundle JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
+    // Load employees from API and populate the dropdown
+    function loadEmployees() {
+      fetch('https://localhost:7136/api/Employees')
+        .then(response => response.json())
+        .then(data => {
+          const employeeSelect = document.getElementById('employeeId');
+          // Clear existing options and add default
+          employeeSelect.innerHTML = '<option value="">-- Select an employee --</option>';
+          data.forEach(emp => {
+            const option = document.createElement('option');
+            option.value = emp.employeeId;
+            option.textContent = `${emp.firstName} ${emp.lastName} (${emp.departmentId ? emp.departmentId : 'No Dept'})`;
+            employeeSelect.appendChild(option);
+          });
+        })
+        .catch(error => {
+          console.error('Error loading employees:', error);
+          showMessage('danger', 'Failed to load employees. Please check your connection.');
+        });
+    }
+
     // Load departments from API and populate the dropdown
     function loadDepartments() {
       fetch('https://localhost:7136/api/Departments')
@@ -155,16 +452,66 @@
         })
         .catch(error => {
           console.error('Error loading departments:', error);
+          showMessage('danger', 'Failed to load departments. Please check your connection.');
         });
     }
 
-    // Call loadDepartments when the DOM content is loaded
-    document.addEventListener('DOMContentLoaded', loadDepartments);
+    // When an employee is selected, populate the form with their data
+    document.getElementById('employeeId').addEventListener('change', function() {
+      const employeeId = this.value;
+      if (!employeeId) return;
+      
+      // Show loading indicator
+      showMessage('info', '<div class="d-flex align-items-center"><div class="spinner-border spinner-border-sm me-2"></div>Loading employee data...</div>');
+      
+      fetch(`https://localhost:7136/api/Employees/${employeeId}`)
+        .then(response => response.json())
+        .then(data => {
+          // Clear message
+          document.getElementById('responseMessage').innerHTML = '';
+          
+          // Populate form fields with employee data
+          document.getElementById('lastName').value = data.lastName || '';
+          document.getElementById('phoneNumber').value = data.phoneNumber || '';
+          document.getElementById('jobTitle').value = data.jobTitle || '';
+          document.getElementById('departmentId').value = data.departmentId || '';
+          document.getElementById('address').value = data.address || '';
+          document.getElementById('level').value = data.level || '2';
+          document.getElementById('role').value = data.role || '3';
+          document.getElementById('isActive').value = data.isActive ? 'true' : 'false';
+          document.getElementById('emergencyContact').value = data.emergencyContact || '';
+        })
+        .catch(error => {
+          console.error('Error loading employee data:', error);
+          showMessage('danger', 'Failed to load employee data. Please try again.');
+        });
+    });
+
+    // Call load functions when the DOM content is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      loadEmployees();
+      loadDepartments();
+      
+      // Add animation classes to elements
+      const formSections = document.querySelectorAll('.form-section');
+      formSections.forEach((section, index) => {
+        section.classList.add('animate-in');
+        section.style.animationDelay = `${0.3 + (index * 0.1)}s`;
+      });
+    });
 
     // Handle the Update Employee form submission
     document.getElementById('updateEmployeeForm').addEventListener('submit', function(event) {
       event.preventDefault();
       const employeeId = document.getElementById('employeeId').value.trim();
+      if (!employeeId) {
+        showMessage('warning', 'Please select an employee to update.');
+        return;
+      }
+      
+      // Show loading indicator
+      showMessage('info', '<div class="d-flex align-items-center justify-content-center"><div class="spinner-border spinner-border-sm me-2"></div>Updating employee data...</div>');
+      
       const url = `https://localhost:7136/api/Employees/${employeeId}`;
       
       const payload = {
@@ -193,14 +540,13 @@
         });
       })
       .then(data => {
-        document.getElementById('responseMessage').innerHTML = `<div class="alert alert-success" role="alert">
-          ${data.message || 'Employee updated successfully!'}
-        </div>`;
+        showMessage('success', data.message || 'Employee updated successfully!');
+        
+        // Reload employees to ensure dropdown is up-to-date
+        loadEmployees();
       })
       .catch(error => {
-        document.getElementById('responseMessage').innerHTML = `<div class="alert alert-danger" role="alert">
-          ${error.message}
-        </div>`;
+        showMessage('danger', error.message);
       });
     });
 
@@ -208,8 +554,39 @@
     document.getElementById('clearBtn').addEventListener('click', function() {
       document.getElementById('updateEmployeeForm').reset();
       document.getElementById('responseMessage').innerHTML = '';
-      loadDepartments(); // Reload departments to reset dropdown
+      // Reset dropdowns
+      document.getElementById('employeeId').value = '';
+      loadDepartments();
     });
+    
+    // Helper function to show messages
+    function showMessage(type, text) {
+      const icon = {
+        success: 'fa-check-circle',
+        danger: 'fa-times-circle',
+        warning: 'fa-exclamation-triangle',
+        info: 'fa-info-circle'
+      }[type];
+      
+      const responseMessage = document.getElementById('responseMessage');
+      responseMessage.innerHTML = `<div class="alert alert-${type} text-center animate-in">
+        ${type !== 'info' ? `<i class="fas ${icon} me-2"></i>` : ''}${text}
+      </div>`;
+    }
+    
+    // Add animation to response messages
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+          const addedNode = mutation.addedNodes[0];
+          if (addedNode.classList && addedNode.classList.contains('alert')) {
+            addedNode.classList.add('animate-in');
+          }
+        }
+      });
+    });
+    
+    observer.observe(document.getElementById('responseMessage'), { childList: true });
   </script>
 </body>
 </html>

@@ -8,41 +8,198 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <!-- Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+  <!-- Font Awesome for enhanced icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     body {
       background-color: #f8f9fa;
       scroll-behavior: smooth;
+      font-family: 'Poppins', sans-serif;
     }
     .dashboard-title {
-      background: linear-gradient(45deg, #007bff, #6610f2);
+      background: linear-gradient(135deg, #3a7bd5, #00d2ff);
       color: #fff;
-      padding: 30px;
-      border-radius: 10px;
+      padding: 40px 30px;
+      border-radius: 15px;
       margin-bottom: 40px;
       text-align: center;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    .dashboard-title::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+      transform: rotate(30deg);
+    }
+    .dashboard-title h1 {
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+      margin-bottom: 15px;
+    }
+    .dashboard-title p {
+      font-size: 1.2rem;
+      font-weight: 300;
+      opacity: 0.9;
     }
     .box-card {
       cursor: pointer;
-      transition: transform 0.2s ease;
+      transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+      border: none;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      height: 100%;
+      position: relative;
     }
     .box-card:hover {
-      transform: scale(1.03);
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+    }
+    .box-card .card-body {
+      padding: 2.5rem 1.5rem;
+      z-index: 1;
+      position: relative;
+    }
+    .box-card .icon-bg {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      font-size: 6rem;
+      opacity: 0.15;
+      transform: rotate(-15deg);
+      transition: all 0.3s ease;
+    }
+    .box-card:hover .icon-bg {
+      transform: rotate(0) scale(1.1);
+      opacity: 0.2;
+    }
+    .box-card .card-title {
+      font-weight: 600;
+      margin-bottom: 15px;
+      font-size: 1.4rem;
+    }
+    .box-card .card-text {
+      font-weight: 300;
+      font-size: 1rem;
     }
     .section {
       display: none;
-      margin-top: 30px;
+      margin-top: 40px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s ease;
     }
     .section.active {
       display: block;
+      opacity: 1;
+      transform: translateY(0);
     }
     .section-title {
-      padding: 15px;
-      border-bottom: 2px solid #ddd;
-      margin-bottom: 20px;
+      padding: 20px 0;
+      border-bottom: 3px solid #ddd;
+      margin-bottom: 30px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .section-title i {
+      font-size: 1.8rem;
     }
     .result-container {
-      margin-top: 20px;
+      margin-top: 25px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      background-color: white;
+      padding: 20px;
+    }
+    .btn {
+      border-radius: 8px;
+      padding: 12px 25px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    }
+    .form-control {
+      border-radius: 8px;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      background-color: #f9f9f9;
+      transition: all 0.3s ease;
+    }
+    .form-control:focus {
+      border-color: #3a7bd5;
+      box-shadow: 0 0 0 3px rgba(58, 123, 213, 0.1);
+      background-color: #fff;
+    }
+    .form-label {
+      font-weight: 500;
+      margin-bottom: 10px;
+      color: #444;
+    }
+    .table {
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    .table-dark th {
+      background-color: #3a4a5a;
+      border-color: #3a4a5a;
+    }
+    .alert {
+      border-radius: 10px;
+      border-left: 5px solid;
+    }
+    .alert-danger {
+      border-left-color: #dc3545;
+    }
+    .alert-info {
+      border-left-color: #0dcaf0;
+    }
+    .alert-warning {
+      border-left-color: #ffc107;
+    }
+    .card {
+      border-radius: 10px;
+      overflow: hidden;
+      border: none;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    .card-title {
+      font-weight: 600;
+      color: #333;
+    }
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .animate-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+    .loading-spinner {
+      display: inline-block;
+      width: 1rem;
+      height: 1rem;
+      margin-right: 0.5rem;
+      border: 0.15rem solid currentColor;
+      border-right-color: transparent;
+      border-radius: 50%;
+      animation: spinner-border 0.75s linear infinite;
     }
   </style>
 </head>
@@ -50,49 +207,53 @@
   <div class="container my-5">
     <!-- Dashboard Title -->
     <div class="dashboard-title">
-      <h1 class="display-4">Attendance Dashboard</h1>
-      <p class="lead">Manage and search attendance records</p>
+      <h1 class="display-4"><i class="bi bi-speedometer2 me-2"></i>Attendance Dashboard</h1>
+      <p class="lead">Comprehensive employee attendance tracking system</p>
     </div>
 
     <!-- Clickable Boxes -->
     <div class="row row-cols-1 row-cols-md-2 g-4 mb-5">
       <!-- Box 1: All Attendances -->
       <div class="col">
-        <div class="card box-card text-white bg-primary h-100" onclick="showSection('allAttendancesSection')">
+        <div class="card box-card text-white bg-primary" onclick="showSection('allAttendancesSection')">
           <div class="card-body text-center">
-            <i class="bi bi-card-list" style="font-size: 3rem;"></i>
-            <h5 class="card-title mt-3">All Attendances</h5>
-            <p class="card-text">View all attendance records.</p>
+            <i class="fas fa-th-list mb-3" style="font-size: 3rem;"></i>
+            <h5 class="card-title">All Attendances</h5>
+            <p class="card-text">View complete attendance records database</p>
+            <i class="fas fa-th-list icon-bg"></i>
           </div>
         </div>
       </div>
       <!-- Box 2: Attendance by Employee -->
       <div class="col">
-        <div class="card box-card text-white bg-success h-100" onclick="showSection('attendanceByEmployeeSection')">
+        <div class="card box-card text-white bg-success" onclick="showSection('attendanceByEmployeeSection')">
           <div class="card-body text-center">
-            <i class="bi bi-person-lines-fill" style="font-size: 3rem;"></i>
-            <h5 class="card-title mt-3">By Employee</h5>
-            <p class="card-text">Search by Employee ID.</p>
+            <i class="fas fa-user-clock mb-3" style="font-size: 3rem;"></i>
+            <h5 class="card-title">By Employee</h5>
+            <p class="card-text">Search attendance records by Employee</p>
+            <i class="fas fa-user-clock icon-bg"></i>
           </div>
         </div>
       </div>
       <!-- Box 3: Attendance by Date -->
       <div class="col">
-        <div class="card box-card text-dark bg-warning h-100" onclick="showSection('attendanceByDateSection')">
+        <div class="card box-card text-dark bg-warning" onclick="showSection('attendanceByDateSection')">
           <div class="card-body text-center">
-            <i class="bi bi-calendar3" style="font-size: 3rem;"></i>
-            <h5 class="card-title mt-3">By Date</h5>
-            <p class="card-text">Search by Date.</p>
+            <i class="fas fa-calendar-day mb-3" style="font-size: 3rem;"></i>
+            <h5 class="card-title">By Date</h5>
+            <p class="card-text">View all records for a specific date</p>
+            <i class="fas fa-calendar-day icon-bg"></i>
           </div>
         </div>
       </div>
       <!-- Box 4: Day Attendance -->
       <div class="col">
-        <div class="card box-card text-white bg-danger h-100" onclick="showSection('dayAttendanceSection')">
+        <div class="card box-card text-white bg-danger" onclick="showSection('dayAttendanceSection')">
           <div class="card-body text-center">
-            <i class="bi bi-clock-history" style="font-size: 3rem;"></i>
-            <h5 class="card-title mt-3">Day Attendance</h5>
-            <p class="card-text">Search by day and employee.</p>
+            <i class="fas fa-fingerprint mb-3" style="font-size: 3rem;"></i>
+            <h5 class="card-title">Day Attendance</h5>
+            <p class="card-text">Check specific employee's attendance on a day</p>
+            <i class="fas fa-fingerprint icon-bg"></i>
           </div>
         </div>
       </div>
@@ -102,23 +263,33 @@
     <div id="sectionsContainer">
       <!-- Section 1: All Attendances -->
       <div id="allAttendancesSection" class="section active">
-        <h2 class="section-title text-primary">All Attendance Records</h2>
-        <div class="text-center mb-3">
-          <button id="loadAttendancesBtn" class="btn btn-primary btn-lg">Load All Attendances</button>
+        <h2 class="section-title text-primary"><i class="fas fa-th-list"></i>All Attendance Records</h2>
+        <div class="text-center mb-4">
+          <button id="loadAttendancesBtn" class="btn btn-primary btn-lg">
+            <i class="fas fa-sync-alt me-2"></i>Load All Attendances
+          </button>
         </div>
         <div id="allAttendancesResult" class="result-container"></div>
       </div>
 
       <!-- Section 2: Attendance by Employee -->
       <div id="attendanceByEmployeeSection" class="section">
-        <h2 class="section-title text-success">Search Attendance by Employee ID</h2>
-        <form id="attendanceByEmployeeForm">
-          <div class="mb-3">
-            <label for="employeeIdAttendance" class="form-label">Employee ID</label>
-            <input type="text" class="form-control" id="employeeIdAttendance" placeholder="Enter Employee ID (GUID)" required>
+        <h2 class="section-title text-success"><i class="fas fa-user-clock"></i>Search Attendance by Employee</h2>
+        <form id="attendanceByEmployeeForm" class="card p-4">
+          <div class="mb-4">
+            <label for="employeeIdAttendance" class="form-label">Select Employee</label>
+            <div class="input-group" id="employeeIdAttendanceContainer">
+              <span class="input-group-text"><i class="fas fa-id-badge"></i></span>
+              <select class="form-control" id="employeeIdAttendance" required>
+                <option value="">-- Loading employees... --</option>
+              </select>
+            </div>
+            <div id="employeeAttendanceDropdownError"></div>
           </div>
-          <div class="d-grid mb-3">
-            <button type="submit" class="btn btn-success btn-lg">Search Attendance</button>
+          <div class="d-grid mb-2">
+            <button type="submit" class="btn btn-success btn-lg">
+              <i class="fas fa-search me-2"></i>Search Attendance
+            </button>
           </div>
         </form>
         <div id="attendanceByEmployeeResult" class="result-container"></div>
@@ -126,14 +297,19 @@
 
       <!-- Section 3: Attendance by Date -->
       <div id="attendanceByDateSection" class="section">
-        <h2 class="section-title text-warning">Search Attendance by Date</h2>
-        <form id="attendanceByDateForm">
-          <div class="mb-3">
+        <h2 class="section-title text-warning"><i class="fas fa-calendar-day"></i>Search Attendance by Date</h2>
+        <form id="attendanceByDateForm" class="card p-4">
+          <div class="mb-4">
             <label for="attendanceDate" class="form-label">Date</label>
-            <input type="date" class="form-control" id="attendanceDate" required>
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              <input type="date" class="form-control" id="attendanceDate" required>
+            </div>
           </div>
-          <div class="d-grid mb-3">
-            <button type="submit" class="btn btn-warning btn-lg">Search Attendance</button>
+          <div class="d-grid mb-2">
+            <button type="submit" class="btn btn-warning btn-lg text-dark">
+              <i class="fas fa-search me-2"></i>Search Attendance
+            </button>
           </div>
         </form>
         <div id="attendanceByDateResult" class="result-container"></div>
@@ -141,18 +317,29 @@
 
       <!-- Section 4: Day Attendance -->
       <div id="dayAttendanceSection" class="section">
-        <h2 class="section-title text-danger">Search Day Attendance</h2>
-        <form id="dayAttendanceForm">
-          <div class="mb-3">
+        <h2 class="section-title text-danger"><i class="fas fa-fingerprint"></i>Search Day Attendance</h2>
+        <form id="dayAttendanceForm" class="card p-4">
+          <div class="mb-4">
             <label for="dayInput" class="form-label">Date</label>
-            <input type="date" class="form-control" id="dayInput" required>
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              <input type="date" class="form-control" id="dayInput" required>
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="employeeIdForDay" class="form-label">Employee ID</label>
-            <input type="text" class="form-control" id="employeeIdForDay" placeholder="Enter Employee ID (GUID)" required>
+          <div class="mb-4">
+            <label for="employeeIdForDay" class="form-label">Select Employee</label>
+            <div class="input-group" id="employeeIdForDayContainer">
+              <span class="input-group-text"><i class="fas fa-id-badge"></i></span>
+              <select class="form-control" id="employeeIdForDay" required>
+                <option value="">-- Loading employees... --</option>
+              </select>
+            </div>
+            <div id="employeeDayDropdownError"></div>
           </div>
-          <div class="d-grid mb-3">
-            <button type="submit" class="btn btn-danger btn-lg">Search Day Attendance</button>
+          <div class="d-grid mb-2">
+            <button type="submit" class="btn btn-danger btn-lg">
+              <i class="fas fa-search me-2"></i>Search Day Attendance
+            </button>
           </div>
         </form>
         <div id="dayAttendanceResult" class="result-container"></div>
@@ -162,14 +349,20 @@
 
   <!-- Bootstrap Bundle JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <Script src ="../config.js"></Script>
   <script>
     // Toggle visible section
     function showSection(sectionId) {
-      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+      document.querySelectorAll('.section').forEach(sec => {
+        sec.classList.remove('active');
+      });
       const target = document.getElementById(sectionId);
       if (target) {
         target.classList.add('active');
-        target.scrollIntoView({ behavior: 'smooth' });
+        // Smooth scroll with offset
+        const yOffset = -80; 
+        const y = target.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({top: y, behavior: 'smooth'});
       }
     }
 
@@ -180,9 +373,86 @@
       return d.toLocaleDateString();
     };
 
+    // Loading indicator function
+    function showLoading(elementId) {
+      const element = document.getElementById(elementId);
+      element.innerHTML = `
+        <div class="text-center p-5">
+          <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <p class="mt-3">Loading data...</p>
+        </div>`;
+    }
+
+    // Fetch employees function
+    function fetchEmployees() {
+      return fetch(`${API_CONFIG.baseUrl}/Employees`)
+        .then(response => {
+          if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
+          return response.json();
+        })
+        .catch(error => {
+          console.error('Error fetching employees:', error);
+          throw error;
+        });
+    }
+
+    // Initialize employee dropdowns
+    function initEmployeeDropdowns() {
+      // Show loading state in dropdowns
+      document.getElementById('employeeIdAttendance').disabled = true;
+      document.getElementById('employeeIdForDay').disabled = true;
+      
+      fetchEmployees()
+        .then(employees => {
+          if (!Array.isArray(employees) || employees.length === 0) {
+            throw new Error('No employees found');
+          }
+          
+          // Create dropdown HTML
+          const employeeOptions = employees.map(emp => 
+            `<option value="${emp.employeeId}">${emp.firstName} ${emp.lastName} (${emp.employeeNumber})</option>`
+          ).join('');
+          
+          const defaultOption = '<option value="">-- Select Employee --</option>';
+          
+          // Update dropdowns
+          document.getElementById('employeeIdAttendance').innerHTML = defaultOption + employeeOptions;
+          document.getElementById('employeeIdAttendance').disabled = false;
+          
+          document.getElementById('employeeIdForDay').innerHTML = defaultOption + employeeOptions;
+          document.getElementById('employeeIdForDay').disabled = false;
+          
+          console.log(`Successfully loaded ${employees.length} employees`);
+        })
+        .catch(error => {
+          console.error('Failed to load employees:', error);
+          // Show error message
+          document.getElementById('employeeAttendanceDropdownError').innerHTML = `
+            <div class="alert alert-danger mt-2">
+              <i class="fas fa-exclamation-triangle me-2"></i>Failed to load employee list. Please refresh the page.
+            </div>
+          `;
+          document.getElementById('employeeDayDropdownError').innerHTML = `
+            <div class="alert alert-danger mt-2">
+              <i class="fas fa-exclamation-triangle me-2"></i>Failed to load employee list. Please refresh the page.
+            </div>
+          `;
+          
+          // Reset dropdowns with error message
+          document.getElementById('employeeIdAttendance').innerHTML = '<option value="">-- Error loading employees --</option>';
+          document.getElementById('employeeIdAttendance').disabled = false;
+          
+          document.getElementById('employeeIdForDay').innerHTML = '<option value="">-- Error loading employees --</option>';
+          document.getElementById('employeeIdForDay').disabled = false;
+        });
+    }
+
     // 1. Load All Attendances
     document.getElementById('loadAttendancesBtn').addEventListener('click', function() {
-      fetch('https://localhost:7136/api/Attendances')
+      showLoading('allAttendancesResult');
+      fetch(`${API_CONFIG.baseUrl}/Attendances`)
         .then(response => {
           if (!response.ok) throw new Error('Failed to fetch attendance records.');
           return response.json();
@@ -190,18 +460,20 @@
         .then(data => {
           let html = '';
           if (!data || data.length === 0) {
-            html = '<div class="alert alert-info">No attendance records found.</div>';
+            html = `<div class="alert alert-info">
+                      <i class="fas fa-info-circle me-2"></i>No attendance records found.
+                    </div>`;
           } else {
             html += `<div class="table-responsive">
                         <table class="table table-bordered table-striped table-hover">
                           <thead class="table-dark">
                             <tr>
-                              <th>Attendance ID</th>
-                              <th>Employee Number</th>
-                              <th>Date</th>
-                              <th>Checkin Time</th>
-                              <th>Checkout Time</th>
-                              <th>Status</th>
+                              <th><i class="fas fa-hashtag me-2"></i>ID</th>
+                              <th><i class="fas fa-user me-2"></i>Employee Number</th>
+                              <th><i class="fas fa-calendar me-2"></i>Date</th>
+                              <th><i class="fas fa-sign-in-alt me-2"></i>Checkin Time</th>
+                              <th><i class="fas fa-sign-out-alt me-2"></i>Checkout Time</th>
+                              <th><i class="fas fa-info-circle me-2"></i>Status</th>
                             </tr>
                           </thead>
                           <tbody>`;
@@ -209,9 +481,9 @@
               html += `<tr>
                         <td>${a.data.attendanceId || 'N/A'}</td>
                         <td>${a.data.employeeNumber || 'N/A'}</td>
-                        <td>${a.data.date  ||'N/A'}</td>
-                        <td>${a.data.checkInTime  ||'N/A'}</td>
-                        <td>${a.data.checkOutTime ||'N/A'}</td>
+                        <td>${a.data.date || 'N/A'}</td>
+                        <td>${a.data.checkInTime || 'N/A'}</td>
+                        <td>${a.data.checkOutTime || 'N/A'}</td>
                         <td>${a.data.statusType || 'N/A'}</td>
                       </tr>`;
             });
@@ -221,7 +493,9 @@
         })
         .catch(error => {
           document.getElementById('allAttendancesResult').innerHTML =
-            `<div class="alert alert-danger">${error.message}</div>`;
+            `<div class="alert alert-danger">
+              <i class="fas fa-exclamation-triangle me-2"></i>${error.message}
+            </div>`;
         });
     });
 
@@ -231,10 +505,13 @@
       const employeeId = document.getElementById('employeeIdAttendance').value.trim();
       if (!employeeId) {
         document.getElementById('attendanceByEmployeeResult').innerHTML =
-          `<div class="alert alert-warning">Please enter a valid Employee ID.</div>`;
+          `<div class="alert alert-warning">
+            <i class="fas fa-exclamation-circle me-2"></i>Please select an employee.
+          </div>`;
         return;
       }
-      fetch(`https://localhost:7136/api/Attendances/ByEmployee/${encodeURIComponent(employeeId)}`)
+      showLoading('attendanceByEmployeeResult');
+      fetch(`${API_CONFIG.baseUrl}/Attendances/ByEmployee/${encodeURIComponent(employeeId)}`)
         .then(response => {
           if (!response.ok) throw new Error('Attendance records not found for this employee.');
           return response.json();
@@ -242,15 +519,17 @@
         .then(data => {
           let html = '';
           if (!data || data.length === 0) {
-            html = '<div class="alert alert-info">No attendance records found for this employee.</div>';
+            html = `<div class="alert alert-info">
+                      <i class="fas fa-info-circle me-2"></i>No attendance records found for this employee.
+                    </div>`;
           } else {
             html += `<div class="table-responsive">
                         <table class="table table-bordered table-striped table-hover">
                           <thead class="table-dark">
                             <tr>
-                              <th>Attendance ID</th>
-                              <th>Date</th>
-                              <th>Status</th>
+                              <th><i class="fas fa-hashtag me-2"></i>Attendance ID</th>
+                              <th><i class="fas fa-calendar me-2"></i>Date</th>
+                              <th><i class="fas fa-info-circle me-2"></i>Status</th>
                             </tr>
                           </thead>
                           <tbody>`;
@@ -267,7 +546,9 @@
         })
         .catch(error => {
           document.getElementById('attendanceByEmployeeResult').innerHTML =
-            `<div class="alert alert-danger">${error.message}</div>`;
+            `<div class="alert alert-danger">
+              <i class="fas fa-exclamation-triangle me-2"></i>${error.message}
+            </div>`;
         });
     });
 
@@ -277,10 +558,13 @@
       const date = document.getElementById('attendanceDate').value;
       if (!date) {
         document.getElementById('attendanceByDateResult').innerHTML =
-          `<div class="alert alert-warning">Please select a valid date.</div>`;
+          `<div class="alert alert-warning">
+            <i class="fas fa-exclamation-circle me-2"></i>Please select a valid date.
+          </div>`;
         return;
       }
-      fetch(`https://localhost:7136/api/Attendances/ByDate/${encodeURIComponent(date)}`)
+      showLoading('attendanceByDateResult');
+      fetch(`${API_CONFIG.baseUrl}/Attendances/ByDate/${encodeURIComponent(date)}`)
         .then(response => {
           if (!response.ok) throw new Error('No attendance records found for the selected date.');
           return response.json();
@@ -288,16 +572,18 @@
         .then(data => {
           let html = '';
           if (!data || data.length === 0) {
-            html = '<div class="alert alert-info">No attendance records found for this date.</div>';
+            html = `<div class="alert alert-info">
+                      <i class="fas fa-info-circle me-2"></i>No attendance records found for this date.
+                    </div>`;
           } else {
             html += `<div class="table-responsive">
                         <table class="table table-bordered table-striped table-hover">
                           <thead class="table-dark">
                             <tr>
-                              <th>Attendance ID</th>
-                              <th>Employee ID</th>
-                              <th>Date</th>
-                              <th>Status</th>
+                              <th><i class="fas fa-hashtag me-2"></i>Attendance ID</th>
+                              <th><i class="fas fa-user me-2"></i>Employee ID</th>
+                              <th><i class="fas fa-calendar me-2"></i>Date</th>
+                              <th><i class="fas fa-info-circle me-2"></i>Status</th>
                             </tr>
                           </thead>
                           <tbody>`;
@@ -315,7 +601,9 @@
         })
         .catch(error => {
           document.getElementById('attendanceByDateResult').innerHTML =
-            `<div class="alert alert-danger">${error.message}</div>`;
+            `<div class="alert alert-danger">
+              <i class="fas fa-exclamation-triangle me-2"></i>${error.message}
+            </div>`;
         });
     });
 
@@ -326,10 +614,13 @@
       const employeeId = document.getElementById('employeeIdForDay').value.trim();
       if (!day || !employeeId) {
         document.getElementById('dayAttendanceResult').innerHTML =
-          `<div class="alert alert-warning">Please enter both date and Employee ID.</div>`;
+          `<div class="alert alert-warning">
+            <i class="fas fa-exclamation-circle me-2"></i>Please select both date and employee.
+          </div>`;
         return;
       }
-      const url = `https://localhost:7136/api/Attendances/GetDayAttendance?day=${encodeURIComponent(day)}&employeeId=${encodeURIComponent(employeeId)}`;
+      showLoading('dayAttendanceResult');
+      const url = `${API_CONFIG.baseUrl}/Attendances/GetDayAttendance?day=${encodeURIComponent(day)}&employeeId=${encodeURIComponent(employeeId)}`;
       fetch(url)
         .then(response => {
           if (!response.ok) throw new Error('Attendance not found for the given day and employee.');
@@ -337,20 +628,77 @@
         })
         .then(data => {
           let html = `<div class="card">
+                        <div class="card-header bg-light">
+                          <h5 class="mb-0"><i class="fas fa-fingerprint me-2"></i>Day Attendance Details</h5>
+                        </div>
                         <div class="card-body">
-                          <h5 class="card-title">Day Attendance Details</h5>
-                          <p><strong>Attendance ID:</strong> ${data.attendanceId || 'N/A'}</p>
-                          <p><strong>Employee ID:</strong> ${data.employeeId || 'N/A'}</p>
-                          <p><strong>Date:</strong> ${data.date ? formatDate(data.date) : 'N/A'}</p>
-                          <p><strong>Status:</strong> ${(data.statusType !== undefined) ? data.statusType : 'N/A'}</p>
+                          <div class="row">
+                            <div class="col-md-6 mb-3">
+                              <div class="d-flex align-items-center">
+                                <div class="me-3 text-primary" style="font-size: 2rem;">
+                                  <i class="fas fa-id-card"></i>
+                                </div>
+                                <div>
+                                  <h6 class="text-muted mb-1">Attendance ID</h6>
+                                  <p class="mb-0 fw-bold">${data.attendanceId || 'N/A'}</p>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <div class="d-flex align-items-center">
+                                <div class="me-3 text-success" style="font-size: 2rem;">
+                                  <i class="fas fa-user-circle"></i>
+                                </div>
+                                <div>
+                                  <h6 class="text-muted mb-1">Employee ID</h6>
+                                  <p class="mb-0 fw-bold">${data.employeeId || 'N/A'}</p>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <div class="d-flex align-items-center">
+                                <div class="me-3 text-warning" style="font-size: 2rem;">
+                                  <i class="fas fa-calendar-alt"></i>
+                                </div>
+                                <div>
+                                  <h6 class="text-muted mb-1">Date</h6>
+                                  <p class="mb-0 fw-bold">${data.date ? formatDate(data.date) : 'N/A'}</p>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                              <div class="d-flex align-items-center">
+                                <div class="me-3 text-info" style="font-size: 2rem;">
+                                  <i class="fas fa-info-circle"></i>
+                                </div>
+                                <div>
+                                  <h6 class="text-muted mb-1">Status</h6>
+                                  <p class="mb-0 fw-bold">${(data.statusType !== undefined) ? data.statusType : 'N/A'}</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>`;
           document.getElementById('dayAttendanceResult').innerHTML = html;
         })
         .catch(error => {
           document.getElementById('dayAttendanceResult').innerHTML =
-            `<div class="alert alert-danger">${error.message}</div>`;
+            `<div class="alert alert-danger">
+              <i class="fas fa-exclamation-triangle me-2"></i>${error.message}
+            </div>`;
         });
+    });
+
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize employee dropdowns when page loads
+      initEmployeeDropdowns();
+      
+      // Set default date inputs to today's date
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('attendanceDate').value = today;
+      document.getElementById('dayInput').value = today;
     });
   </script>
 </body>

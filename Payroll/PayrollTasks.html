@@ -59,15 +59,21 @@
     }
     /* Styling for each card */
     .dashboard-card {
-      transition: transform 0.2s;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
       cursor: pointer;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
     .dashboard-card:hover {
-      transform: translateY(-5px);
+      transform: translateY(-8px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     }
     .card-icon {
       font-size: 3rem;
-      color: #2c3e50;
+      color: #2980b9;
+    }
+    .card-title {
+      font-weight: bold;
     }
     /* Footer styling */
     footer {
@@ -119,41 +125,42 @@
       <!-- Grid row with auto-sizing columns and centered alignment -->
       <div class="row justify-content-center g-4">
         <!-- Add Payroll-->
-        <div class="col-auto">
-          <div id="task-Add Payroll" class="card dashboard-card" style="width: 25rem;" onclick="location.href='AddPayroll.html'">
+        <div class="col-md-4">
+          <div id="task-Add Payroll" class="card dashboard-card" onclick="location.href='AddPayroll.html'">
             <div class="card-body text-center">
-              <i class="fas fa-plus card-icon"></i>
+              <i class="fas fa-plus-circle card-icon"></i>
               <h5 class="card-title mt-3">Add Payroll</h5>
             </div>
           </div>
         </div>
         <!-- Delete Payroll -->
-        <div class="col-auto">
-          <div id="task-Delete Payroll" class="card dashboard-card" style="width: 25rem;" onclick="location.href='DeletePayroll.html'">
+        <div class="col-md-4">
+          <div id="task-Delete Payroll" class="card dashboard-card" onclick="location.href='DeletePayroll.html'">
             <div class="card-body text-center">
-              <i class="fas fa-trash card-icon"></i>
+              <i class="fas fa-trash-alt card-icon"></i>
               <h5 class="card-title mt-3">Delete Payroll</h5>
             </div>
           </div>
         </div>
         <!-- Payrolls -->
-        <div class="col-auto">
-          <div id="task-Payrolls" class="card dashboard-card" style="width: 25rem;" onclick="location.href='Payrolls.html'">
+        <div class="col-md-4">
+          <div id="task-Payrolls" class="card dashboard-card" onclick="location.href='Payrolls.html'">
             <div class="card-body text-center">
-              <i class="fas fa-list card-icon"></i>
+              <i class="fas fa-list-alt card-icon"></i>
               <h5 class="card-title mt-3">Payrolls</h5>
             </div>
           </div>
         </div>
-         <!-- Update Payroll -->
-         <div class="col-auto">
-            <div id="task-Update-Payroll" class="card dashboard-card" style="width: 25rem;" onclick="location.href='UpdatePayroll.html'">
-              <div class="card-body text-center">
-                <i class="fas fa-list card-icon"></i>
-                <h5 class="card-title mt-3">Update Payroll</h5>
-              </div>
+        <!-- Update Payroll -->
+        <div class="col-md-4">
+          <div id="task-Update-Payroll" class="card dashboard-card" onclick="location.href='UpdatePayroll.html'">
+            <div class="card-body text-center">
+              <i class="fas fa-sync-alt card-icon"></i>
+              <h5 class="card-title mt-3">Update Payroll</h5>
             </div>
           </div>
+        </div>
+      </div>
     </main>
    
     <!-- Footer -->
@@ -211,4 +218,3 @@
   </script>
 </body>
 </html>
- 
